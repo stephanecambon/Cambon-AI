@@ -27,7 +27,7 @@ const pretty = (url: string) => url.replace(/^https?:\/\//, '').replace(/\/$/, '
     <p class="eyebrow">{plain(d.kicker, lang)}</p>
     <h1>{plain(d.title, lang)}</h1>
     <p class="lead fiche-projet__summary">{plain(d.summary, lang)}</p>
-    <Image class="fiche-projet__image" src={projectImage(d.image)} alt={plain(d.imageAlt, lang)} widths={[640, 960, 1600]} sizes="(max-width: 860px) 92vw, 800px" loading="eager" />
+    <Image class="fiche-projet__image" src={projectImage(d.image)} alt={plain(d.imageAlt, lang)} widths={[800, 1200, 1600, 2400]} sizes="(max-width: 860px) calc(100vw - 32px), 800px" quality={82} loading="eager" />
 
     {d.context && (
       <section class="block">

@@ -14,7 +14,8 @@ export const en: Texts = {
     privacyTitle: 'Privacy · Cambon AI',
     privacyDescription:
       'What data the cambon.ai website and its newsletter collect, why, how long it is kept, and your rights.',
-    legalDescription: 'Legal notice for the cambon.ai website.',
+    legalDescription:
+      'Legal notice for the cambon.ai website: publisher CAMBON AI (SASU, Paris), registration, publication director and hosting provider.',
     notFoundTitle: 'Page not found · Cambon AI',
     ogImageAlt: 'Cambon AI: Your hardest problems are the ones that pay the most.',
   },

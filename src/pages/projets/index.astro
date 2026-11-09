@@ -1,10 +1,13 @@
 ---
 import Base from '../../layouts/Base.astro';
 import ProjectList from '../../components/ProjectList.astro';
+import { projectsJsonLd } from '../../lib/seo';
+import { getProjets, slugOf } from '../../lib/projets';
 import { texts, routes } from '../../i18n';
 
 const t = texts.fr.meta;
+const list = (await getProjets('fr')).map((p) => ({ title: p.data.title, slug: slugOf(p) }));
 ---
-<Base lang="fr" alternates={routes.projects} title={t.projectsTitle} description={t.projectsDescription}>
+<Base lang="fr" alternates={routes.projects} title={t.projectsTitle} description={t.projectsDescription} jsonLd={projectsJsonLd('fr', list)}>
   <ProjectList lang="fr" />
 </Base>

@@ -2,7 +2,7 @@
 translationOf: preuves-robotique
 title: "Proving that a robot cannot reach its target"
 image: "preuves-robotique"
-imageAlt: "Silhouettes of the KUKA iiwa7 arm: the start and goal poses are free, but every intermediate pose hits the shelf."
+imageAlt: "3D view of the KUKA iiwa7 arm under a shelf: the start and goal poses are free, but moving from one to the other takes the arm through the shelf."
 kicker: "Hard problems · Robotics · Research"
 category: difficile
 summary: "A research project that produces independently checkable mathematical proofs that a robot motion is impossible."

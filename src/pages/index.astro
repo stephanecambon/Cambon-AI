@@ -1,10 +1,11 @@
 ---
 import Base from '../layouts/Base.astro';
 import Home from '../components/Home.astro';
+import { homeJsonLd } from '../lib/seo';
 import { texts, routes } from '../i18n';
 
 const t = texts.fr.meta;
 ---
-<Base lang="fr" alternates={routes.home} title={t.homeTitle} description={t.homeDescription}>
+<Base lang="fr" alternates={routes.home} title={t.homeTitle} description={t.homeDescription} jsonLd={homeJsonLd('fr')}>
   <Home lang="fr" />
 </Base>

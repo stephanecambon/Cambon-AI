@@ -17,7 +17,7 @@ const t = texts[lang].projects;
 const Heading = `h${level}` as 'h2' | 'h3';
 ---
 <li class="card" data-category={d.category}>
-  <Image class="card__image" src={projectImage(d.image)} alt="" widths={[400, 640, 960]} sizes="(max-width: 720px) 92vw, 360px" loading="lazy" />
+  <Image class="card__image" src={projectImage(d.image)} alt={plain(d.imageAlt, lang)} widths={[480, 720, 1080, 1440]} sizes="(max-width: 720px) calc(100vw - 32px), 360px" quality={82} loading="lazy" />
   <p class="card__kicker">{plain(d.kicker, lang)}</p>
   <Heading class="card__title">
     <a href={projectUrl(lang, slugOf(projet))}>{plain(d.title, lang)}</a>

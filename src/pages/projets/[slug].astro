@@ -3,12 +3,22 @@ import Base from '../../layouts/Base.astro';
 import ProjectPage from '../../components/ProjectPage.astro';
 import { projectPaths } from '../../lib/projectPaths';
 import type { Projet } from '../../lib/projets';
+import { getImage } from 'astro:assets';
+import { projectImage } from '../../lib/projectImages';
+import { projectJsonLd } from '../../lib/seo';
+import { slugOf } from '../../lib/projets';
+import { plain } from '../../i18n';
 import type { Alternates } from '../../i18n';
 
 export const getStaticPaths = () => projectPaths('fr');
 
 const { projet, alternates } = Astro.props as { projet: Projet; alternates: Alternates };
+const d = projet.data;
+// Image de partage : l'image du projet, 1200 × 750, en JPEG (compatible avec tous les réseaux).
+const share = await getImage({ src: projectImage(d.image), width: 1200, height: 750, format: 'jpg', quality: 85 });
+const ogImage = { src: share.src, width: 1200, height: 750, alt: plain(d.imageAlt, 'fr') };
+const jsonLd = projectJsonLd('fr', { title: d.title, summary: d.summary, slug: slugOf(projet), imageUrl: share.src, keywords: plain(d.kicker, 'fr') });
 ---
-<Base lang="fr" alternates={alternates} title={projet.data.seoTitle} description={projet.data.seoDescription}>
+<Base lang="fr" alternates={alternates} title={projet.data.seoTitle} description={projet.data.seoDescription} ogImage={ogImage} jsonLd={jsonLd}>
   <ProjectPage lang="fr" projet={projet} />
 </Base>

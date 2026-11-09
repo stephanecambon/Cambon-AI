@@ -14,7 +14,8 @@ export const fr = {
     privacyTitle: 'Confidentialité · Cambon AI',
     privacyDescription:
       'Données collectées par le site cambon.ai et sa newsletter, finalité, durée de conservation et vos droits.',
-    legalDescription: 'Mentions légales du site cambon.ai.',
+    legalDescription:
+      'Mentions légales du site cambon.ai : éditeur CAMBON AI (SASU, Paris), immatriculation, directeur de la publication et hébergeur.',
     notFoundTitle: 'Page introuvable · Cambon AI',
     ogImageAlt: 'Cambon AI : Vos problèmes difficiles sont ceux qui rapportent le plus.',
   },
