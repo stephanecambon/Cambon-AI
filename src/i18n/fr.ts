@@ -215,6 +215,8 @@ export const fr = {
     title: 'Qui je suis',
     photoAlt: 'Stéphane Cambon',
     photoPlaceholder: 'Photo à venir',
+    linkedin: 'Mon profil LinkedIn',
+    email: "M'écrire un e-mail",
     lead: 'Stéphane Cambon, docteur en intelligence artificielle et entrepreneur.',
     paragraphs: [
       "J'ai fondé et dirigé Ownpage pendant onze ans. Nous avons construit, vendu et déployé un logiciel de personnalisation adopté par environ 40 % des grands médias français, puis l'entreprise a été revendue en 2024. J'ai ensuite été directeur des opérations chez Opper Marketing. Je continue à travailler sur l'économie de la presse : j'ai publié en open source un modèle de licence globale pour les éditeurs français.",

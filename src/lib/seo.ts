@@ -1,7 +1,7 @@
 // Données structurées Schema.org (JSON-LD) : aident Google à comprendre
 // qui édite le site, ce que fait Cambon AI et comment les pages s'organisent.
 import { texts, routes, projectUrl, plain, type Lang } from '../i18n';
-import { CONTACT_EMAIL } from '../config';
+import { CONTACT_EMAIL, LINKEDIN_URL } from '../config';
 
 const SITE = 'https://cambon.ai';
 const abs = (path: string) => new URL(path, SITE).href;
@@ -53,7 +53,7 @@ export function homeJsonLd(lang: Lang) {
         image: abs('/images/stephane-cambon.jpg'),
         worksFor: { '@id': ORG_ID },
         alumniOf: { '@type': 'CollegeOrUniversity', name: 'Université Paul Sabatier' },
-        sameAs: ['https://github.com/stephanecambon'],
+        sameAs: [LINKEDIN_URL, 'https://github.com/stephanecambon'],
       },
       {
         '@type': 'WebSite',

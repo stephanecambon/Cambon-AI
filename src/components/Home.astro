@@ -9,7 +9,7 @@ import ProjectCard from './ProjectCard.astro';
 import Cta from './Cta.astro';
 import { texts, plain, anchors, routes, type Lang } from '../i18n';
 import { getProjets } from '../lib/projets';
-import { PHOTO_PATH } from '../config';
+import { PHOTO_PATH, LINKEDIN_URL, CONTACT_EMAIL } from '../config';
 
 interface Props {
   lang: Lang;
@@ -100,6 +100,10 @@ const hasPhoto = fs.existsSync(path.join(process.cwd(), 'public', PHOTO_PATH));
       <div class="prose">
         <p class="lead about__lead">{plain(t.about.lead, lang)}</p>
         {t.about.paragraphs.map((p) => <p>{plain(p, lang)}</p>)}
+        <p class="about__links">
+          <a class="btn btn--outline" href={LINKEDIN_URL} rel="me noopener" target="_blank">{t.about.linkedin}</a>
+          <a class="btn btn--outline" href={`mailto:${CONTACT_EMAIL}`}>{plain(t.about.email, lang)}</a>
+        </p>
       </div>
     </div>
   </div>
@@ -241,6 +245,17 @@ const hasPhoto = fs.existsSync(path.join(process.cwd(), 'public', PHOTO_PATH));
     font-size: 0.875rem;
     letter-spacing: 0.08em;
     text-transform: uppercase;
+  }
+  .about__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 24px;
+  }
+  @media (max-width: 480px) {
+    .about__links .btn {
+      width: 100%;
+    }
   }
   .about__lead {
     font-weight: 600;

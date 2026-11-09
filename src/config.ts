@@ -6,6 +6,9 @@
 
 export const CONTACT_EMAIL = 'stephane@cambon.ai';
 
+/** Profil LinkedIn de Stéphane (section « Qui je suis » et données structurées). */
+export const LINKEDIN_URL = 'https://www.linkedin.com/in/scambon/';
+
 /**
  * Page de prise de rendez-vous (Google Agenda), utilisée par tous les boutons
  * « Prendre rendez-vous ». Si la valeur commence par « [ », les boutons ouvrent un e-mail.

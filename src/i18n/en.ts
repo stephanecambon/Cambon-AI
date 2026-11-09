@@ -212,6 +212,8 @@ export const en: Texts = {
     title: 'Who I am',
     photoAlt: 'Stéphane Cambon',
     photoPlaceholder: 'Photo coming soon',
+    linkedin: 'My LinkedIn profile',
+    email: 'Email me',
     lead: 'Stéphane Cambon, PhD in artificial intelligence and entrepreneur.',
     paragraphs: [
       'I founded and ran Ownpage for eleven years. We built, sold and deployed personalization software used by about 40% of major French media, and the company was sold in 2024. I then served as COO at Opper Marketing. I keep working on the economics of the press: I published an open-source global licence model for French publishers.',
