@@ -83,6 +83,8 @@ Tokens dans `src/styles/global.css` (`:root`). Toujours utiliser les variables, 
 - Polices : Barlow Condensed 600 en capitales pour les titres (`--font-title`), Barlow 400/500/600/700 pour le texte (`--font-text`).
 - Fond : lignes de cahier (gradient 1 px, pas de 34 px) sur `body`.
 - **Pas de liserés foncés** (choix de Stéphane, novembre 2026) : aucun trait `--ink` sur les sections, cartes, blocs ou images. Les sections sont séparées par l'espacement ; seuls des traits gris clairs (`--rule`) sont permis là où un repère est utile (tétière, pied de page, listes). Les contours `--ink` sont réservés aux boutons et aux filtres.
+- **Fond blanc (`--surface`)** pour la tétière, le pied de page et tous les encadrés (encart « Fiche », « Ce que je ne fais pas », champ et messages de la newsletter). Le fond papier ligné reste pour le corps de page ; le schéma des trois couches reste un bloc sombre.
+- **Chaque section a un surtitre et un titre** (`SectionHead` : `num` + `label` + `title` ; textes `label` dans `fr.ts`/`en.ts`).
 - Tétière (`Header.astro`) : fond blanc (`--header-bg`), `position: sticky` en haut ; `--header-h` + `scroll-padding-top` décalent les ancres sous la tétière (à ajuster si sa hauteur change).
 - Classes : `.section` (espacement vertical, sans trait), `.eyebrow` + `.eyebrow__num`, `.surligne`, `.btn` + `.btn--primary` / `.btn--outline` / `.btn--small`, `.container`, `.lead`, `.prose`, `.list`, `.cards`.
 - Angles : `--radius` (2 px).

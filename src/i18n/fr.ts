@@ -139,6 +139,7 @@ export const fr = {
   },
 
   offer: {
+    label: "L'offre",
     title: 'Ce que je fais',
     goalLabel: 'Objectif :',
     blocks: [
@@ -172,6 +173,7 @@ export const fr = {
   },
 
   method: {
+    label: 'La méthode',
     title: 'Comment je travaille',
     steps: [
       {
@@ -195,6 +197,7 @@ export const fr = {
   },
 
   why: {
+    label: 'La différence',
     title: 'Pourquoi moi',
     items: [
       { title: 'Chercheur.', text: 'Je formalise le problème et je prouve que la solution tient.' },
@@ -207,6 +210,7 @@ export const fr = {
   },
 
   about: {
+    label: 'Le parcours',
     title: 'Qui je suis',
     photoAlt: 'Stéphane Cambon',
     photoPlaceholder: 'Photo à venir',
@@ -219,11 +223,13 @@ export const fr = {
   },
 
   projectsPreview: {
+    label: 'Réalisations',
     title: 'Projets',
     all: 'Tous les projets',
   },
 
   cta: {
+    label: 'Contact',
     title: 'Un problème qui résiste ?',
     text: 'Décrivez-le-moi en 30 minutes. Si je ne suis pas la bonne personne pour le résoudre, je vous le dirai.',
     button: 'Prendre rendez-vous',
@@ -231,6 +237,7 @@ export const fr = {
 
   // ---------- Projets ----------
   projects: {
+    label: 'Réalisations',
     title: 'Projets',
     filterLegend: 'Filtrer par catégorie',
     filterAll: 'Tous',
@@ -259,6 +266,7 @@ export const fr = {
 
   // ---------- Newsletter ----------
   newsletter: {
+    label: 'Newsletter',
     title: 'Recevez mes analyses.',
     text: "L'économie de la tech vue par la science. Pas de rythme imposé : seulement quand j'ai quelque chose d'utile à dire.",
     emailLabel: 'Votre e-mail',

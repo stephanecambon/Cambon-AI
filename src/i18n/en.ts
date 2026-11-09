@@ -136,6 +136,7 @@ export const en: Texts = {
   },
 
   offer: {
+    label: 'The offer',
     title: 'What I do',
     goalLabel: 'Goal:',
     blocks: [
@@ -169,6 +170,7 @@ export const en: Texts = {
   },
 
   method: {
+    label: 'The method',
     title: 'How I work',
     steps: [
       {
@@ -192,6 +194,7 @@ export const en: Texts = {
   },
 
   why: {
+    label: 'The difference',
     title: 'Why me',
     items: [
       { title: 'Researcher.', text: 'I formalize the problem and prove the solution holds.' },
@@ -204,6 +207,7 @@ export const en: Texts = {
   },
 
   about: {
+    label: 'Background',
     title: 'Who I am',
     photoAlt: 'Stéphane Cambon',
     photoPlaceholder: 'Photo coming soon',
@@ -216,11 +220,13 @@ export const en: Texts = {
   },
 
   projectsPreview: {
+    label: 'Track record',
     title: 'Projects',
     all: 'All projects',
   },
 
   cta: {
+    label: 'Contact',
     title: "A problem that won't budge?",
     text: "Tell me about it in 30 minutes. If I'm not the right person to solve it, I'll tell you.",
     button: 'Book a call',
@@ -228,6 +234,7 @@ export const en: Texts = {
 
   // ---------- Projects ----------
   projects: {
+    label: 'Track record',
     title: 'Projects',
     filterLegend: 'Filter by category',
     filterAll: 'All',
@@ -256,6 +263,7 @@ export const en: Texts = {
 
   // ---------- Newsletter ----------
   newsletter: {
+    label: 'Newsletter',
     title: 'Get my analyses.',
     text: 'The economics of tech, seen through science. No fixed schedule: only when I have something useful to say.',
     emailLabel: 'Your email',

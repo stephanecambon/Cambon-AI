@@ -15,7 +15,7 @@ const nl = texts[lang].newsletter;
 ---
 <section class="section cta" id={anchors[lang].contact} aria-labelledby={`cta-title-${lang}`}>
   <div class="container">
-    <SectionHead num={num} title={plain(t.title, lang)} id={`cta-title-${lang}`} />
+    <SectionHead num={num} label={plain(t.label, lang)} title={plain(t.title, lang)} id={`cta-title-${lang}`} />
     <p class="lead cta__text">{plain(t.text, lang)}</p>
     <a class="btn btn--primary" href={bookingHref}>{t.button}</a>
     {newsletterEnabled && (

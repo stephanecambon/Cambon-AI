@@ -20,7 +20,8 @@
   /* Formes */
   --radius: 2px;
   --rule-strong: 1px solid var(--rule); /* séparateur discret (gris clair) */
-  --header-bg: #ffffff;
+  --surface: #ffffff; /* fond blanc : tétière, pied de page, encadrés */
+  --header-bg: var(--surface);
   --header-h: 72px; /* hauteur de la tétière, pour les ancres */
   --rule-thin: 1px solid var(--rule);
 

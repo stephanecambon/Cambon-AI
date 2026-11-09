@@ -39,7 +39,7 @@ const hasPhoto = fs.existsSync(path.join(process.cwd(), 'public', PHOTO_PATH));
 <!-- 02 · Ce que je fais -->
 <section class="section" aria-labelledby={`s02-${lang}`}>
   <div class="container">
-    <SectionHead num="02" title={plain(t.offer.title, lang)} id={`s02-${lang}`} />
+    <SectionHead num="02" label={plain(t.offer.label, lang)} title={plain(t.offer.title, lang)} id={`s02-${lang}`} />
     <div class="offer">
       {t.offer.blocks.map((b) => (
         <div class="offer__block">
@@ -58,7 +58,7 @@ const hasPhoto = fs.existsSync(path.join(process.cwd(), 'public', PHOTO_PATH));
 <!-- 03 · Comment je travaille -->
 <section class="section" id={a.approach} aria-labelledby={`s03-${lang}`}>
   <div class="container">
-    <SectionHead num="03" title={plain(t.method.title, lang)} id={`s03-${lang}`} />
+    <SectionHead num="03" label={plain(t.method.label, lang)} title={plain(t.method.title, lang)} id={`s03-${lang}`} />
     <ol class="steps">
       {t.method.steps.map((s) => (
         <li class="step">
@@ -73,7 +73,7 @@ const hasPhoto = fs.existsSync(path.join(process.cwd(), 'public', PHOTO_PATH));
 <!-- 04 · Pourquoi moi -->
 <section class="section" aria-labelledby={`s04-${lang}`}>
   <div class="container">
-    <SectionHead num="04" title={plain(t.why.title, lang)} id={`s04-${lang}`} />
+    <SectionHead num="04" label={plain(t.why.label, lang)} title={plain(t.why.title, lang)} id={`s04-${lang}`} />
     <ul class="why">
       {t.why.items.map((w) => (
         <li class="why__item">
@@ -88,7 +88,7 @@ const hasPhoto = fs.existsSync(path.join(process.cwd(), 'public', PHOTO_PATH));
 <!-- 05 · Qui je suis -->
 <section class="section" id={a.about} aria-labelledby={`s05-${lang}`}>
   <div class="container">
-    <SectionHead num="05" title={plain(t.about.title, lang)} id={`s05-${lang}`} />
+    <SectionHead num="05" label={plain(t.about.label, lang)} title={plain(t.about.title, lang)} id={`s05-${lang}`} />
     <div class="about">
       <div class="about__photo">
         {hasPhoto ? (
@@ -108,7 +108,7 @@ const hasPhoto = fs.existsSync(path.join(process.cwd(), 'public', PHOTO_PATH));
 <!-- 06 · Projets -->
 <section class="section" id={a.projects} aria-labelledby={`s06-${lang}`}>
   <div class="container">
-    <SectionHead num="06" title={plain(t.projectsPreview.title, lang)} id={`s06-${lang}`} />
+    <SectionHead num="06" label={plain(t.projectsPreview.label, lang)} title={plain(t.projectsPreview.title, lang)} id={`s06-${lang}`} />
     <ul class="cards">
       {projets.map((p) => <ProjectCard lang={lang} projet={p} level={3} />)}
     </ul>
@@ -153,6 +153,7 @@ const hasPhoto = fs.existsSync(path.join(process.cwd(), 'public', PHOTO_PATH));
     padding: 14px 18px;
     border: 1px dashed var(--text-muted);
     border-radius: var(--radius);
+    background: var(--surface);
     color: var(--text-2);
   }
   .offer__not strong {
@@ -234,7 +235,7 @@ const hasPhoto = fs.existsSync(path.join(process.cwd(), 'public', PHOTO_PATH));
     align-items: center;
     justify-content: center;
     border: 1px dashed var(--text-muted);
-    background: rgba(14, 46, 85, 0.04);
+    background: var(--surface);
     color: var(--text-muted);
     font-weight: 600;
     font-size: 0.875rem;

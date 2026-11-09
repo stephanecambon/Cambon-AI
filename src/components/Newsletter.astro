@@ -21,6 +21,7 @@ const builtAt = Date.now();
 ---
 <section class="nl" id="newsletter" aria-labelledby={id('title')}>
   <div class="nl__intro">
+    <p class="eyebrow nl__eyebrow">{plain(t.label, lang)}</p>
     <h2 class="nl__title" id={id('title')}>{plain(t.title, lang)}</h2>
     <p class="nl__text">{plain(t.text, lang)}</p>
   </div>
@@ -151,6 +152,9 @@ const builtAt = Date.now();
     padding-block: clamp(36px, 6vw, 56px);
     border-bottom: var(--rule-thin);
   }
+  .nl__eyebrow {
+    margin-bottom: 0.6rem;
+  }
   .nl__title {
     font-size: clamp(1.75rem, 3.6vw, 2.4rem);
   }
@@ -172,7 +176,7 @@ const builtAt = Date.now();
     padding: 0 14px;
     border: 1px solid var(--rule);
     border-radius: var(--radius);
-    background: #fbfaf6;
+    background: var(--surface);
     color: var(--ink);
     font: inherit;
   }
@@ -243,9 +247,12 @@ const builtAt = Date.now();
     padding: 10px 14px;
     font-weight: 600;
     color: var(--ink);
-    background: rgba(14, 46, 85, 0.05);
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
   }
   .nl__status[data-kind='ok'] {
+    border-color: transparent;
     background: rgba(255, 179, 71, 0.7);
     border-left-color: transparent;
   }

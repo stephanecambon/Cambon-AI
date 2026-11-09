@@ -1,7 +1,7 @@
 ---
 // Page « Projets » : filtres par catégorie (sans JavaScript) + cartes.
 import ProjectCard from './ProjectCard.astro';
-import { texts, type Lang } from '../i18n';
+import { texts, plain, type Lang } from '../i18n';
 import { getProjets } from '../lib/projets';
 
 interface Props {
@@ -20,6 +20,7 @@ const filters = [
 ---
 <section class="projects-page">
   <div class="container">
+    <p class="eyebrow">{plain(t.label, lang)}</p>
     <h1>{t.title}</h1>
 
     <fieldset class="filters">
