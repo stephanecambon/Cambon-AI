@@ -1,0 +1,10 @@
+---
+import Base from '../../layouts/Base.astro';
+import Legal from '../../components/Legal.astro';
+import { texts } from '../../i18n';
+
+const t = texts.en.meta;
+---
+<Base lang="en" page="legal" title={t.legalTitle} description={t.legalDescription}>
+  <Legal lang="en" />
+</Base>

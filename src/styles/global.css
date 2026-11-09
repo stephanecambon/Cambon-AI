@@ -1,0 +1,215 @@
+/* ==========================================================
+   Cambon AI — design « carnet annoté »
+   Toutes les couleurs et réglages de base sont ici.
+   ========================================================== */
+
+:root {
+  /* Couleurs */
+  --paper: #f3f1ea;        /* fond papier */
+  --ink: #0e2e55;          /* encre principale, bleu de plan */
+  --text-2: #24395a;       /* texte secondaire */
+  --text-muted: #4a5d78;   /* texte discret */
+  --rule: #c9cfd8;         /* traits fins */
+  --amber: #ffb347;        /* accent : boutons d'action et surligneur UNIQUEMENT (jamais en couleur de texte) */
+  --amber-dark: #8a4b00;   /* petits textes d'accent (numéros de section) */
+
+  /* Polices (chargées par Astro, voir astro.config.mjs) */
+  --font-title: var(--font-barlow-condensed), 'Arial Narrow', sans-serif;
+  --font-text: var(--font-barlow), system-ui, sans-serif;
+
+  /* Formes */
+  --radius: 2px;
+  --rule-strong: 2px solid var(--ink);
+  --rule-thin: 1px solid var(--rule);
+
+  /* Cahier */
+  --notebook-line: rgba(14, 46, 85, 0.07);
+  --notebook-step: 34px;
+
+  /* Mise en page */
+  --max-width: 1120px;
+  --gutter: clamp(16px, 4vw, 40px);
+
+  color-scheme: light;
+}
+
+/* ---------- Base ---------- */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--paper);
+  background-image: linear-gradient(var(--notebook-line) 1px, transparent 1px);
+  background-size: 100% var(--notebook-step);
+  color: var(--text-2);
+  font-family: var(--font-text);
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  overflow-wrap: break-word;
+}
+
+main {
+  flex: 1;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-title);
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--ink);
+  line-height: 1.05;
+  letter-spacing: 0.005em;
+  margin: 0;
+}
+
+p {
+  margin: 0;
+}
+
+a {
+  color: var(--ink);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+a:hover {
+  text-decoration-thickness: 2px;
+}
+
+:focus-visible {
+  outline: 3px solid var(--ink);
+  outline-offset: 3px;
+  border-radius: var(--radius);
+}
+
+.container {
+  width: 100%;
+  max-width: var(--max-width);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* ---------- Éléments du design ---------- */
+
+/* Surligneur ambre sur un mot clé */
+.surligne {
+  background: linear-gradient(transparent 58%, rgba(255, 179, 71, 0.7) 58%);
+  padding-inline: 0.06em;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+/* Section séparée par un trait de 2 px */
+.section {
+  border-top: var(--rule-strong);
+  padding-block: clamp(48px, 9vw, 104px);
+}
+
+/* Surtitre numéroté : « 00 / … » */
+.eyebrow {
+  font-family: var(--font-text);
+  font-weight: 600;
+  font-size: 0.875rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-2);
+  margin: 0 0 1.25rem;
+}
+
+.eyebrow__num {
+  color: var(--amber-dark);
+  font-weight: 700;
+  margin-right: 0.5em;
+}
+
+/* Boutons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
+  min-height: 48px;
+  padding: 0.7em 1.3em;
+  border: 2px solid var(--ink);
+  border-radius: var(--radius);
+  font-family: var(--font-text);
+  font-weight: 600;
+  font-size: 1rem;
+  line-height: 1.2;
+  text-decoration: none;
+  text-align: center;
+  color: var(--ink);
+  transition: background-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.btn:hover {
+  text-decoration: none;
+}
+
+.btn--primary {
+  background: var(--amber);
+  box-shadow: 3px 3px 0 var(--ink);
+}
+
+.btn--primary:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0 var(--ink);
+}
+
+.btn--primary:active {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0 var(--ink);
+}
+
+.btn--outline {
+  background: transparent;
+}
+
+.btn--outline:hover {
+  background: rgba(14, 46, 85, 0.06);
+}
+
+.btn--small {
+  min-height: 40px;
+  padding: 0.45em 0.85em;
+  font-size: 0.9375rem;
+  box-shadow: 2px 2px 0 var(--ink);
+}
+
+.btn--small:hover {
+  box-shadow: 3px 3px 0 var(--ink);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn {
+    transition: none;
+  }
+  .btn:hover,
+  .btn:active {
+    transform: none;
+  }
+}

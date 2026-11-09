@@ -1,0 +1,36 @@
+---
+import { texts, routes, type Lang } from '../i18n';
+import { CONTACT_EMAIL } from '../config';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = texts[lang].footer;
+---
+<footer class="site-footer">
+  <div class="container site-footer__inner">
+    <p>{t.company}</p>
+    <p><a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a></p>
+    <p><a href={routes.legal[lang]}>{t.legal}</a></p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    border-top: var(--rule-strong);
+    background: var(--paper);
+    font-size: 0.9375rem;
+    color: var(--text-muted);
+  }
+  .site-footer__inner {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 32px;
+    padding-block: 28px;
+  }
+  .site-footer a {
+    color: var(--text-2);
+  }
+</style>

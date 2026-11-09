@@ -1,0 +1,63 @@
+---
+import { texts, type Lang } from '../i18n';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = texts[lang].legal;
+---
+<section class="legal">
+  <div class="container">
+    <p class="eyebrow"><span class="eyebrow__num">§</span><span>{t.eyebrow}</span></p>
+    <h1>{t.title}</h1>
+    <dl class="legal__list">
+      {t.items.map(([label, value]) => (
+        <div class="legal__row">
+          <dt>{label}</dt>
+          <dd>{value}</dd>
+        </div>
+      ))}
+    </dl>
+    <p class="legal__note">{t.privacy}</p>
+  </div>
+</section>
+
+<style>
+  .legal {
+    padding-block: clamp(48px, 9vw, 104px);
+  }
+  .legal h1 {
+    font-size: clamp(2.4rem, 6vw, 3.75rem);
+  }
+  .legal__list {
+    margin: 40px 0 0;
+    max-width: 760px;
+    border-top: var(--rule-strong);
+  }
+  .legal__row {
+    display: grid;
+    grid-template-columns: minmax(0, 15rem) minmax(0, 1fr);
+    gap: 4px 24px;
+    padding-block: 14px;
+    border-bottom: var(--rule-thin);
+  }
+  .legal dt {
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .legal dd {
+    margin: 0;
+  }
+  .legal__note {
+    margin-top: 28px;
+    max-width: 760px;
+    color: var(--text-muted);
+  }
+  @media (max-width: 600px) {
+    .legal__row {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>

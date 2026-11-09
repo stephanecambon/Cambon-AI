@@ -1,0 +1,136 @@
+---
+import Logo from './Logo.astro';
+import { texts, routes, anchors, type Lang, type PageKey } from '../i18n';
+import { bookingHref } from '../config';
+
+interface Props {
+  lang: Lang;
+  page?: PageKey;
+}
+
+const { lang, page = 'home' } = Astro.props;
+const t = texts[lang].nav;
+const home = routes.home[lang];
+const a = anchors[lang];
+const other: Lang = lang === 'fr' ? 'en' : 'fr';
+const otherHref = routes[page][other];
+---
+<header class="site-header">
+  <div class="container site-header__inner">
+    <a class="site-header__logo" href={home}><Logo /></a>
+
+    <div class="site-header__bar">
+    <nav class="site-header__nav" aria-label={t.mainLabel}>
+      <a href={`${home}#${a.approach}`}>{t.approach}</a>
+      <a href={`${home}#${a.projects}`}>{t.projects}</a>
+      <a href={`${home}#${a.about}`}>{t.about}</a>
+    </nav>
+
+    <p class="lang-switch" aria-label={t.langLabel}>
+      {lang === 'fr' ? (
+        <>
+          <span aria-current="true">FR</span>
+          <span aria-hidden="true">·</span>
+          <a href={otherHref} hreflang="en" lang="en">EN</a>
+        </>
+      ) : (
+        <>
+          <a href={otherHref} hreflang="fr" lang="fr">FR</a>
+          <span aria-hidden="true">·</span>
+          <span aria-current="true">EN</span>
+        </>
+      )}
+    </p>
+    </div>
+
+    <a class="site-header__cta btn btn--primary btn--small" href={bookingHref}>{t.booking}</a>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    border-bottom: var(--rule-strong);
+    background: var(--paper);
+  }
+  .site-header__inner {
+    display: grid;
+    grid-template-columns: auto 1fr auto auto;
+    grid-template-areas: 'logo nav lang cta';
+    align-items: center;
+    gap: 12px 24px;
+    padding-block: 16px;
+  }
+  .site-header__bar {
+    display: contents;
+  }
+  .site-header__logo {
+    grid-area: logo;
+    text-decoration: none;
+  }
+  .site-header__nav {
+    grid-area: nav;
+    justify-self: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 28px;
+  }
+  .site-header__nav a {
+    font-weight: 500;
+    text-decoration: none;
+    color: var(--text-2);
+  }
+  .site-header__nav a:hover {
+    color: var(--ink);
+    text-decoration: underline;
+  }
+  .lang-switch {
+    grid-area: lang;
+    display: flex;
+    gap: 0.35em;
+    margin: 0;
+    font-weight: 600;
+    font-size: 0.9375rem;
+    letter-spacing: 0.04em;
+    color: var(--text-muted);
+  }
+  .lang-switch [aria-current] {
+    color: var(--ink);
+  }
+  .lang-switch a {
+    color: var(--text-muted);
+    text-decoration: none;
+  }
+  .lang-switch a:hover {
+    color: var(--ink);
+    text-decoration: underline;
+  }
+  .site-header__cta {
+    grid-area: cta;
+  }
+
+  /* Écrans étroits : logo + bouton sur la 1re ligne, menu + langue sur la 2de */
+  @media (max-width: 860px) {
+    .site-header__inner {
+      grid-template-columns: 1fr auto;
+      grid-template-areas:
+        'logo cta'
+        'bar bar';
+      gap: 14px 16px;
+    }
+    .site-header__bar {
+      grid-area: bar;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .site-header__nav {
+      gap: 4px 22px;
+    }
+  }
+  @media (max-width: 400px) {
+    .site-header__nav {
+      gap: 4px 16px;
+    }
+  }
+</style>

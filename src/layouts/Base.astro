@@ -1,0 +1,56 @@
+---
+import { Font } from 'astro:assets';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { routes, LANGS, type Lang, type PageKey } from '../i18n';
+import '../styles/global.css';
+
+interface Props {
+  lang: Lang;
+  title: string;
+  description?: string;
+  /** Page courante : sert au lien FR · EN et aux balises hreflang. */
+  page?: PageKey;
+  noindex?: boolean;
+}
+
+const { lang, title, description, page, noindex = false } = Astro.props;
+const site = Astro.site!;
+const canonical = page ? new URL(routes[page][lang], site).href : undefined;
+const ogLocale = { fr: 'fr_FR', en: 'en_US' }[lang];
+---
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    {description && <meta name="description" content={description} />}
+    {noindex && <meta name="robots" content="noindex" />}
+    {canonical && <link rel="canonical" href={canonical} />}
+    {page && LANGS.map((l) => (
+      <link rel="alternate" hreflang={l} href={new URL(routes[page][l], site).href} />
+    ))}
+    {page && <link rel="alternate" hreflang="x-default" href={new URL(routes[page].fr, site).href} />}
+
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Cambon AI" />
+    <meta property="og:title" content={title} />
+    {description && <meta property="og:description" content={description} />}
+    {canonical && <meta property="og:url" content={canonical} />}
+    <meta property="og:locale" content={ogLocale} />
+
+    <Font cssVariable="--font-barlow-condensed" preload />
+    <Font cssVariable="--font-barlow" preload={[{ weight: '400' }, { weight: '600' }]} />
+  </head>
+  <body>
+    <Header lang={lang} page={page} />
+    <main>
+      <slot />
+    </main>
+    <Footer lang={lang} />
+  </body>
+</html>

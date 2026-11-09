@@ -1,0 +1,30 @@
+---
+import Base from '../layouts/Base.astro';
+import { texts, routes } from '../i18n';
+
+const fr = texts.fr.notFound;
+const en = texts.en.notFound;
+---
+<Base lang="fr" title={texts.fr.meta.notFoundTitle} noindex>
+  <section class="not-found">
+    <div class="container">
+      <p class="eyebrow"><span class="eyebrow__num">404 /</span><span>{fr.title}</span></p>
+      <h1>{fr.title}</h1>
+      <p>{fr.text} <a href={routes.home.fr}>{fr.back}</a></p>
+      <p lang="en">{en.text} <a href={routes.home.en}>{en.back}</a></p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .not-found {
+    padding-block: clamp(48px, 9vw, 104px);
+  }
+  .not-found h1 {
+    font-size: clamp(2.4rem, 6vw, 3.75rem);
+    margin-bottom: 24px;
+  }
+  .not-found p + p {
+    margin-top: 8px;
+  }
+</style>

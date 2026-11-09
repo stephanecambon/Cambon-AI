@@ -1,0 +1,19 @@
+# Build
+dist/
+.astro/
+
+# Dépendances
+node_modules/
+
+# Logs
+npm-debug.log*
+
+# Environnement
+.env
+.env.*
+
+# macOS
+.DS_Store
+
+# Réglages locaux Claude Code
+.claude/settings.local.json
