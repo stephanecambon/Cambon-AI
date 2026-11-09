@@ -226,9 +226,9 @@ export const fr = {
     email: "M'écrire un e-mail",
     lead: 'Stéphane Cambon, docteur en intelligence artificielle et entrepreneur.',
     paragraphs: [
-      "J'ai fondé et dirigé Ownpage pendant onze ans. Nous avons construit, vendu et déployé un logiciel de personnalisation adopté par environ 40 % des grands médias français, puis l'entreprise a été revendue en 2024. J'ai ensuite été directeur des opérations chez Opper Marketing. Je continue à travailler sur l'économie de la presse : j'ai publié en open source un modèle de licence globale pour les éditeurs français.",
-      "Avant cela, j'ai fait de la recherche. Ma thèse portait sur la planification sous contraintes multiples pour les systèmes autonomes (Université Paul Sabatier, 2005). J'ai ensuite confronté l'IA au terrain, dans des secteurs très différents : l'aéronautique, avec la maintenance prédictive sur Rafale et A320 ; la santé, avec un logiciel d'anesthésie à l'hôpital ; le jeu vidéo, avec l'intelligence artificielle du jeu de stratégie R.U.S.E.",
-      "Je n'ai jamais lâché la recherche scientifique. Mon dernier travail démontre mathématiquement qu'un robot ne peut pas atteindre certains objets.",
+      "J’ai fondé et dirigé Ownpage pendant onze ans. Nous avons construit, vendu et déployé une plateforme de recommandation personnalisée pour les sites, les applications et surtout les newsletters, adoptée par une grande partie des médias français. L’entreprise a été revendue en 2024. J’ai ensuite été directeur des opérations chez Opper Marketing.",
+      "Ownpage était déjà une start-up d’IA, mais cela fait vingt-cinq ans que je travaille dans ce domaine. Ma thèse portait sur la planification sous contraintes multiples en robotique, et mon post-doctorat sur le machine learning appliqué à la reconnaissance de plans. J’ai ensuite confronté l’IA au terrain, dans des secteurs très différents : l’aéronautique, avec la maintenance prédictive sur Rafale et A320 ; le grand public, avec un système de recommandation pour une application B2C ; le jeu vidéo, avec l’intelligence artificielle du jeu de stratégie R.U.S.E.",
+      "À côté, je poursuis mes propres projets : des travaux de recherche sur la sécurité en robotique, et le développement d’applications. Je participe aussi au débat public sur l’avenir de la presse et sur la sécurité de l’IA.",
     ],
   },
 

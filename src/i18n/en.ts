@@ -223,9 +223,9 @@ export const en: Texts = {
     email: 'Email me',
     lead: 'Stéphane Cambon, PhD in artificial intelligence and entrepreneur.',
     paragraphs: [
-      'I founded and ran Ownpage for eleven years. We built, sold and deployed personalization software used by about 40% of major French media, and the company was sold in 2024. I then served as COO at Opper Marketing. I keep working on the economics of the press: I published an open-source global licence model for French publishers.',
-      'Before that, I was a researcher. My PhD focused on planning under multiple constraints for autonomous systems (Université Paul Sabatier, 2005). I then took AI into the field, across very different sectors: aerospace, with predictive maintenance on the Rafale and the A320; healthcare, with anesthesia software in hospitals; video games, with the AI of the strategy game R.U.S.E.',
-      'I never let go of scientific research. My latest work proves mathematically that a robot cannot reach certain objects.',
+      "I founded and ran Ownpage for eleven years. We built, sold and deployed a personalized recommendation platform for websites, apps and above all newsletters, adopted by a large share of the French media. The company was sold in 2024. I then served as COO at Opper Marketing.",
+      "Ownpage was already an AI startup, but I have been working in this field for twenty-five years. My PhD focused on planning under multiple constraints in robotics, and my postdoc on machine learning applied to plan recognition. I then took AI into the field, across very different sectors: aerospace, with predictive maintenance on the Rafale and the A320; consumer products, with a recommendation system for a B2C app; video games, with the AI of the strategy game R.U.S.E.",
+      "Alongside this, I pursue my own projects: research on safety in robotics, and app development. I also take part in the public debate on the future of the press and on AI safety.",
     ],
   },
 
