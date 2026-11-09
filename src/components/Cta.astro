@@ -1,0 +1,48 @@
+---
+import SectionHead from './SectionHead.astro';
+import { texts, plain, anchors, type Lang } from '../i18n';
+import { bookingHref, newsletterEnabled } from '../config';
+
+interface Props {
+  lang: Lang;
+  /** Numéro de section (accueil uniquement). */
+  num?: string;
+}
+
+const { lang, num } = Astro.props;
+const t = texts[lang].cta;
+const nl = texts[lang].newsletter;
+---
+<section class="section cta" id={anchors[lang].contact} aria-labelledby={`cta-title-${lang}`}>
+  <div class="container">
+    <SectionHead num={num} title={plain(t.title, lang)} id={`cta-title-${lang}`} />
+    <p class="lead cta__text">{plain(t.text, lang)}</p>
+    <a class="btn btn--primary" href={bookingHref}>{t.button}</a>
+    {newsletterEnabled && (
+      <p class="cta__newsletter">
+        {plain(nl.ctaLine, lang)} <a href="#newsletter">{plain(nl.ctaLink, lang)}</a>
+      </p>
+    )}
+  </div>
+</section>
+
+<style>
+  .cta .section-head {
+    margin-bottom: 20px;
+  }
+  .cta__newsletter {
+    margin-top: 24px;
+    font-size: 0.9375rem;
+    color: var(--text-muted);
+  }
+  .cta__newsletter a {
+    display: inline-block;
+    padding-block: 10px;
+    font-weight: 600;
+    color: var(--text-2);
+  }
+  .cta__text {
+    max-width: 52ch;
+    margin-bottom: 32px;
+  }
+</style>

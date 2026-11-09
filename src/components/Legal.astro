@@ -1,5 +1,5 @@
 ---
-import { texts, type Lang } from '../i18n';
+import { texts, plain, type Lang } from '../i18n';
 
 interface Props {
   lang: Lang;
@@ -16,7 +16,7 @@ const t = texts[lang].legal;
       {t.items.map(([label, value]) => (
         <div class="legal__row">
           <dt>{label}</dt>
-          <dd>{value}</dd>
+          <dd>{plain(value, lang)}</dd>
         </div>
       ))}
     </dl>

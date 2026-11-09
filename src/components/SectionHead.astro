@@ -1,0 +1,19 @@
+---
+// En-tête de section : numéro ambre foncé (« 01 / »), surtitre facultatif, titre.
+interface Props {
+  num?: string;
+  label?: string;
+  title: string;
+  id?: string;
+}
+const { num, label, title, id } = Astro.props;
+---
+<header class="section-head">
+  {(num || label) && (
+    <p class="eyebrow">
+      {num && <span class="eyebrow__num">{num} /</span>}
+      {label && <span>{label}</span>}
+    </p>
+  )}
+  <h2 id={id}>{title}</h2>
+</header>

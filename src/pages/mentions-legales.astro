@@ -1,10 +1,10 @@
 ---
 import Base from '../layouts/Base.astro';
 import Legal from '../components/Legal.astro';
-import { texts } from '../i18n';
+import { texts, routes } from '../i18n';
 
 const t = texts.fr.meta;
 ---
-<Base lang="fr" page="legal" title={t.legalTitle} description={t.legalDescription}>
+<Base lang="fr" alternates={routes.legal} title={t.legalTitle} description={t.legalDescription}>
   <Legal lang="fr" />
 </Base>

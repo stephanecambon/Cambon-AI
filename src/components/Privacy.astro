@@ -1,0 +1,56 @@
+---
+import { texts, plain, type Lang } from '../i18n';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = texts[lang].privacy;
+---
+<section class="privacy">
+  <div class="container privacy__inner">
+    <p class="eyebrow"><span class="eyebrow__num">§</span><span>{t.eyebrow}</span></p>
+    <h1>{t.title}</h1>
+    <p class="lead privacy__intro">{plain(t.intro, lang)}</p>
+    {t.sections.map((s) => (
+      <section class="privacy__block">
+        <h2>{plain(s.title, lang)}</h2>
+        {s.paragraphs.map((p) => <p>{plain(p, lang)}</p>)}
+      </section>
+    ))}
+    <p class="privacy__updated">{plain(t.updated, lang)}</p>
+  </div>
+</section>
+
+<style>
+  .privacy {
+    padding-block: clamp(48px, 9vw, 104px);
+  }
+  .privacy__inner {
+    max-width: calc(760px + 2 * var(--gutter));
+  }
+  .privacy h1 {
+    font-size: clamp(2.4rem, 6vw, 3.75rem);
+  }
+  .privacy__intro {
+    margin-top: 20px;
+  }
+  .privacy__block {
+    margin-top: 32px;
+    padding-top: 14px;
+    border-top: var(--rule-thin);
+  }
+  .privacy__block h2 {
+    font-size: clamp(1.2rem, 2.2vw, 1.4rem);
+    margin-bottom: 8px;
+  }
+  .privacy__block p + p {
+    margin-top: 0.8em;
+  }
+  .privacy__updated {
+    margin-top: 40px;
+    font-size: 0.9375rem;
+    color: var(--text-muted);
+  }
+</style>

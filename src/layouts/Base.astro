@@ -2,22 +2,24 @@
 import { Font } from 'astro:assets';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
-import { routes, LANGS, type Lang, type PageKey } from '../i18n';
+import { texts, routes, LANGS, type Lang, type Alternates } from '../i18n';
 import '../styles/global.css';
 
 interface Props {
   lang: Lang;
   title: string;
   description?: string;
-  /** Page courante : sert au lien FR · EN et aux balises hreflang. */
-  page?: PageKey;
+  /** Adresse de cette page dans chaque langue (lien FR · EN, hreflang, canonical). */
+  alternates?: Alternates;
   noindex?: boolean;
 }
 
-const { lang, title, description, page, noindex = false } = Astro.props;
+const { lang, title, description, alternates, noindex = false } = Astro.props;
 const site = Astro.site!;
-const canonical = page ? new URL(routes[page][lang], site).href : undefined;
+const abs = (path: string) => new URL(path, site).href;
+const canonical = alternates ? abs(alternates[lang]) : undefined;
 const ogLocale = { fr: 'fr_FR', en: 'en_US' }[lang];
+const ogImage = abs(`/og-${lang}.png`);
 ---
 <!doctype html>
 <html lang={lang}>
@@ -28,10 +30,8 @@ const ogLocale = { fr: 'fr_FR', en: 'en_US' }[lang];
     {description && <meta name="description" content={description} />}
     {noindex && <meta name="robots" content="noindex" />}
     {canonical && <link rel="canonical" href={canonical} />}
-    {page && LANGS.map((l) => (
-      <link rel="alternate" hreflang={l} href={new URL(routes[page][l], site).href} />
-    ))}
-    {page && <link rel="alternate" hreflang="x-default" href={new URL(routes[page].fr, site).href} />}
+    {alternates && LANGS.map((l) => <link rel="alternate" hreflang={l} href={abs(alternates[l])} />)}
+    {alternates && <link rel="alternate" hreflang="x-default" href={abs(alternates.fr)} />}
 
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="sitemap" href="/sitemap-index.xml" />
@@ -42,15 +42,20 @@ const ogLocale = { fr: 'fr_FR', en: 'en_US' }[lang];
     {description && <meta property="og:description" content={description} />}
     {canonical && <meta property="og:url" content={canonical} />}
     <meta property="og:locale" content={ogLocale} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={texts[lang].meta.ogImageAlt} />
+    <meta name="twitter:card" content="summary_large_image" />
 
     <Font cssVariable="--font-barlow-condensed" preload />
     <Font cssVariable="--font-barlow" preload={[{ weight: '400' }, { weight: '600' }]} />
   </head>
   <body>
-    <Header lang={lang} page={page} />
+    <Header lang={lang} alternates={alternates ?? routes.home} />
     <main>
       <slot />
     </main>
-    <Footer lang={lang} />
+    <Footer lang={lang} path={Astro.url.pathname} />
   </body>
 </html>

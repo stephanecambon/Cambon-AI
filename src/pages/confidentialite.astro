@@ -1,0 +1,10 @@
+---
+import Base from '../layouts/Base.astro';
+import Privacy from '../components/Privacy.astro';
+import { texts, routes } from '../i18n';
+
+const t = texts.fr.meta;
+---
+<Base lang="fr" alternates={routes.privacy} title={t.privacyTitle} description={t.privacyDescription}>
+  <Privacy lang="fr" />
+</Base>

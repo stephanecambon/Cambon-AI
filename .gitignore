@@ -15,5 +15,5 @@ npm-debug.log*
 # macOS
 .DS_Store
 
-# Réglages locaux Claude Code
-.claude/settings.local.json
+# Réglages locaux de l’éditeur
+.claude/

@@ -1,0 +1,14 @@
+---
+import Base from '../../../layouts/Base.astro';
+import ProjectPage from '../../../components/ProjectPage.astro';
+import { projectPaths } from '../../../lib/projectPaths';
+import type { Projet } from '../../../lib/projets';
+import type { Alternates } from '../../../i18n';
+
+export const getStaticPaths = () => projectPaths('en');
+
+const { projet, alternates } = Astro.props as { projet: Projet; alternates: Alternates };
+---
+<Base lang="en" alternates={alternates} title={projet.data.seoTitle} description={projet.data.seoDescription}>
+  <ProjectPage lang="en" projet={projet} />
+</Base>

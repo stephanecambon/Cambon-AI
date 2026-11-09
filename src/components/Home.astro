@@ -1,0 +1,279 @@
+---
+// Page d'accueil complète (sections 00 à 07), dans la langue demandée.
+import fs from 'node:fs';
+import path from 'node:path';
+import Hero from './Hero.astro';
+import SectionHead from './SectionHead.astro';
+import Layers from './Layers.astro';
+import ProjectCard from './ProjectCard.astro';
+import Cta from './Cta.astro';
+import { texts, plain, anchors, routes, type Lang } from '../i18n';
+import { getProjets } from '../lib/projets';
+import { PHOTO_PATH } from '../config';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = texts[lang];
+const a = anchors[lang];
+const projets = await getProjets(lang);
+const hasPhoto = fs.existsSync(path.join(process.cwd(), 'public', PHOTO_PATH));
+---
+<Hero lang={lang} />
+
+<!-- 01 · Le constat -->
+<section class="section" aria-labelledby={`s01-${lang}`}>
+  <div class="container">
+    <SectionHead num="01" label={t.constat.label} title={plain(t.constat.title, lang)} id={`s01-${lang}`} />
+    <Layers lang={lang} />
+    <div class="prose constat__text">
+      {t.constat.paragraphs.map((p, i) => (
+        <p class={i === t.constat.paragraphs.length - 1 ? 'constat__key' : undefined}>{plain(p, lang)}</p>
+      ))}
+    </div>
+  </div>
+</section>
+
+<!-- 02 · Ce que je fais -->
+<section class="section" aria-labelledby={`s02-${lang}`}>
+  <div class="container">
+    <SectionHead num="02" title={plain(t.offer.title, lang)} id={`s02-${lang}`} />
+    <div class="offer">
+      {t.offer.blocks.map((b) => (
+        <div class="offer__block">
+          <h3>{plain(b.title, lang)}</h3>
+          <p class="offer__goal"><strong>{plain(t.offer.goalLabel, lang)}</strong> {plain(b.goal, lang)}</p>
+          <ul class="list">
+            {b.items.map((item) => <li>{plain(item, lang)}</li>)}
+          </ul>
+        </div>
+      ))}
+    </div>
+    <p class="offer__not"><strong>{plain(t.offer.notLead, lang)}</strong> {plain(t.offer.notText, lang)}</p>
+  </div>
+</section>
+
+<!-- 03 · Comment je travaille -->
+<section class="section" id={a.approach} aria-labelledby={`s03-${lang}`}>
+  <div class="container">
+    <SectionHead num="03" title={plain(t.method.title, lang)} id={`s03-${lang}`} />
+    <ol class="steps">
+      {t.method.steps.map((s) => (
+        <li class="step">
+          <p><strong>{plain(s.title, lang)}</strong> {plain(s.text, lang)}</p>
+        </li>
+      ))}
+    </ol>
+    <p class="steps__note">{plain(t.method.note, lang)}</p>
+  </div>
+</section>
+
+<!-- 04 · Pourquoi moi -->
+<section class="section" aria-labelledby={`s04-${lang}`}>
+  <div class="container">
+    <SectionHead num="04" title={plain(t.why.title, lang)} id={`s04-${lang}`} />
+    <ul class="why">
+      {t.why.items.map((w) => (
+        <li class="why__item">
+          <h3>{plain(w.title, lang)}</h3>
+          <p>{plain(w.text, lang)}</p>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<!-- 05 · Qui je suis -->
+<section class="section" id={a.about} aria-labelledby={`s05-${lang}`}>
+  <div class="container">
+    <SectionHead num="05" title={plain(t.about.title, lang)} id={`s05-${lang}`} />
+    <div class="about">
+      <div class="about__photo">
+        {hasPhoto ? (
+          <img src={`/${PHOTO_PATH}`} alt={t.about.photoAlt} width="800" height="1000" loading="lazy" decoding="async" />
+        ) : (
+          <div class="about__placeholder"><span>{t.about.photoPlaceholder}</span></div>
+        )}
+      </div>
+      <div class="prose">
+        <p class="lead about__lead">{plain(t.about.lead, lang)}</p>
+        {t.about.paragraphs.map((p) => <p>{plain(p, lang)}</p>)}
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 06 · Projets -->
+<section class="section" id={a.projects} aria-labelledby={`s06-${lang}`}>
+  <div class="container">
+    <SectionHead num="06" title={plain(t.projectsPreview.title, lang)} id={`s06-${lang}`} />
+    <ul class="cards">
+      {projets.map((p) => <ProjectCard lang={lang} projet={p} level={3} />)}
+    </ul>
+    <p class="projects__all">
+      <a class="btn btn--outline" href={routes.projects[lang]}>{t.projectsPreview.all} →</a>
+    </p>
+  </div>
+</section>
+
+<!-- 07 · Appel à l'action -->
+<Cta lang={lang} num="07" />
+
+<style>
+  /* 01 */
+  .constat__text {
+    margin-top: clamp(32px, 5vw, 48px);
+    font-size: 1.125rem;
+  }
+  .constat__key {
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  /* 02 */
+  .offer {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 40px clamp(32px, 5vw, 64px);
+  }
+  .offer__block {
+    border-top: 3px solid var(--ink);
+    padding-top: 18px;
+  }
+  .offer__goal {
+    margin: 12px 0 18px;
+    color: var(--text-2);
+  }
+  .offer__goal strong {
+    color: var(--ink);
+  }
+  .offer__not {
+    margin-top: clamp(32px, 5vw, 48px);
+    max-width: 68ch;
+    padding: 14px 18px;
+    border: 1px dashed var(--text-muted);
+    border-radius: var(--radius);
+    color: var(--text-2);
+  }
+  .offer__not strong {
+    color: var(--ink);
+  }
+
+  /* 03 */
+  .steps {
+    list-style: none;
+    counter-reset: step;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0;
+    max-width: 860px;
+  }
+  .step {
+    counter-increment: step;
+    display: grid;
+    grid-template-columns: 64px minmax(0, 1fr);
+    gap: 16px;
+    padding-block: 18px;
+    border-top: var(--rule-thin);
+  }
+  .step:last-child {
+    border-bottom: var(--rule-thin);
+  }
+  .step::before {
+    content: counter(step, decimal-leading-zero);
+    font-family: var(--font-title);
+    font-weight: 600;
+    font-size: 2.25rem;
+    line-height: 1;
+    color: var(--ink);
+  }
+  .step strong {
+    color: var(--ink);
+  }
+  .steps__note {
+    margin-top: 28px;
+    max-width: 68ch;
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  /* 04 */
+  .why {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 32px clamp(24px, 4vw, 48px);
+  }
+  .why__item {
+    border-top: 3px solid var(--ink);
+    padding-top: 18px;
+  }
+  .why__item p {
+    margin-top: 10px;
+  }
+
+  /* 05 */
+  .about {
+    display: grid;
+    grid-template-columns: minmax(200px, 300px) minmax(0, 1fr);
+    gap: 32px clamp(32px, 6vw, 72px);
+    align-items: start;
+  }
+  .about__photo img,
+  .about__placeholder {
+    display: block;
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    border: 1px solid var(--ink);
+    border-radius: var(--radius);
+  }
+  .about__placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-style: dashed;
+    background: rgba(14, 46, 85, 0.04);
+    color: var(--text-muted);
+    font-weight: 600;
+    font-size: 0.875rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .about__lead {
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  /* 06 */
+  .projects__all {
+    margin-top: clamp(36px, 5vw, 56px);
+  }
+
+  @media (max-width: 860px) {
+    .offer,
+    .why {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .about {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .about__photo {
+      max-width: 240px;
+    }
+  }
+  @media (max-width: 480px) {
+    .step {
+      grid-template-columns: 44px minmax(0, 1fr);
+      gap: 12px;
+    }
+    .step::before {
+      font-size: 1.75rem;
+    }
+  }
+</style>

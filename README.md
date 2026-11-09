@@ -20,42 +20,60 @@ Deux règles :
 - **Surligner un mot en ambre** : entourez-le de `==`. Exemple : `ceux qui ==rapportent== le plus`.
 - **Apostrophes** : si la phrase est entre guillemets doubles `"…"`, vous pouvez écrire `l'accueil` librement. Si elle est entre guillemets simples `'…'`, utilisez des guillemets doubles à la place dès que la phrase contient une apostrophe.
 
-Les réglages généraux sont dans `src/config.ts` :
-
-- `BOOKING_URL` : le lien de prise de rendez-vous. Tant qu'il vaut `[LIEN_PAGE_RESERVATION]`, les boutons « Prendre rendez-vous » ouvrent un e-mail vers stephane@cambon.ai.
-- `CONTACT_EMAIL` : l'adresse affichée en pied de page.
-
 Les mentions légales sont aussi dans `fr.ts` et `en.ts`, rubrique `legal`.
 
-## Ajouter un projet
+## Réglages généraux
 
-Chaque projet est un petit fichier texte, un par langue :
+Ils sont regroupés dans `src/config.ts` :
 
-- en français : `src/content/projets/fr/nom-du-projet.md`
-- en anglais : `src/content/projets/en/nom-du-projet.md`
+- `BOOKING_URL` : le lien de prise de rendez-vous (Google Agenda), utilisé par tous les boutons « Prendre rendez-vous ».
+- `NEWSLETTER_URL` : l'adresse du script Google qui enregistre les inscriptions à la newsletter.
+- `CONTACT_EMAIL` : l'adresse affichée en pied de page.
+- **La photo** : déposez votre photo sous le nom `public/images/stephane-cambon.jpg` (format portrait, environ 800 × 1000 px). Elle remplace automatiquement le cadre « Photo à venir ».
 
-Le plus simple est de copier le fichier d'exemple `src/content/projets/fr/exemple.md` et de remplir les champs :
+## Newsletter : la liste des inscrits
 
-| Champ      | Ce qu'on y met                                                        |
-| ---------- | --------------------------------------------------------------------- |
-| `title`    | Le titre du projet                                                    |
-| `layer`    | `"difficile"` (problème difficile résolu) ou `"production"` (mise en production) — ces deux mots restent en français, même dans le fichier anglais |
-| `sector`   | Le secteur du client                                                  |
-| `problem`  | Le problème, en une ou deux phrases                                   |
-| `approach` | La démarche                                                           |
-| `result`   | Le résultat obtenu                                                    |
-| `order`    | L'ordre d'affichage : 1 apparaît en premier                           |
-| `draft`    | `true` = brouillon (invisible sur le site), `false` = publié          |
+- **Où ?** Dans le tableur Google Sheets **« Cambon AI · Inscriptions newsletter »**, dans le Drive de stephane@cambon.ai, onglet « Inscriptions ». Colonnes : `date`, `email`, `langue`, `page`, `consentement`.
+- **Exporter la liste** : dans le tableur, **Fichier › Télécharger › Valeurs séparées par des virgules (.csv)**, ou copier la colonne `email`.
+- **Traiter une désinscription** : retrouvez l'adresse (Cmd + F), clic droit sur le numéro de la ligne, **Supprimer la ligne**. Répondez à la personne pour confirmer.
+- **Durée de conservation** : une fois par an, supprimez les inscrits sans aucun contact avec vous depuis trois ans (voir la page Confidentialité).
+- **Mise en place et dépannage du script** : `tools/newsletter/README.md`.
 
-Le texte libre sous les `---` est facultatif.
+## Ajouter ou modifier un projet
 
-Si un champ manque ou contient une valeur non prévue, la publication s'arrête et GitHub affiche une erreur qui indique le fichier et le champ en cause. Le site en ligne reste alors inchangé.
+Chaque projet est un petit fichier texte, un par langue. Le nom du fichier donne l'adresse de la page :
 
-> Pour l'instant, la page d'accueil n'affiche pas encore la liste des projets : ce sera fait lors de la prochaine étape.
+- en français : `src/content/projets/fr/nom-du-projet.md` → `cambon.ai/projets/nom-du-projet/`
+- en anglais : `src/content/projets/en/project-name.md` → `cambon.ai/en/projects/project-name/`
+
+Le plus simple est de copier un projet existant et de remplacer les textes. Les champs :
+
+| Champ             | Ce qu'on y met                                                                 |
+| ----------------- | ------------------------------------------------------------------------------ |
+| `translationOf`   | Fichier anglais uniquement : le nom du fichier français correspondant          |
+| `title`           | Le titre                                                                       |
+| `kicker`          | Le surtitre (catégorie · secteur), aussi affiché sur la carte                  |
+| `category`        | `difficile`, `production` ou `saas` (sert aux filtres ; toujours en français)  |
+| `summary`         | La phrase de résumé, sous le titre                                             |
+| `context`         | Facultatif : le contexte                                                       |
+| `problemLabel`    | Facultatif : un autre intitulé que « Le problème »                             |
+| `problem`         | Le problème                                                                    |
+| `approach`        | Les étapes, une par ligne commençant par `- text:`                              |
+| `result`          | Le résultat                                                                    |
+| `resultHighlight` | Le morceau du résultat à surligner, recopié exactement                         |
+| `transferable`    | Ce qui est transposable                                                        |
+| `links`           | Facultatif : les liens (`label` = texte affiché, `url` = adresse)              |
+| `cardProblem`, `cardApproach`, `cardResult` | Les trois phrases courtes de la carte                |
+| `seoTitle`        | Le titre pour Google et les réseaux : 60 caractères maximum                    |
+| `seoDescription`  | La description pour Google : 155 caractères maximum                            |
+| `order`           | L'ordre d'affichage : 1 apparaît en premier                                    |
+| `draft`           | Facultatif : `true` = brouillon, invisible sur le site                         |
+
+Si un champ manque, dépasse sa longueur maximale ou contient une valeur non prévue, la publication s'arrête et GitHub affiche une erreur qui indique le fichier et le champ en cause. Le site en ligne reste alors inchangé.
 
 ## Publier
 
-**Le plus simple : demander à Claude Code** (« publie les modifications »). Il vérifie que le site se construit sans erreur, puis l'envoie sur GitHub.
+**Le plus simple : demander à votre assistant de code** (« publie les modifications »). Il vérifie que le site se construit sans erreur, puis l'envoie sur GitHub.
 
 **Directement sur github.com** : ouvrez le fichier dans le dépôt `stephanecambon/Cambon-AI`, cliquez sur l'icône crayon, modifiez, puis « Commit changes ». La publication part automatiquement.
 
@@ -76,15 +94,18 @@ puis ouvrir http://localhost:4321. Les modifications s'affichent dès l'enregist
 
 ```
 src/
-  config.ts              Lien de rendez-vous, e-mail de contact
+  config.ts              Éléments à compléter (rendez-vous, liens, photo…)
   i18n/fr.ts, en.ts      Tous les textes, en français et en anglais
   content/projets/       Les projets (un fichier par projet et par langue)
   styles/global.css      Couleurs, polices et éléments du design
   components/            Morceaux de page (en-tête, pied de page, accroche…)
-  pages/                 Les pages : / et /mentions-legales/, /en/ et /en/legal/
+  pages/                 Les pages : /, /projets/, /mentions-legales/, /confidentialite/ et leurs équivalents /en/
 public/
   CNAME                  Nom de domaine (cambon.ai) pour GitHub Pages
   favicon.svg            Icône de l'onglet
+  og-fr.png, og-en.png   Images affichées quand on partage le site (1200 × 630)
+  images/                Photo de la section « Qui je suis »
   robots.txt             Consignes pour les moteurs de recherche
 .github/workflows/       Publication automatique
+tools/newsletter/        Script Google Apps Script de la newsletter et son mode d'emploi
 ```

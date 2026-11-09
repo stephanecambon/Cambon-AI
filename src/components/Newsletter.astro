@@ -1,0 +1,272 @@
+---
+// Formulaire d'inscription à la newsletter (pied de page).
+// Sans JavaScript : envoi classique vers Google Apps Script, qui affiche une
+// page de confirmation. Avec JavaScript : envoi en arrière-plan et message
+// sur place (voir le <script> plus bas).
+import { texts, plain, routes, type Lang } from '../i18n';
+import { NEWSLETTER_URL, NEWSLETTER_CONSENT_VERSION } from '../config';
+
+interface Props {
+  lang: Lang;
+  /** Chemin de la page courante (enregistré avec l'inscription). */
+  path: string;
+}
+
+const { lang, path } = Astro.props;
+const t = texts[lang].newsletter;
+const id = (name: string) => `nl-${name}`;
+// Sans JavaScript, « t » vaut l'heure du build (toujours > 3 s) ;
+// le script la remplace par l'heure d'affichage réelle.
+const builtAt = Date.now();
+---
+<section class="nl" id="newsletter" aria-labelledby={id('title')}>
+  <div class="nl__intro">
+    <h2 class="nl__title" id={id('title')}>{plain(t.title, lang)}</h2>
+    <p class="nl__text">{plain(t.text, lang)}</p>
+  </div>
+
+  <form
+    class="nl__form"
+    method="post"
+    action={NEWSLETTER_URL}
+    data-newsletter
+    data-msg-success={plain(t.success, lang)}
+    data-msg-error={plain(t.error, lang)}
+    data-msg-email={plain(t.errorEmail, lang)}
+    data-msg-consent={plain(t.errorConsent, lang)}
+    data-msg-sending={t.sending}
+  >
+    <div class="nl__fields">
+      <div class="nl__row">
+        <label class="nl__label" for={id('email')}>{t.emailLabel}</label>
+        <input
+            class="nl__input"
+            id={id('email')}
+            name="email"
+            type="email"
+            inputmode="email"
+            autocomplete="email"
+            autocapitalize="off"
+            spellcheck="false"
+            maxlength="254"
+            required
+          />
+      </div>
+
+      <div class="nl__consent">
+        <input class="nl__check" id={id('consent')} name="consentement" type="checkbox" value="oui" required />
+        <label for={id('consent')}>
+          {plain(t.consent, lang)} <a href={routes.privacy[lang]}>{t.privacyLink}</a>
+        </label>
+      </div>
+
+      <button class="btn btn--primary nl__button" type="submit">{t.button}</button>
+
+      <!-- Champ piège : invisible pour les humains, rempli par les robots -->
+      <div class="nl__hp" aria-hidden="true">
+        <label for={id('website')}>{t.honeypot}</label>
+        <input id={id('website')} name="website" type="text" tabindex="-1" autocomplete="off" />
+      </div>
+      <input type="hidden" name="t" value={String(builtAt)} />
+      <input type="hidden" name="langue" value={lang} />
+      <input type="hidden" name="page" value={path} />
+      <input type="hidden" name="version" value={NEWSLETTER_CONSENT_VERSION} />
+    </div>
+
+    <p class="nl__status" role="status" aria-live="polite" data-status></p>
+  </form>
+</section>
+
+<script>
+  // Amélioration progressive : envoi en arrière-plan.
+  // Requête « simple » (formulaire encodé, sans en-tête personnalisé) : pas de
+  // pré-vérification CORS, que Google Apps Script ne gère pas. La réponse JSON
+  // arrive après une redirection vers script.googleusercontent.com, qui
+  // l'autorise pour tous les sites. En cas d'échec réseau, on retombe sur
+  // l'envoi classique (les doublons sont ignorés par le script).
+  const shownAt = String(Date.now());
+
+  for (const form of document.querySelectorAll<HTMLFormElement>('form[data-newsletter]')) {
+    const stamp = form.querySelector<HTMLInputElement>('input[name="t"]');
+    if (stamp) stamp.value = shownAt;
+
+    const status = form.querySelector<HTMLElement>('[data-status]')!;
+    const button = form.querySelector<HTMLButtonElement>('button[type="submit"]')!;
+    const label = button.textContent ?? '';
+    const msg = form.dataset;
+
+    const show = (text: string, kind: 'ok' | 'error' | 'busy') => {
+      status.textContent = text;
+      status.dataset.kind = kind;
+    };
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const body = new URLSearchParams();
+      for (const [key, value] of new FormData(form)) body.append(key, String(value));
+      body.set('format', 'json');
+      body.set('sent', String(Date.now()));
+
+      button.disabled = true;
+      button.textContent = msg.msgSending ?? label;
+      form.setAttribute('aria-busy', 'true');
+      show('', 'busy');
+
+      let result: { ok?: boolean; status?: string } | null = null;
+      try {
+        const response = await fetch(form.action, { method: 'POST', body, redirect: 'follow' });
+        result = await response.json();
+      } catch {
+        result = null;
+      }
+
+      button.disabled = false;
+      button.textContent = label;
+      form.removeAttribute('aria-busy');
+
+      if (result === null) {
+        // Réponse illisible (réseau, CORS) : envoi classique, sans JavaScript.
+        HTMLFormElement.prototype.submit.call(form);
+        return;
+      }
+      if (result.ok) {
+        form.classList.add('is-done');
+        show(msg.msgSuccess ?? '', 'ok');
+        status.setAttribute('tabindex', '-1');
+        status.focus();
+        return;
+      }
+      if (result.status === 'email') show(msg.msgEmail ?? '', 'error');
+      else if (result.status === 'consent') show(msg.msgConsent ?? '', 'error');
+      else show(msg.msgError ?? '', 'error');
+    });
+  }
+</script>
+
+<style>
+  .nl {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+    gap: 24px clamp(32px, 6vw, 72px);
+    padding-block: clamp(36px, 6vw, 56px);
+    border-bottom: var(--rule-thin);
+  }
+  .nl__title {
+    font-size: clamp(1.75rem, 3.6vw, 2.4rem);
+  }
+  .nl__text {
+    margin-top: 12px;
+    max-width: 46ch;
+    color: var(--text-2);
+  }
+  .nl__label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .nl__input {
+    display: block;
+    width: 100%;
+    min-height: 48px;
+    padding: 0 14px;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    background: #fbfaf6;
+    color: var(--ink);
+    font: inherit;
+  }
+  .nl__input:hover {
+    border-color: var(--text-muted);
+  }
+  .nl__input:focus-visible {
+    outline: 3px solid var(--ink);
+    outline-offset: 2px;
+    border-color: var(--ink);
+  }
+  .nl__button {
+    margin-top: 16px;
+    min-height: 48px;
+  }
+  .nl__button[disabled] {
+    cursor: progress;
+    opacity: 0.8;
+  }
+  .nl__consent {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-top: 14px;
+    font-size: 0.9375rem;
+    line-height: 1.45;
+    color: var(--text-2);
+  }
+  .nl__check {
+    flex: none;
+    width: 22px;
+    height: 22px;
+    margin: 1px 0 0;
+    accent-color: var(--ink);
+  }
+  /* Zone cliquable d'au moins 44 px autour de la case */
+  .nl__consent label {
+    min-height: 44px;
+    padding-top: 1px;
+    cursor: pointer;
+  }
+  .nl__consent {
+    position: relative;
+  }
+  .nl__check {
+    position: relative;
+  }
+  .nl__check::after {
+    content: '';
+    position: absolute;
+    inset: -11px;
+  }
+  .nl__consent a {
+    font-weight: 600;
+  }
+  .nl__hp {
+    position: absolute;
+    left: -10000px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+  .nl__status:empty {
+    display: none;
+  }
+  .nl__status {
+    margin-top: 16px;
+    padding: 10px 14px;
+    font-weight: 600;
+    color: var(--ink);
+    border-left: 3px solid var(--ink);
+  }
+  .nl__status[data-kind='ok'] {
+    background: rgba(255, 179, 71, 0.7);
+    border-left-color: transparent;
+  }
+  .nl__status:focus {
+    outline: none;
+  }
+  .nl__form.is-done .nl__fields {
+    display: none;
+  }
+  .nl__form.is-done .nl__status {
+    margin-top: 0;
+  }
+
+  @media (max-width: 760px) {
+    .nl {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+  @media (max-width: 420px) {
+    .nl__button {
+      width: 100%;
+    }
+  }
+</style>

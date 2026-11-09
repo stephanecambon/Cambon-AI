@@ -1,10 +1,10 @@
 ---
 import Base from '../layouts/Base.astro';
-import Hero from '../components/Hero.astro';
-import { texts } from '../i18n';
+import Home from '../components/Home.astro';
+import { texts, routes } from '../i18n';
 
 const t = texts.fr.meta;
 ---
-<Base lang="fr" page="home" title={t.homeTitle} description={t.homeDescription}>
-  <Hero lang="fr" />
+<Base lang="fr" alternates={routes.home} title={t.homeTitle} description={t.homeDescription}>
+  <Home lang="fr" />
 </Base>

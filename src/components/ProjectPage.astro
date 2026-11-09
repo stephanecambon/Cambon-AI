@@ -1,0 +1,155 @@
+---
+// Fiche projet : surtitre, titre, résumé, contexte, problème, approche,
+// résultat, transposable, liens, puis l'appel à l'action.
+import Cta from './Cta.astro';
+import { texts, plain, richHighlight, routes, type Lang } from '../i18n';
+import { resolveUrl } from '../config';
+import type { Projet } from '../lib/projets';
+
+interface Props {
+  lang: Lang;
+  projet: Projet;
+}
+
+const { lang, projet } = Astro.props;
+const d = projet.data;
+const t = texts[lang].projects;
+const links = (d.links ?? [])
+  .map((l) => ({ ...l, href: resolveUrl(l.url) }))
+  .filter((l): l is typeof l & { href: string } => l.href !== null);
+const pretty = (url: string) => url.replace(/^https?:\/\//, '').replace(/\/$/, '');
+---
+<article class="fiche-projet">
+  <div class="container fiche-projet__inner">
+    <p class="fiche-projet__back"><a href={routes.projects[lang]}>← {t.back}</a></p>
+    <p class="eyebrow">{plain(d.kicker, lang)}</p>
+    <h1>{plain(d.title, lang)}</h1>
+    <p class="lead fiche-projet__summary">{plain(d.summary, lang)}</p>
+
+    {d.context && (
+      <section class="block">
+        <h2>{t.context}</h2>
+        <p>{plain(d.context, lang)}</p>
+      </section>
+    )}
+
+    <section class="block">
+      <h2>{plain(d.problemLabel ?? t.problem, lang)}</h2>
+      <p>{plain(d.problem, lang)}</p>
+    </section>
+
+    <section class="block">
+      <h2>{t.approach}</h2>
+      <ol class="approach">
+        {d.approach.map((step) => (
+          <li>
+            <p>
+              {step.title && <strong>{plain(step.title, lang)} </strong>}
+              {plain(step.text, lang)}
+            </p>
+          </li>
+        ))}
+      </ol>
+    </section>
+
+    <section class="block block--result">
+      <h2>{t.result}</h2>
+      <p class="result" set:html={richHighlight(d.result, d.resultHighlight, lang)} />
+    </section>
+
+    <section class="block">
+      <h2>{t.transferable}</h2>
+      <p>{plain(d.transferable, lang)}</p>
+    </section>
+
+    {links.length > 0 && (
+      <section class="block">
+        <h2>{t.links}</h2>
+        <ul class="links">
+          {links.map((l) => (
+            <li><a class="text-link" href={l.href}>{l.label ? plain(l.label, lang) : pretty(l.href)}</a> <span aria-hidden="true">→</span></li>
+          ))}
+        </ul>
+      </section>
+    )}
+  </div>
+</article>
+
+<Cta lang={lang} />
+
+<style>
+  .fiche-projet {
+    padding-block: clamp(32px, 6vw, 64px) clamp(56px, 9vw, 96px);
+  }
+  .fiche-projet__inner {
+    max-width: calc(800px + 2 * var(--gutter));
+  }
+  .fiche-projet__back {
+    margin-bottom: clamp(28px, 5vw, 48px);
+    font-size: 0.9375rem;
+  }
+  .fiche-projet__back a {
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .fiche-projet__back a:hover {
+    text-decoration: underline;
+  }
+  .fiche-projet h1 {
+    font-size: clamp(2.2rem, 6vw, 3.75rem);
+    text-wrap: balance;
+  }
+  .fiche-projet__summary {
+    margin-top: 20px;
+  }
+  .block {
+    margin-top: clamp(36px, 6vw, 52px);
+    padding-top: 16px;
+    border-top: var(--rule-thin);
+  }
+  .block h2 {
+    font-size: clamp(1.25rem, 2.4vw, 1.5rem);
+    margin-bottom: 12px;
+  }
+  .block--result {
+    border-top: 3px solid var(--ink);
+  }
+  .result {
+    font-weight: 600;
+    font-size: clamp(1.25rem, 2.6vw, 1.6rem);
+    line-height: 1.4;
+    color: var(--ink);
+  }
+  .approach {
+    list-style: none;
+    counter-reset: etape;
+    margin: 0;
+    padding: 0;
+  }
+  .approach li {
+    counter-increment: etape;
+    display: grid;
+    grid-template-columns: 44px minmax(0, 1fr);
+    gap: 12px;
+    padding-block: 10px;
+  }
+  .approach li::before {
+    content: counter(etape, decimal-leading-zero);
+    font-family: var(--font-title);
+    font-weight: 600;
+    font-size: 1.5rem;
+    line-height: 1.1;
+    color: var(--ink);
+  }
+  .approach strong {
+    color: var(--ink);
+  }
+  .links {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .links li + li {
+    margin-top: 8px;
+  }
+</style>

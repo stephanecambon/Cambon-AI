@@ -1,19 +1,28 @@
 ---
+import Newsletter from './Newsletter.astro';
 import { texts, routes, type Lang } from '../i18n';
-import { CONTACT_EMAIL } from '../config';
+import { CONTACT_EMAIL, newsletterEnabled } from '../config';
 
 interface Props {
   lang: Lang;
+  /** Chemin de la page courante. */
+  path: string;
 }
 
-const { lang } = Astro.props;
+const { lang, path } = Astro.props;
 const t = texts[lang].footer;
 ---
 <footer class="site-footer">
-  <div class="container site-footer__inner">
-    <p>{t.company}</p>
-    <p><a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a></p>
-    <p><a href={routes.legal[lang]}>{t.legal}</a></p>
+  <div class="container">
+    {newsletterEnabled && <Newsletter lang={lang} path={path} />}
+    <div class="site-footer__inner">
+      <p>{t.company}</p>
+      <p><a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a></p>
+      <p class="site-footer__legal">
+        <a href={routes.legal[lang]}>{t.legal}</a>
+        <a href={routes.privacy[lang]}>{t.privacy}</a>
+      </p>
+    </div>
   </div>
 </footer>
 
@@ -29,6 +38,11 @@ const t = texts[lang].footer;
     flex-wrap: wrap;
     gap: 8px 32px;
     padding-block: 28px;
+  }
+  .site-footer__legal {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 24px;
   }
   .site-footer a {
     color: var(--text-2);

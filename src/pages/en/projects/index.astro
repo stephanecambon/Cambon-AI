@@ -1,0 +1,10 @@
+---
+import Base from '../../../layouts/Base.astro';
+import ProjectList from '../../../components/ProjectList.astro';
+import { texts, routes } from '../../../i18n';
+
+const t = texts.en.meta;
+---
+<Base lang="en" alternates={routes.projects} title={t.projectsTitle} description={t.projectsDescription}>
+  <ProjectList lang="en" />
+</Base>

@@ -1,0 +1,101 @@
+---
+import { texts, plain, richHighlight, projectUrl, type Lang } from '../i18n';
+import { slugOf, type Projet } from '../lib/projets';
+
+interface Props {
+  lang: Lang;
+  projet: Projet;
+  /** Niveau de titre de la carte (3 sur l'accueil, 2 sur la page Projets). */
+  level?: 2 | 3;
+}
+
+const { lang, projet, level = 3 } = Astro.props;
+const d = projet.data;
+const t = texts[lang].projects;
+const Heading = `h${level}` as 'h2' | 'h3';
+---
+<li class="card" data-category={d.category}>
+  <p class="card__kicker">{plain(d.kicker, lang)}</p>
+  <Heading class="card__title">
+    <a href={projectUrl(lang, slugOf(projet))}>{plain(d.title, lang)}</a>
+  </Heading>
+  <dl class="card__facts">
+    <div>
+      <dt>{t.cardProblem}</dt>
+      <dd>{plain(d.cardProblem, lang)}</dd>
+    </div>
+    <div>
+      <dt>{t.cardApproach}</dt>
+      <dd>{plain(d.cardApproach, lang)}</dd>
+    </div>
+    <div class="card__result">
+      <dt>{t.cardResult}</dt>
+      <dd set:html={richHighlight(d.cardResult, d.cardResult, lang)} />
+    </div>
+  </dl>
+</li>
+
+<style>
+  .card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    border-top: 3px solid var(--ink);
+    padding-top: 16px;
+  }
+  .card__kicker {
+    font-weight: 600;
+    font-size: 0.8125rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+  .card__title {
+    margin-top: 10px;
+    font-size: clamp(1.4rem, 2.2vw, 1.6rem);
+    line-height: 1.08;
+  }
+  .card__title a {
+    text-decoration: none;
+    color: var(--ink);
+  }
+  /* Toute la carte est cliquable */
+  .card__title a::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+  .card:hover .card__title a {
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+  }
+  .card:focus-within {
+    outline: 3px solid var(--ink);
+    outline-offset: 6px;
+  }
+  .card__title a:focus-visible {
+    outline: none;
+  }
+  .card__facts {
+    margin: 16px 0 0;
+    display: grid;
+    gap: 12px;
+  }
+  .card__facts dt {
+    font-weight: 600;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+  .card__facts dd {
+    margin: 2px 0 0;
+    font-size: 0.9875rem;
+    line-height: 1.5;
+  }
+  .card__result dd {
+    font-weight: 700;
+    font-size: 1.0625rem;
+    color: var(--ink);
+  }
+</style>

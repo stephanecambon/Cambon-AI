@@ -1,0 +1,310 @@
+---
+// Schéma « Le marché de l'IA en trois couches » (section 01 de l'accueil).
+// Construit en HTML/CSS : lisible, traduisible, accessible.
+import { texts, plain, type Lang } from '../i18n';
+import type { LayerBox } from '../i18n/fr';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = texts[lang].layers;
+const rows = t.rows as Array<{
+  name: string;
+  gain: string;
+  examples: string[];
+  before: LayerBox[];
+  now: LayerBox[];
+}>;
+---
+<figure class="layers" aria-labelledby={`layers-title-${lang}`}>
+  <h3 class="layers__title" id={`layers-title-${lang}`}>{plain(t.title, lang)}</h3>
+
+  <div class="layers__grid">
+    <div class="layers__roi"><span>{t.roi}</span></div>
+
+    <p class="layers__colhead layers__colhead--ex" aria-hidden="true">{t.colExamples}</p>
+    <p class="layers__colhead layers__colhead--before" aria-hidden="true">{t.colBefore}</p>
+    <p class="layers__colhead layers__colhead--now" aria-hidden="true">{t.colNow}</p>
+
+    <div class="layers__bar" aria-hidden="true"><span>{t.bar}</span></div>
+
+    {rows.map((row, i) => (
+      <section class="layer" style={`--row: ${2 + i * 2}`} aria-label={row.name}>
+        <div class="layer__cell layer__ex">
+          <h4 class="layer__name">{plain(row.name, lang)}</h4>
+          <p class="layer__gain"><span>{plain(t.gainLabel, lang)}</span> {plain(row.gain, lang)}</p>
+          <p class="layer__label layer__label--sr">{t.colExamples}</p>
+          <ul class="layer__examples">
+            {row.examples.map((ex) => <li>{plain(ex, lang)}</li>)}
+          </ul>
+        </div>
+        {[
+          { label: t.colBefore, boxes: row.before, cls: 'layer__before' },
+          { label: t.colNow, boxes: row.now, cls: 'layer__now' },
+        ].map((col) => (
+          <div class={`layer__cell ${col.cls}`}>
+            <p class="layer__label">{col.label}</p>
+            {col.boxes.map((box) => (
+              <div class="layer__item">
+                <div class={`box box--${box.style}`}>
+                  <strong>{plain(box.title, lang)}</strong>
+                  {box.text && <span>{plain(box.text, lang)}</span>}
+                </div>
+                {box.caption && <p class="box__caption">{plain(box.caption, lang)}</p>}
+              </div>
+            ))}
+          </div>
+        ))}
+      </section>
+    ))}
+  </div>
+</figure>
+
+<style>
+  .layers {
+    margin: 0;
+    background: var(--plan-bg);
+    color: var(--plan-text);
+    border-radius: var(--radius);
+    padding: clamp(18px, 3.5vw, 36px);
+    font-size: 0.9375rem;
+    line-height: 1.45;
+  }
+  .layers__title {
+    color: var(--plan-text);
+    font-size: clamp(1.35rem, 2.6vw, 1.75rem);
+    margin-bottom: clamp(18px, 3vw, 28px);
+  }
+
+  /* ---------- Grille (grand écran) ---------- */
+  .layers__grid {
+    display: grid;
+    grid-template-columns: 52px minmax(0, 1.3fr) minmax(0, 1fr) minmax(0, 1.15fr) 48px;
+    grid-template-rows: auto repeat(6, auto);
+  }
+  .layers__colhead {
+    grid-row: 1;
+    margin: 0;
+    padding: 0 16px 10px;
+    font-weight: 600;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--plan-muted);
+  }
+  .layers__colhead--ex { grid-column: 2; }
+  .layers__colhead--before { grid-column: 3; }
+  .layers__colhead--now { grid-column: 4; }
+
+  .layer {
+    display: contents;
+  }
+  .layer__cell {
+    grid-row: var(--row) / span 2;
+    padding: 18px 16px 20px;
+    border-top: 1px solid var(--plan-rule);
+  }
+  .layer__ex { grid-column: 2; }
+  .layer__before { grid-column: 3; border-left: 1px solid var(--plan-rule); }
+  .layer__now { grid-column: 4; border-left: 1px solid var(--plan-rule); }
+
+  .layer__name {
+    margin: 0;
+    font-family: var(--font-title);
+    font-weight: 600;
+    font-size: 1.3rem;
+    line-height: 1.1;
+    text-transform: uppercase;
+    color: var(--plan-text);
+  }
+  .layer__gain {
+    margin-top: 6px;
+    color: var(--plan-muted);
+  }
+  .layer__gain span {
+    font-weight: 600;
+  }
+  .layer__examples {
+    list-style: none;
+    margin: 12px 0 0;
+    padding: 0;
+  }
+  .layer__examples li {
+    position: relative;
+    padding-left: 14px;
+  }
+  .layer__examples li + li {
+    margin-top: 4px;
+  }
+  .layer__examples li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.62em;
+    width: 5px;
+    height: 5px;
+    background: var(--plan-muted);
+  }
+
+  /* Libellés de colonne répétés dans chaque couche : lus par les lecteurs d'écran,
+     visibles seulement sur mobile */
+  .layer__label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  .layer__item + .layer__item {
+    margin-top: 14px;
+  }
+  .box {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 9px 12px;
+    border: 1.5px solid var(--plan-text);
+    border-radius: var(--radius);
+  }
+  .box strong {
+    font-weight: 700;
+  }
+  .box--dashed {
+    border-style: dashed;
+    border-color: var(--plan-muted);
+  }
+  .box--amber {
+    background: var(--amber);
+    border-color: var(--amber);
+    color: var(--ink);
+  }
+  .box__caption {
+    margin-top: 6px;
+    font-size: 0.875rem;
+    color: var(--plan-muted);
+  }
+
+  /* Flèche « Retour sur investissement » */
+  .layers__roi {
+    grid-column: 1;
+    grid-row: 2 / span 6;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .layers__roi::before {
+    content: '';
+    position: absolute;
+    top: 10px;
+    bottom: 6px;
+    left: 50%;
+    width: 2px;
+    margin-left: -1px;
+    background: var(--plan-muted);
+  }
+  .layers__roi::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    margin-left: -7px;
+    border: 7px solid transparent;
+    border-top: 0;
+    border-bottom: 12px solid var(--plan-muted);
+  }
+  .layers__roi span {
+    position: relative;
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    padding-block: 10px;
+    background: var(--plan-bg);
+    font-weight: 600;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--plan-muted);
+    white-space: nowrap;
+  }
+
+  /* Barre ambre « Cambon AI » : couche 3 entière + moitié de la couche 2 */
+  .layers__bar {
+    grid-column: 5;
+    grid-row: 2 / span 3;
+    margin: 10px 0 0 12px;
+    background: var(--amber);
+    border-radius: var(--radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .layers__bar span {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    font-family: var(--font-title);
+    font-weight: 600;
+    font-size: 1.05rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink);
+    white-space: nowrap;
+  }
+
+  /* ---------- Mobile : une pile par couche ---------- */
+  @media (max-width: 900px) {
+    .layers__grid {
+      grid-template-columns: 30px minmax(0, 1fr) 30px;
+    }
+    .layers__colhead {
+      display: none;
+    }
+    .layer {
+      display: block;
+      grid-column: 2;
+      grid-row: var(--row) / span 2;
+      border-top: 1px solid var(--plan-rule);
+      padding: 16px 12px 20px;
+    }
+    .layer__cell {
+      padding: 0;
+      border: 0;
+    }
+    .layer__before,
+    .layer__now {
+      margin-top: 16px;
+    }
+    .layer__label {
+      position: static;
+      width: auto;
+      height: auto;
+      overflow: visible;
+      clip: auto;
+      margin-bottom: 6px;
+      font-weight: 600;
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--plan-muted);
+    }
+    .layer__label--sr {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+    }
+    .layers__roi span {
+      font-size: 0.6875rem;
+    }
+    .layers__bar {
+      margin: 10px 0 0 6px;
+    }
+    .layers__bar span {
+      font-size: 0.875rem;
+    }
+  }
+</style>
