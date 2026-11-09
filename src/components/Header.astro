@@ -18,7 +18,7 @@ const otherHref = alternates[other];
 ---
 <header class="site-header">
   <div class="container site-header__inner">
-    <a class="site-header__logo" href={home}><Logo /></a>
+    <a class="site-header__logo" href={home} aria-label={t.logoLabel}><Logo /></a>
 
     <div class="site-header__bar">
     <nav class="site-header__nav" aria-label={t.mainLabel}>
@@ -194,11 +194,58 @@ const otherHref = alternates[other];
       transition: none;
     }
   }
+
+  /* ---------- Logo : le carré « AI » ressort puis s'emboîte (0,7 s) ----------
+     Déclenché par JavaScript (classe .is-animating) au survol ou au focus
+     clavier du lien. Sans JS, sur mobile ou si l'utilisateur réduit les
+     animations : logo statique. 60px = 60 unités du dessin (viewBox 240),
+     donc proportionnel à la taille d'affichage. */
+  @keyframes logo-emboite {
+    0% {
+      transform: translateX(0);
+      animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    45% {
+      transform: translateX(60px);
+      animation-timing-function: cubic-bezier(0.6, 0, 0.85, 0.9);
+    }
+    100% {
+      transform: translateX(0);
+    }
+  }
+  .site-header__logo.is-animating :global(.logo-ai) {
+    animation: logo-emboite 0.7s both;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .site-header__logo.is-animating :global(.logo-ai) {
+      animation: none;
+    }
+  }
 </style>
 
 <script>
   // Mobile : masque la ligne de navigation en descendant, la réaffiche en remontant.
   // Le logo et « Prendre rendez-vous » restent toujours visibles.
+  // Logo : animation d'emboîtement, une fois par survol (ou focus clavier).
+  // Elle se joue toujours en entier : la classe n'est retirée qu'à la fin.
+  const logoLink = document.querySelector<HTMLAnchorElement>('.site-header__logo');
+  const logoAi = logoLink?.querySelector('.logo-ai');
+  if (logoLink && logoAi) {
+    const canHover = window.matchMedia('(hover: hover) and (pointer: fine)');
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const play = () => {
+      if (reduced.matches || logoLink.classList.contains('is-animating')) return;
+      logoLink.classList.add('is-animating');
+    };
+    logoLink.addEventListener('mouseenter', () => {
+      if (canHover.matches) play();
+    });
+    logoLink.addEventListener('focus', () => {
+      if (logoLink.matches(':focus-visible')) play();
+    });
+    logoAi.addEventListener('animationend', () => logoLink.classList.remove('is-animating'));
+  }
+
   const header = document.querySelector<HTMLElement>('.site-header');
   if (header) {
     const root = document.documentElement;

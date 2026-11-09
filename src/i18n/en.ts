@@ -25,6 +25,7 @@ export const en: Texts = {
     about: 'About',
     booking: 'Book a call',
     mainLabel: 'Main navigation',
+    logoLabel: 'Cambon AI, home',
     langLabel: 'Language',
   },
 

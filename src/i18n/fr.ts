@@ -25,6 +25,7 @@ export const fr = {
     about: 'À propos',
     booking: 'Prendre rendez-vous',
     mainLabel: 'Navigation principale',
+    logoLabel: 'Cambon AI, accueil',
     langLabel: 'Langue',
   },
 
