@@ -1,6 +1,8 @@
 ---
 translationOf: appels-offres
 title: "Answering tenders in two days instead of three weeks"
+image: "appels-offres"
+imageAlt: "Illustration: an archive of past responses feeds a new bid, prepared in a fraction of the time."
 kicker: "Production with a strong R&D component · Project owner advisory"
 category: production
 summary: "A firm that advises project owners now reuses its entire archive of past bids to produce new ones."

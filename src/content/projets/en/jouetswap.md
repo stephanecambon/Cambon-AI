@@ -1,6 +1,8 @@
 ---
 translationOf: jouetswap
 title: "A toy-swapping platform for families, used by a pilot school"
+image: "jouetswap"
+imageAlt: "JouetSwap home page, with its mascot: pupils swap toys, games and books within their school."
 kicker: "SaaS product · Education"
 category: saas
 summary: "Pupils at the same school swap games and toys using a points system, in the spirit of HomeExchange."

@@ -1,5 +1,7 @@
 ---
 title: "Prouver qu'un robot ne peut pas atteindre sa cible"
+image: "preuves-robotique"
+imageAlt: "Silhouettes du bras KUKA iiwa7 : les positions de départ et d'arrivée sont libres, mais toutes les positions intermédiaires heurtent l'étagère."
 kicker: "Problèmes difficiles · Robotique · Recherche"
 category: difficile
 summary: "Un travail de recherche qui produit des preuves mathématiques, vérifiables indépendamment, qu'un mouvement de robot est impossible."

@@ -1,6 +1,8 @@
 ---
 translationOf: experiences-biotech
 title: "Choosing the next experiments instead of guessing them"
+image: "experiences-biotech"
+imageAlt: "Illustration: past experiments, performance zones estimated by the model, and the proposed next trials."
 kicker: "Hard problems · Biotech"
 category: difficile
 summary: "A working session on a biotech company's experimental data, to identify the most promising parameters to test next."

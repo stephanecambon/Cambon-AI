@@ -1,5 +1,7 @@
 ---
 title: "Modéliser un abonnement unique à toute la presse française"
+image: "licence-globale-presse"
+imageAlt: "Capture du simulateur en ligne de la licence globale : réglages du scénario et effet sur les revenus des principaux éditeurs."
 kicker: "Problèmes difficiles · Économie des médias"
 category: difficile
 summary: "Un modèle économique ouvert et reproductible, avec un simulateur en ligne, pour tester l'idée d'un pass unique donnant accès à toute la presse payante."

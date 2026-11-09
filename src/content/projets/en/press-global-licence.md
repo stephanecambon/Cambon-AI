@@ -1,6 +1,8 @@
 ---
 translationOf: licence-globale-presse
 title: "Modeling a single subscription to the entire French press"
+image: "licence-globale-presse"
+imageAlt: "Screenshot of the online global licence simulator: scenario settings and the effect on the revenue of the main publishers."
 kicker: "Hard problems · Media economics"
 category: difficile
 summary: "An open, reproducible economic model, with an online simulator, to test the idea of a single pass giving access to all paid French news."

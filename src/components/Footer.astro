@@ -1,5 +1,6 @@
 ---
 import Newsletter from './Newsletter.astro';
+import Picto from './Picto.astro';
 import { texts, routes, type Lang } from '../i18n';
 import { CONTACT_EMAIL, newsletterEnabled } from '../config';
 
@@ -16,7 +17,7 @@ const t = texts[lang].footer;
   <div class="container">
     {newsletterEnabled && <Newsletter lang={lang} path={path} />}
     <div class="site-footer__inner">
-      <p>{t.company}</p>
+      <p class="site-footer__brand"><Picto size={22} />{t.company}</p>
       <p><a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a></p>
       <p class="site-footer__legal">
         <a href={routes.legal[lang]}>{t.legal}</a>
@@ -38,6 +39,11 @@ const t = texts[lang].footer;
     flex-wrap: wrap;
     gap: 8px 32px;
     padding-block: 28px;
+  }
+  .site-footer__brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
   }
   .site-footer__legal {
     display: flex;

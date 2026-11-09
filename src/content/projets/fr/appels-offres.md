@@ -1,5 +1,7 @@
 ---
 title: "Répondre aux appels d'offres en deux jours au lieu de trois semaines"
+image: "appels-offres"
+imageAlt: "Illustration : un historique de réponses passées alimente un nouveau dossier, préparé en une fraction du temps."
 kicker: "Production à forte composante R&D · Maîtrise d'ouvrage"
 category: production
 summary: "Un cabinet de maîtrise d'ouvrage réutilise désormais tout son historique de réponses pour produire ses nouveaux dossiers."

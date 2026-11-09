@@ -52,6 +52,8 @@ Le plus simple est de copier un projet existant et de remplacer les textes. Les 
 | ----------------- | ------------------------------------------------------------------------------ |
 | `translationOf`   | Fichier anglais uniquement : le nom du fichier français correspondant          |
 | `title`           | Le titre                                                                       |
+| `image`           | Le nom du fichier image, sans extension, déposé dans `src/assets/projets/` (format 16:10, environ 1600 × 1000 px) |
+| `imageAlt`        | Une phrase qui décrit l'image, pour les personnes malvoyantes                  |
 | `kicker`          | Le surtitre (catégorie · secteur), aussi affiché sur la carte                  |
 | `category`        | `difficile`, `production` ou `saas` (sert aux filtres ; toujours en français)  |
 | `summary`         | La phrase de résumé, sous le titre                                             |

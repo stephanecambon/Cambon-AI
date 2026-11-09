@@ -1,5 +1,7 @@
 ---
 title: "Un produit SaaS complet, conçu et mis en ligne en trois jours"
+image: "briefd"
+imageAlt: "Page d'accueil de Briefd : trois offres d'emploi chaque matin, choisies pour l'abonné."
 kicker: "Logiciel SaaS · Emploi"
 category: saas
 summary: "Un service grand public qui sélectionne chaque jour les offres d'emploi adaptées à chaque abonné et l'accompagne jusqu'à l'entretien."

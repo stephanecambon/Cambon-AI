@@ -1,5 +1,7 @@
 ---
 title: "Choisir les prochaines expériences au lieu de les deviner"
+image: "experiences-biotech"
+imageAlt: "Illustration : expériences passées, zones de performance estimées par le modèle et prochains essais proposés."
 kicker: "Problèmes difficiles · Biotech"
 category: difficile
 summary: "Une séance de travail sur les données d'expériences d'une entreprise de biotech, pour identifier les paramètres les plus prometteurs à tester ensuite."

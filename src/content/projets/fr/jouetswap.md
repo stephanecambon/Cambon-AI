@@ -1,5 +1,7 @@
 ---
 title: "Une plateforme d'échange de jouets entre familles, utilisée par une école pilote"
+image: "jouetswap"
+imageAlt: "Page d'accueil de JouetSwap, avec sa mascotte : les élèves échangent jouets, jeux et livres au sein de leur école."
 kicker: "Logiciel SaaS · Éducation"
 category: saas
 summary: "Les élèves d'une même école échangent jeux et jouets grâce à un système de points, à la manière d'HomeExchange."

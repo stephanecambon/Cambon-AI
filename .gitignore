@@ -15,5 +15,7 @@ npm-debug.log*
 # macOS
 .DS_Store
 
-# Réglages locaux de l’éditeur
-.claude/
+
+# Originaux du picto : contiennent des métadonnées de provenance.
+# Le site utilise des copies nettoyées (favicon.svg, *.png, composant Picto).
+public/brand/

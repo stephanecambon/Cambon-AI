@@ -14,6 +14,10 @@ const projets = defineCollection({
       translationOf: z.string().optional(),
 
       title: z.string(),
+      /** Nom du fichier image (sans extension) dans src/assets/projets/, format 16:10. */
+      image: z.string(),
+      /** Description de l'image pour les lecteurs d'écran. */
+      imageAlt: z.string(),
       /** Surtitre de la fiche, aussi affiché sur la carte (catégorie et secteur). */
       kicker: z.string(),
       category: z.enum(['difficile', 'production', 'saas']),

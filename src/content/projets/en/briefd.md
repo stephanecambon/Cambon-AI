@@ -1,6 +1,8 @@
 ---
 translationOf: briefd
 title: "A complete SaaS product, designed and launched in three days"
+image: "briefd"
+imageAlt: "Briefd home page: three job offers every morning, picked for each subscriber."
 kicker: "SaaS product · Jobs"
 category: saas
 summary: "A consumer service that picks the right job offers for each subscriber every day and supports them all the way to the interview."

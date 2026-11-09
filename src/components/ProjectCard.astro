@@ -1,6 +1,8 @@
 ---
 import { texts, plain, richHighlight, projectUrl, type Lang } from '../i18n';
 import { slugOf, type Projet } from '../lib/projets';
+import { Image } from 'astro:assets';
+import { projectImage } from '../lib/projectImages';
 
 interface Props {
   lang: Lang;
@@ -15,6 +17,7 @@ const t = texts[lang].projects;
 const Heading = `h${level}` as 'h2' | 'h3';
 ---
 <li class="card" data-category={d.category}>
+  <Image class="card__image" src={projectImage(d.image)} alt="" widths={[400, 640, 960]} sizes="(max-width: 720px) 92vw, 360px" loading="lazy" />
   <p class="card__kicker">{plain(d.kicker, lang)}</p>
   <Heading class="card__title">
     <a href={projectUrl(lang, slugOf(projet))}>{plain(d.title, lang)}</a>
@@ -40,6 +43,17 @@ const Heading = `h${level}` as 'h2' | 'h3';
     position: relative;
     display: flex;
     flex-direction: column;
+  }
+  .card__image {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    background: var(--surface);
+    margin-bottom: 14px;
   }
   .card__kicker {
     font-weight: 600;
