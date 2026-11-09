@@ -139,8 +139,6 @@ const hasPhoto = fs.existsSync(path.join(process.cwd(), 'public', PHOTO_PATH));
     gap: 40px clamp(32px, 5vw, 64px);
   }
   .offer__block {
-    border-top: 1px solid var(--ink);
-    padding-top: 18px;
   }
   .offer__goal {
     margin: 12px 0 18px;
@@ -210,8 +208,6 @@ const hasPhoto = fs.existsSync(path.join(process.cwd(), 'public', PHOTO_PATH));
     gap: 32px clamp(24px, 4vw, 48px);
   }
   .why__item {
-    border-top: 1px solid var(--ink);
-    padding-top: 18px;
   }
   .why__item p {
     margin-top: 10px;
@@ -231,14 +227,13 @@ const hasPhoto = fs.existsSync(path.join(process.cwd(), 'public', PHOTO_PATH));
     height: auto;
     aspect-ratio: 4 / 5;
     object-fit: cover;
-    border: 1px solid var(--ink);
     border-radius: var(--radius);
   }
   .about__placeholder {
     display: flex;
     align-items: center;
     justify-content: center;
-    border-style: dashed;
+    border: 1px dashed var(--text-muted);
     background: rgba(14, 46, 85, 0.04);
     color: var(--text-muted);
     font-weight: 600;

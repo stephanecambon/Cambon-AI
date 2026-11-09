@@ -49,9 +49,13 @@ const otherHref = alternates[other];
 </header>
 
 <style>
+  /* Tétière blanche, collée en haut de l'écran */
   .site-header {
-    border-bottom: var(--rule-strong);
-    background: var(--paper);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: var(--header-bg);
+    border-bottom: 1px solid var(--rule);
   }
   .site-header__inner {
     display: grid;

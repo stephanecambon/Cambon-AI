@@ -19,7 +19,9 @@
 
   /* Formes */
   --radius: 2px;
-  --rule-strong: 1px solid var(--ink);
+  --rule-strong: 1px solid var(--rule); /* séparateur discret (gris clair) */
+  --header-bg: #ffffff;
+  --header-h: 72px; /* hauteur de la tétière, pour les ancres */
   --rule-thin: 1px solid var(--rule);
 
   /* Cahier */
@@ -44,6 +46,14 @@
 html {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
+  /* La tétière reste affichée : les ancres s'arrêtent juste dessous */
+  scroll-padding-top: calc(var(--header-h) + 16px);
+}
+
+@media (max-width: 860px) {
+  :root {
+    --header-h: 124px;
+  }
 }
 
 body {
@@ -123,9 +133,8 @@ a:hover {
   box-decoration-break: clone;
 }
 
-/* Section séparée par un trait de 2 px */
+/* Section : séparée par l'espacement, sans trait */
 .section {
-  border-top: var(--rule-strong);
   padding-block: clamp(48px, 9vw, 104px);
 }
 

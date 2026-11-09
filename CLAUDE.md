@@ -63,7 +63,7 @@ Schéma des trois couches : bloc sombre en HTML/CSS (fond `--plan-bg` `#0E2E55`,
 - Schéma : `src/content.config.ts`. Fichiers : `src/content/projets/fr/<slug>.md` et `src/content/projets/en/<slug>.md` ; le nom du fichier donne l'URL. Un fichier EN porte `translationOf: <slug FR>`.
 - Champs : `title`, `kicker` (surtitre, aussi affiché sur la carte), `category` (`difficile` | `production` | `saas`), `summary`, `context?`, `problemLabel?` (si l'intitulé n'est pas « Le problème »), `problem`, `approach` (liste `{ title?, text }`), `result`, `resultHighlight` (doit figurer tel quel dans `result`, sinon erreur), `transferable`, `links?` (`{ label?, url }`), `cardProblem`, `cardApproach`, `cardResult`, `seoTitle` (≤ 60), `seoDescription` (≤ 155), `order`, `draft`.
 - Ordre : 1 appels d'offres, 2 biotech, 3 robotique, 4 licence globale presse, 5 Briefd, 6 JouetSwap.
-- Carte (`ProjectCard.astro`) : pas de fond ni de cadre, trait de 3 px `--ink` au-dessus ; ordre : surtitre, titre, problème, approche, résultat surligné.
+- Carte (`ProjectCard.astro`) : pas de fond, pas de cadre, pas de trait ; ordre : surtitre, titre, problème, approche, résultat surligné.
 - Fiche (`ProjectPage.astro`) : surtitre, titre, résumé, contexte, problème, approche numérotée, résultat (surligné), transposable, liens, appel à l'action « Un problème qui résiste ? ».
 
 ## Design « carnet annoté »
@@ -82,7 +82,9 @@ Tokens dans `src/styles/global.css` (`:root`). Toujours utiliser les variables, 
 
 - Polices : Barlow Condensed 600 en capitales pour les titres (`--font-title`), Barlow 400/500/600/700 pour le texte (`--font-text`).
 - Fond : lignes de cahier (gradient 1 px, pas de 34 px) sur `body`.
-- Classes : `.section` (trait 2 px `--ink` en haut), `.eyebrow` + `.eyebrow__num`, `.surligne`, `.btn` + `.btn--primary` / `.btn--outline` / `.btn--small`, `.container`, `.lead`, `.prose`, `.list`, `.cards`.
+- **Pas de liserés foncés** (choix de Stéphane, novembre 2026) : aucun trait `--ink` sur les sections, cartes, blocs ou images. Les sections sont séparées par l'espacement ; seuls des traits gris clairs (`--rule`) sont permis là où un repère est utile (tétière, pied de page, listes). Les contours `--ink` sont réservés aux boutons et aux filtres.
+- Tétière (`Header.astro`) : fond blanc (`--header-bg`), `position: sticky` en haut ; `--header-h` + `scroll-padding-top` décalent les ancres sous la tétière (à ajuster si sa hauteur change).
+- Classes : `.section` (espacement vertical, sans trait), `.eyebrow` + `.eyebrow__num`, `.surligne`, `.btn` + `.btn--primary` / `.btn--outline` / `.btn--small`, `.container`, `.lead`, `.prose`, `.list`, `.cards`.
 - Angles : `--radius` (2 px).
 - Accessibilité : contraste ≥ 4,5:1 pour le texte. **Jamais `#FFB347` comme couleur de texte** sur le papier. Focus visible conservé.
 - Responsive : doit fonctionner à 390 px sans défilement horizontal.
