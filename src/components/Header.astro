@@ -138,4 +138,105 @@ const otherHref = alternates[other];
       gap: 4px 16px;
     }
   }
+
+  /* ---------- Mobile : zones tactiles d'au moins 44 px ---------- */
+  @media (max-width: 860px) {
+    .site-header__inner {
+      row-gap: 4px;
+    }
+    .site-header__nav a,
+    .lang-switch a,
+    .lang-switch [aria-current] {
+      display: inline-flex;
+      align-items: center;
+      min-height: 44px;
+    }
+    .lang-switch a,
+    .lang-switch [aria-current] {
+      justify-content: center;
+      min-width: 44px;
+    }
+    .lang-switch {
+      gap: 0;
+      align-items: center;
+    }
+  }
+
+  /* ---------- Mobile + JavaScript : la ligne de navigation se masque
+     quand on descend et revient quand on remonte. Sans JS : inchangé. ---------- */
+  @media (max-width: 860px) {
+    :global(html.js-hdr) .site-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+    }
+    :global(html.js-hdr body) {
+      padding-top: var(--header-full-h, 0px);
+    }
+    :global(html.js-hdr) .site-header__bar {
+      max-height: 60px;
+      overflow: hidden;
+      transition: max-height 0.2s ease, opacity 0.2s ease;
+    }
+    :global(html.js-hdr) .site-header.nav-hidden .site-header__bar {
+      max-height: 0;
+      opacity: 0;
+      visibility: hidden;
+      transition: max-height 0.2s ease, opacity 0.15s ease, visibility 0s linear 0.2s;
+    }
+    :global(html.js-hdr) .site-header.nav-hidden .site-header__inner {
+      row-gap: 0;
+    }
+  }
+  @media (max-width: 860px) and (prefers-reduced-motion: reduce) {
+    :global(html.js-hdr) .site-header__bar {
+      transition: none;
+    }
+  }
 </style>
+
+<script>
+  // Mobile : masque la ligne de navigation en descendant, la réaffiche en remontant.
+  // Le logo et « Prendre rendez-vous » restent toujours visibles.
+  const header = document.querySelector<HTMLElement>('.site-header');
+  if (header) {
+    const root = document.documentElement;
+    const mobile = window.matchMedia('(max-width: 860px)');
+    const measure = () => {
+      if (!header.classList.contains('nav-hidden')) {
+        root.style.setProperty('--header-full-h', `${header.offsetHeight}px`);
+      }
+    };
+    root.classList.add('js-hdr');
+    measure();
+    document.fonts?.ready.then(measure);
+
+    let lastY = window.scrollY;
+    let ticking = false;
+    const update = () => {
+      ticking = false;
+      const y = Math.max(0, window.scrollY);
+      if (!mobile.matches || y < header.offsetHeight) {
+        header.classList.remove('nav-hidden');
+        lastY = y;
+        return;
+      }
+      const delta = y - lastY;
+      if (Math.abs(delta) < 8) return;
+      header.classList.toggle('nav-hidden', delta > 0 && !header.contains(document.activeElement));
+      lastY = y;
+    };
+    window.addEventListener('scroll', () => {
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(update);
+      }
+    }, { passive: true });
+    window.addEventListener('resize', () => {
+      header.classList.remove('nav-hidden');
+      measure();
+    });
+    header.addEventListener('focusin', () => header.classList.remove('nav-hidden'));
+  }
+</script>

@@ -232,6 +232,18 @@ const builtAt = Date.now();
   .nl__consent a {
     font-weight: 600;
   }
+  /* Mobile : zones tactiles d'au moins 44 px, sans changer le rendu */
+  @media (max-width: 860px) {
+    .nl__consent label {
+      display: block;
+      min-height: 44px;
+    }
+    .nl__consent a {
+      display: inline-block;
+      padding-block: 13px;
+      margin-block: -13px;
+    }
+  }
   .nl__hp {
     position: absolute;
     left: -10000px;

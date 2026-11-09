@@ -60,6 +60,44 @@ const rows = t.rows as Array<{
       </section>
     ))}
   </div>
+
+  <!-- Mobile (< 720 px) : une couche par accordéon, sans JavaScript -->
+  <div class="lm">
+    <div class="lm__roi"><span>{t.roi}</span></div>
+    <div class="lm__list">
+      {rows.map((row, i) => (
+        <details class={`lm__layer lm__layer--${3 - i}`} open={i === 0} data-bar={i === 0 ? t.bar : undefined}>
+          <summary class="lm__summary">
+            <span class="lm__name">{plain(row.name, lang)}</span>
+            <span class="lm__gain"><span>{plain(t.gainLabel, lang)}</span> {plain(row.gain, lang)}</span>
+          </summary>
+          <div class="lm__body">
+            <p class="lm__label">{t.colExamples}</p>
+            <ul class="layer__examples">
+              {row.examples.map((ex) => <li>{plain(ex, lang)}</li>)}
+            </ul>
+            {[
+              { label: t.colBefore, boxes: row.before },
+              { label: t.colNow, boxes: row.now },
+            ].map((col) => (
+              <>
+                <p class="lm__label">{col.label}</p>
+                {col.boxes.map((box) => (
+                  <div class="layer__item">
+                    <div class={`box box--${box.style}`}>
+                      <strong>{plain(box.title, lang)}</strong>
+                      {box.text && <span>{plain(box.text, lang)}</span>}
+                    </div>
+                    {box.caption && <p class="box__caption">{plain(box.caption, lang)}</p>}
+                  </div>
+                ))}
+              </>
+            ))}
+          </div>
+        </details>
+      ))}
+    </div>
+  </div>
 </figure>
 
 <style>
@@ -305,6 +343,167 @@ const rows = t.rows as Array<{
     }
     .layers__bar span {
       font-size: 0.875rem;
+    }
+  }
+
+  /* ---------- Accordéon mobile (< 720 px) ---------- */
+  .lm {
+    display: none;
+  }
+  @media (max-width: 719px) {
+    .layers__grid {
+      display: none;
+    }
+    .lm {
+      display: grid;
+      grid-template-columns: 26px minmax(0, 1fr);
+    }
+    .lm__roi {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .lm__roi::before {
+      content: '';
+      position: absolute;
+      top: 10px;
+      bottom: 6px;
+      left: 50%;
+      width: 2px;
+      margin-left: -1px;
+      background: var(--plan-muted);
+    }
+    .lm__roi::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      margin-left: -6px;
+      border: 6px solid transparent;
+      border-top: 0;
+      border-bottom: 11px solid var(--plan-muted);
+    }
+    .lm__roi span {
+      position: relative;
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+      padding-block: 8px;
+      background: var(--plan-bg);
+      font-weight: 600;
+      font-size: 0.6875rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--plan-muted);
+      white-space: nowrap;
+    }
+    .lm__layer {
+      position: relative;
+      border-top: 1px solid var(--plan-rule);
+      padding-left: 10px;
+      padding-right: 34px;
+    }
+    .lm__summary {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-height: 44px;
+      padding: 14px 28px 14px 0;
+      cursor: pointer;
+      list-style: none;
+    }
+    .lm__summary::-webkit-details-marker {
+      display: none;
+    }
+    /* Signe + / − */
+    .lm__summary::after {
+      content: '+';
+      position: absolute;
+      top: 12px;
+      right: 0;
+      width: 24px;
+      height: 24px;
+      display: grid;
+      place-items: center;
+      border: 1px solid var(--plan-muted);
+      border-radius: var(--radius);
+      font-weight: 600;
+      line-height: 1;
+      color: var(--plan-text);
+    }
+    .lm__layer[open] > .lm__summary::after {
+      content: '−';
+    }
+    .lm__summary:focus-visible {
+      outline: 3px solid var(--amber);
+      outline-offset: 2px;
+    }
+    .lm__name {
+      font-family: var(--font-title);
+      font-weight: 600;
+      font-size: 1.2rem;
+      line-height: 1.1;
+      text-transform: uppercase;
+      color: var(--plan-text);
+    }
+    .lm__gain {
+      color: var(--plan-muted);
+    }
+    .lm__gain span {
+      font-weight: 600;
+    }
+    .lm__body {
+      padding-bottom: 18px;
+    }
+    .lm__label {
+      margin: 16px 0 6px;
+      font-weight: 600;
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--plan-muted);
+    }
+    .lm__body > .lm__label:first-child {
+      margin-top: 0;
+    }
+    .lm__body .layer__examples {
+      margin-top: 0;
+    }
+    /* Barre ambre « Cambon AI » : couche 3 entière + moitié haute de la couche 2.
+       En pseudo-élément du <details> : reste visible même couche repliée. */
+    .lm__layer--3::before {
+      content: attr(data-bar);
+      content: attr(data-bar) / '';
+      position: absolute;
+      top: 10px;
+      right: 0;
+      bottom: 0;
+      width: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--amber);
+      border-radius: var(--radius) var(--radius) 0 0;
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+      font-family: var(--font-title);
+      font-weight: 600;
+      font-size: 0.875rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--ink);
+      white-space: nowrap;
+    }
+    .lm__layer--2::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 24px;
+      height: 50%;
+      background: var(--amber);
+      border-radius: 0 0 var(--radius) var(--radius);
     }
   }
 </style>

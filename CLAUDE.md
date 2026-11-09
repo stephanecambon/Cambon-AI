@@ -36,7 +36,7 @@ Tout est dans `src/config.ts` :
 
 ## Pile technique
 
-- Astro 7, sortie 100 % statique. Pas de framework JS côté client ; un seul `<script>` (formulaire newsletter). Les filtres de la page Projets sont en CSS pur (boutons radio + `:has()`) : sans `:has()` ni JS, tous les projets restent visibles.
+- Astro 7, sortie 100 % statique. Pas de framework JS côté client ; deux petits `<script>` en amélioration progressive : formulaire newsletter (`Newsletter.astro`) et masquage de la ligne de navigation mobile au défilement (`Header.astro`, classe `js-hdr` sur `<html>`, en-tête `fixed` + `--header-full-h` seulement avec JS ; sans JS, en-tête collé classique). Les filtres de la page Projets sont en CSS pur (boutons radio + `:has()`) : sans `:has()` ni JS, tous les projets restent visibles.
 - Hébergement : GitHub Pages, dépôt public `stephanecambon/Cambon-AI`. Le workflow `.github/workflows/deploy.yml` (`withastro/action` puis `actions/deploy-pages`) se déclenche à chaque push sur `main`.
 - Domaine `cambon.ai` (apex), `www` redirige vers l'apex. Le fichier `public/CNAME` doit rester présent.
 - **Ne jamais toucher aux DNS MX/TXT** : la messagerie Google Workspace tourne sur ce domaine.
@@ -57,7 +57,7 @@ Tout est dans `src/config.ts` :
 
 Sections numérotées en ambre foncé : 00 accroche + encart « Fiche » (`Hero.astro`), 01 Le constat + schéma des trois couches (`Layers.astro`), 02 Ce que je fais, 03 Comment je travaille (ancre `#approche`), 04 Pourquoi moi, 05 Qui je suis (`#a-propos`), 06 Projets (6 cartes), 07 appel à l'action (`Cta.astro`).
 
-Schéma des trois couches : bloc sombre en HTML/CSS (fond `--plan-bg` `#0E2E55`, texte `--plan-text` `#EAF2FF`, secondaire `--plan-muted` `#A4BCDD`, traits `--plan-rule` `#3F6698`). L'ambre y est **réservé à Cambon AI**. La barre verticale « Cambon AI » couvre la couche 3 et la moitié haute de la couche 2 (chaque couche occupe 2 lignes de grille, la barre en couvre 3). Sous 900 px : une pile par couche, libellés « Avant / Maintenant » visibles.
+Schéma des trois couches : bloc sombre en HTML/CSS (fond `--plan-bg` `#0E2E55`, texte `--plan-text` `#EAF2FF`, secondaire `--plan-muted` `#A4BCDD`, traits `--plan-rule` `#3F6698`). L'ambre y est **réservé à Cambon AI**. La barre verticale « Cambon AI » couvre la couche 3 et la moitié haute de la couche 2 (chaque couche occupe 2 lignes de grille, la barre en couvre 3). Entre 720 et 900 px : une pile par couche, libellés « Avant / Maintenant » visibles. Sous 720 px : accordéon `<details>/<summary>` (bloc `.lm` dédié, sans JS), couche 3 ouverte par défaut, barre ambre en pseudo-élément du `<details>` pour rester visible couche repliée. Sur ordinateur, la grille est inchangée.
 
 ## Contenu : collection `projets`
 
@@ -92,7 +92,7 @@ Tokens dans `src/styles/global.css` (`:root`). Toujours utiliser les variables, 
 - Classes : `.section` (espacement vertical, sans trait), `.eyebrow` + `.eyebrow__num`, `.surligne`, `.btn` + `.btn--primary` / `.btn--outline` / `.btn--small`, `.container`, `.lead`, `.prose`, `.list`, `.cards`.
 - Angles : `--radius` (2 px).
 - Accessibilité : contraste ≥ 4,5:1 pour le texte. **Jamais `#FFB347` comme couleur de texte** sur le papier. Focus visible conservé.
-- Responsive : doit fonctionner à 390 px sans défilement horizontal.
+- Responsive : doit fonctionner à 375 px sans défilement horizontal. Sur mobile (≤ 860 px), toute zone cliquable fait au moins 44 px de haut (menu, FR · EN, case et lien de la newsletter, liens du pied de page), sans changer le rendu sur ordinateur.
 
 ## Règles Git
 

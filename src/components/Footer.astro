@@ -53,4 +53,16 @@ const t = texts[lang].footer;
   .site-footer a {
     color: var(--text-2);
   }
+  /* Mobile : zones tactiles d'au moins 44 px */
+  @media (max-width: 860px) {
+    .site-footer__inner {
+      row-gap: 0;
+      padding-block: 18px;
+    }
+    .site-footer a {
+      display: inline-flex;
+      align-items: center;
+      min-height: 44px;
+    }
+  }
 </style>
