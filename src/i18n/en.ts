@@ -205,7 +205,7 @@ export const en: Texts = {
       },
       {
         title: 'Entrepreneur.',
-        text: "I know where the return on investment lies, and how to sell what comes out of it. I've been through every stage of a startup: founding, first customers, equity fundraising and non-dilutive funding, go-to-market, customer relationships, project delivery and exit.",
+        text: "I know where the return on investment lies, and how to sell what comes out of it. I've been through every stage of a startup: founding, first customers, equity fundraising and non-dilutive funding, go-to-market, customer relationships, project delivery, through to selling the company and integrating it into the acquirer.",
       },
       {
         title: 'Builder.',

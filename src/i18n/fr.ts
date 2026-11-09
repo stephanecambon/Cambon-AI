@@ -208,7 +208,7 @@ export const fr = {
       },
       {
         title: 'Entrepreneur.',
-        text: "Je sais où se trouve le retour sur investissement, et je sais vendre ce qui en sort. J'ai vécu toutes les étapes d'une start-up : la fondation, les premiers clients, les levées de fonds et le financement non dilutif, le go-to-market, la relation client, la conduite des projets et la vente.",
+        text: "Je sais où se trouve le retour sur investissement, et je sais vendre ce qui en sort. J'ai vécu toutes les étapes d'une start-up : la fondation, les premiers clients, les levées de fonds et le financement non dilutif, le go-to-market, la relation client, la conduite des projets, jusqu'à la cession de la société et son intégration chez l'acquéreur.",
       },
       {
         title: 'Bâtisseur.',
