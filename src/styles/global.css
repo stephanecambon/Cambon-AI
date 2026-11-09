@@ -19,7 +19,7 @@
 
   /* Formes */
   --radius: 2px;
-  --rule-strong: 2px solid var(--ink);
+  --rule-strong: 1px solid var(--ink);
   --rule-thin: 1px solid var(--rule);
 
   /* Cahier */
@@ -154,7 +154,7 @@ a:hover {
   gap: 0.5em;
   min-height: 48px;
   padding: 0.7em 1.3em;
-  border: 2px solid var(--ink);
+  border: 1px solid var(--ink);
   border-radius: var(--radius);
   font-family: var(--font-text);
   font-weight: 600;
@@ -172,12 +172,12 @@ a:hover {
 
 .btn--primary {
   background: var(--amber);
-  box-shadow: 3px 3px 0 var(--ink);
+  box-shadow: 2px 2px 0 var(--ink);
 }
 
 .btn--primary:hover {
   transform: translate(-1px, -1px);
-  box-shadow: 4px 4px 0 var(--ink);
+  box-shadow: 3px 3px 0 var(--ink);
 }
 
 .btn--primary:active {
@@ -197,11 +197,11 @@ a:hover {
   min-height: 40px;
   padding: 0.45em 0.85em;
   font-size: 0.9375rem;
-  box-shadow: 2px 2px 0 var(--ink);
+  box-shadow: 1.5px 1.5px 0 var(--ink);
 }
 
 .btn--small:hover {
-  box-shadow: 3px 3px 0 var(--ink);
+  box-shadow: 2px 2px 0 var(--ink);
 }
 
 @media (prefers-reduced-motion: reduce) {
