@@ -198,12 +198,18 @@ export const en: Texts = {
     label: 'The difference',
     title: 'Why me',
     items: [
-      { title: 'Researcher.', text: 'I formalize the problem and prove the solution holds.' },
+      {
+        title: 'Researcher.',
+        text: 'I frame the problem and prove the solution holds. With a PhD in AI and expertise in constraint-based planning, optimization, machine learning, data science and autonomous systems, I apply these methods wherever they make a difference: aerospace, healthcare, video games, media, logistics, biotech.',
+      },
       {
         title: 'Entrepreneur.',
         text: "I know where the return on investment lies, and how to sell what comes out of it. I've been through every stage of a startup: founding, first customers, equity fundraising and non-dilutive funding, go-to-market, customer relationships, project delivery and exit.",
       },
-      { title: 'Builder.', text: 'I build and deliver, with no middleman.' },
+      {
+        title: 'Builder.',
+        text: 'I build and ship, with no middleman. Twenty years of experience in software development and product creation: AI models, SaaS software, desktop applications, embedded systems, from the first mockup to production.',
+      },
     ],
   },
 

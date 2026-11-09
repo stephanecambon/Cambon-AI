@@ -201,12 +201,18 @@ export const fr = {
     label: 'La différence',
     title: 'Pourquoi moi',
     items: [
-      { title: 'Chercheur.', text: 'Je formalise le problème et je prouve que la solution tient.' },
+      {
+        title: 'Chercheur.',
+        text: "Je formalise le problème et je prouve que la solution tient. Docteur en IA, spécialiste de la planification sous contraintes, de l'optimisation, du machine learning, de la data science et des systèmes autonomes, j'applique ces méthodes partout où elles font la différence : aéronautique, santé, jeu vidéo, médias, logistique, biotech.",
+      },
       {
         title: 'Entrepreneur.',
         text: "Je sais où se trouve le retour sur investissement, et je sais vendre ce qui en sort. J'ai vécu toutes les étapes d'une start-up : la fondation, les premiers clients, les levées de fonds et le financement non dilutif, le go-to-market, la relation client, la conduite des projets et la vente.",
       },
-      { title: 'Bâtisseur.', text: 'Je développe et je livre, sans intermédiaire.' },
+      {
+        title: 'Bâtisseur.',
+        text: "Je développe et je livre, sans intermédiaire. Vingt ans d'expérience en développement logiciel et en création de produits : modèles d'IA, logiciels SaaS, clients lourds, systèmes embarqués, de la première maquette à la mise en production.",
+      },
     ],
   },
 
