@@ -37,11 +37,11 @@ export const en: Texts = {
       'A researcher to frame the problem, an entrepreneur to turn it into value. With a PhD in AI and more than ten years as an entrepreneur, I tackle what weighs on your margins: optimization, forecasting, targeting, decision support. From a well-framed problem to a solution running in production.',
     ctaPrimary: "Let's talk about your problem",
     ctaSecondary: 'See the projects',
-    factsLabel: 'Fact sheet',
+    factsLabel: "What I bring",
     facts: [
-      ['PhD in AI', 'Planning under constraints, 2005'],
-      ['11 years as a founder', 'Founded Ownpage, sold in 2024'],
-      ['≈ 40% of major French media', 'equipped by Ownpage'],
+      ["Model", "constraints, data, scenarios"],
+      ["Build", "algorithms, software, infrastructure"],
+      ["Make it pay", "ROI, go-to-market, funding"],
     ],
   },
 

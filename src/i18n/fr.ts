@@ -37,11 +37,11 @@ export const fr = {
       "Un chercheur pour poser le problème, un entrepreneur pour en tirer de la valeur. Docteur en IA et entrepreneur depuis plus de dix ans, je m'attaque à ce qui pèse sur votre marge : optimisation, prévision, ciblage, aide à la décision. Du problème formalisé à la solution en production.",
     ctaPrimary: 'Parlons de votre problème',
     ctaSecondary: 'Voir les projets',
-    factsLabel: 'Fiche',
+    factsLabel: "Ce que j'apporte",
     facts: [
-      ['Doctorat en IA', 'Planification sous contraintes, 2005'],
-      ["11 ans d'entreprise", "Fondateur d'Ownpage, revendu en 2024"],
-      ['≈ 40 % des grands médias', 'équipés par Ownpage en France'],
+      ["Modéliser", "contraintes, données, scénarios"],
+      ["Construire", "algorithmes, logiciels, infrastructure"],
+      ["Rentabiliser", "ROI, go-to-market, financements"],
     ],
   },
 
