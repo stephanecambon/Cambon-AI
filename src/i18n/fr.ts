@@ -204,7 +204,7 @@ export const fr = {
       { title: 'Chercheur.', text: 'Je formalise le problème et je prouve que la solution tient.' },
       {
         title: 'Entrepreneur.',
-        text: 'Je choisis les problèmes qui rapportent, et je sais vendre ce qui en sort.',
+        text: "Je sais où se trouve le retour sur investissement, et je sais vendre ce qui en sort. J'ai vécu toutes les étapes d'une start-up : la fondation, les premiers clients, les levées de fonds et le financement non dilutif, le go-to-market, la relation client, la conduite des projets et la vente.",
       },
       { title: 'Bâtisseur.', text: 'Je développe et je livre, sans intermédiaire.' },
     ],

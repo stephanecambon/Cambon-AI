@@ -201,7 +201,7 @@ export const en: Texts = {
       { title: 'Researcher.', text: 'I formalize the problem and prove the solution holds.' },
       {
         title: 'Entrepreneur.',
-        text: 'I pick the problems that pay, and I know how to sell what comes out of them.',
+        text: "I know where the return on investment lies, and how to sell what comes out of it. I've been through every stage of a startup: founding, first customers, equity fundraising and non-dilutive funding, go-to-market, customer relationships, project delivery and exit.",
       },
       { title: 'Builder.', text: 'I build and deliver, with no middleman.' },
     ],
