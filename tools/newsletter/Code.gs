@@ -9,6 +9,8 @@
  * Reçoit le formulaire du site cambon.ai et ajoute une ligne :
  *   date | email | langue | page | consentement
  * Rien d'autre n'est enregistré (ni adresse IP, ni navigateur).
+ * À chaque nouvelle inscription, un e-mail de notification est envoyé à
+ * NOTIFY_EMAIL (pas pour les doublons ni les robots).
  *
  * Mode d'emploi : voir README.md dans le même dossier du dépôt.
  *
@@ -24,6 +26,8 @@ var CONFIG = {
   CONSENT_VERSIONS: ['v1-2026-11'],
   MIN_DELAY_MS: 3000, // envoi plus rapide = robot
   TIMEZONE: 'Europe/Paris',
+  // Destinataire des notifications de nouvelle inscription ('' pour désactiver).
+  NOTIFY_EMAIL: 'stephane@cambon.ai',
 };
 
 var MESSAGES = {
@@ -72,15 +76,18 @@ function doPost(e) {
     //    mais même message de succès (ne pas révéler qui est inscrit).
     var lock = LockService.getScriptLock();
     if (!lock.tryLock(10000)) return respond_('error', lang, page, wantsJson);
+    var added = null;
     try {
       var sheet = getSheet_();
       if (!alreadySubscribed_(sheet, email)) {
         var date = Utilities.formatDate(new Date(), CONFIG.TIMEZONE, "yyyy-MM-dd'T'HH:mm:ssXXX");
         sheet.appendRow([date, email, lang, page, version]);
+        added = { date: date, total: sheet.getLastRow() - 1 };
       }
     } finally {
       lock.releaseLock();
     }
+    if (added) notify_(email, lang, page, added.date, added.total);
     return respond_('ok', lang, page, wantsJson);
   } catch (err) {
     console.error('Inscription impossible : ' + (err && err.message)); // jamais l'adresse
@@ -108,7 +115,39 @@ function setup() {
   console.log('Tableur prêt : onglet « ' + CONFIG.SHEET_NAME + ' ».');
 }
 
+/**
+ * À lancer une fois à la main depuis l'éditeur après l'ajout des notifications :
+ * déclenche l'autorisation d'envoi d'e-mails et envoie un message de test.
+ */
+function testNotification() {
+  notify_('test@example.com', 'fr', '/', Utilities.formatDate(new Date(), CONFIG.TIMEZONE, "yyyy-MM-dd'T'HH:mm:ssXXX"), 0);
+  console.log('E-mail de test envoyé à ' + CONFIG.NOTIFY_EMAIL + '.');
+}
+
 // ---------------------------------------------------------------------------
+
+/** E-mail à Stéphane pour une nouvelle inscription. Une erreur d'envoi n'empêche pas l'inscription. */
+function notify_(email, lang, page, date, total) {
+  if (!CONFIG.NOTIFY_EMAIL) return;
+  try {
+    var url = SpreadsheetApp.getActiveSpreadsheet().getUrl();
+    MailApp.sendEmail({
+      to: CONFIG.NOTIFY_EMAIL,
+      subject: 'Newsletter cambon.ai : nouvelle inscription (' + email + ')',
+      name: 'Site cambon.ai',
+      body:
+        'Nouvelle inscription à la newsletter.\n\n' +
+        'Adresse : ' + email + '\n' +
+        'Langue : ' + lang + '\n' +
+        'Page : ' + CONFIG.SITE_URL + page + '\n' +
+        'Date : ' + date + '\n' +
+        'Nombre d\'inscrits : ' + total + '\n\n' +
+        'Tableur : ' + url + '\n',
+    });
+  } catch (err) {
+    console.error('Notification impossible : ' + (err && err.message));
+  }
+}
 
 function looksLikeBot_(p) {
   if (String(p.website || '').trim() !== '') return true; // champ piège rempli

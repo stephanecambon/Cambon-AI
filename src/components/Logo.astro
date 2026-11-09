@@ -1,10 +1,10 @@
 ---
-// Logo : picto + « CAMBON AI » en Barlow Condensed capitales.
+// Logo : picto + « CAMBON » + « AI » sur fond ambre, en Barlow Condensed capitales.
 import Picto from './Picto.astro';
 ---
 <span class="logo" role="img" aria-label="Cambon AI">
   <Picto class="logo__picto" size={34} />
-  <span class="logo__word" aria-hidden="true">Cambon AI</span>
+  <span class="logo__word" aria-hidden="true">Cambon<span class="logo__ai">AI</span></span>
 </span>
 
 <style>
@@ -19,6 +19,9 @@ import Picto from './Picto.astro';
     flex: none;
   }
   .logo__word {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.22em;
     font-family: var(--font-title);
     font-weight: 600;
     font-size: 1.5rem;
@@ -26,5 +29,10 @@ import Picto from './Picto.astro';
     text-transform: uppercase;
     letter-spacing: 0.02em;
     color: var(--ink);
+  }
+  .logo__ai {
+    background: var(--amber);
+    padding: 0.1em 0.2em 0.06em;
+    border-radius: var(--radius);
   }
 </style>
