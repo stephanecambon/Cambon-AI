@@ -32,6 +32,11 @@
    Un domaine absent de la liste est enregistré tel quel (sans www.).
    Pour ajouter une règle : ajouter une ligne, puis publier une nouvelle
    version du script (voir README).
+
+   Règles privées : la propriété de script PROVENANCES_SUPPLEMENTAIRES
+   (Paramètres du projet › Propriétés du script) ajoute des règles qui ne
+   figurent pas dans ce fichier public, au format
+   « domaine=nom; domaine=nom ». Elles passent AVANT la table ci-dessous.
    ============================================================ */
 var PROVENANCES = [
   ['linkedin.com', 'linkedin'],
@@ -152,10 +157,27 @@ function buildRow_(d) {
 function normaliserProvenance_(brute) {
   if (!brute || brute === 'direct' || brute === 'interne') return brute;
   var host = brute.replace(/^(www|m|l|lm)\./, '');
-  for (var i = 0; i < PROVENANCES.length; i++) {
-    if (matches_(host, PROVENANCES[i][0])) return PROVENANCES[i][1];
+  var regles = reglesPrivees_().concat(PROVENANCES);
+  for (var i = 0; i < regles.length; i++) {
+    if (matches_(host, regles[i][0])) return regles[i][1];
   }
   return host;
+}
+
+/** Règles de la propriété de script PROVENANCES_SUPPLEMENTAIRES (« domaine=nom; … »). */
+function reglesPrivees_() {
+  var txt = '';
+  try {
+    txt = PropertiesService.getScriptProperties().getProperty('PROVENANCES_SUPPLEMENTAIRES') || '';
+  } catch (err) {}
+  var regles = [];
+  txt.split(/[;\n]+/).forEach(function (r) {
+    var parts = r.split('=');
+    var domaine = (parts[0] || '').trim().toLowerCase();
+    var nom = (parts[1] || '').trim();
+    if (domaine && nom) regles.push([domaine, nom]);
+  });
+  return regles;
 }
 
 /** Le domaine correspond-il au motif (sous-domaines compris) ? */

@@ -117,6 +117,18 @@ Pour ajouter une règle :
 
 La règle ne s'applique qu'aux nouveaux événements. La colonne `provenance_brute` garde toujours le domaine d'origine.
 
+### Règles privées (hors du dépôt)
+
+Certaines règles ne doivent pas figurer dans ce dépôt public, par exemple le regroupement sous un seul nom des visites venues d'assistants IA. On les écrit directement dans Apps Script :
+
+1. Dans l'éditeur Apps Script, menu de gauche : icône de la roue dentée, **Paramètres du projet**.
+2. En bas : **Propriétés du script › Ajouter une propriété de script**.
+3. **Propriété** : `PROVENANCES_SUPPLEMENTAIRES`
+4. **Valeur** : les règles, séparées par des points-virgules, au format `domaine=nom`. Par exemple : `exemple.com=exemple; autre-exemple.fr=exemple`
+5. Cliquez sur **Enregistrer les propriétés du script**.
+
+Ces règles passent avant celles de la table `PROVENANCES`, et elles suivent les mêmes conventions : sous-domaines compris, `*` pour l'extension de pays. Elles s'appliquent immédiatement, sans nouvelle version du script.
+
 ## Modifier le script plus tard
 
 Pour garder la même adresse : **Déployer › Gérer les déploiements**, crayon, **Version : Nouvelle version**, puis **Déployer**.
