@@ -27,12 +27,10 @@ const hasPhoto = fs.existsSync(path.join(process.cwd(), 'public', PHOTO_PATH));
 <section class="section" aria-labelledby={`s01-${lang}`}>
   <div class="container">
     <SectionHead num="01" label={t.constat.label} title={plain(t.constat.title, lang)} id={`s01-${lang}`} />
-    <Layers lang={lang} />
     <div class="prose constat__text">
-      {t.constat.paragraphs.map((p, i) => (
-        <p class={i === t.constat.paragraphs.length - 1 ? 'constat__key' : undefined}>{plain(p, lang)}</p>
-      ))}
+      {t.constat.paragraphs.map((p) => <p>{plain(p, lang)}</p>)}
     </div>
+    <Layers lang={lang} />
   </div>
 </section>
 
@@ -131,12 +129,8 @@ const hasPhoto = fs.existsSync(path.join(process.cwd(), 'public', PHOTO_PATH));
 <style>
   /* 01 */
   .constat__text {
-    margin-top: clamp(32px, 5vw, 48px);
+    margin-bottom: clamp(32px, 5vw, 48px);
     font-size: 1.125rem;
-  }
-  .constat__key {
-    font-weight: 600;
-    color: var(--ink);
   }
 
   /* 02 */

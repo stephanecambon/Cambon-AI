@@ -50,8 +50,8 @@ export const en: Texts = {
     title: 'Providers are moving up the stack.',
     paragraphs: [
       'Yesterday, optimizing delivery routes or forecasting demand precisely took an R&D team. Today, a small or mid-sized company can take it on.',
-      'The whole market is moving up a notch. Support functions are shifting from software to AI agents, which teams are learning to use themselves. Custom development is getting faster and cheaper. And problems once reserved for labs and large corporations are now within reach.',
-      "That's where I work: on the problems that move margins, markets and products.",
+      'The whole market is moving up a notch. Support functions are shifting from software to AI agents. Custom development is getting faster and cheaper. And problems once reserved for labs and large corporations are now within reach.',
+      'I have to move up a notch too. Throughout my career, I spent 5% of my time on research and 95% on execution: writing code, drafting specifications, shipping. Today, AI takes on much of that execution. I can finally flip the ratio, and spend most of my time on what creates value: understanding your problem and finding the solution that pays.',
     ],
   },
 
@@ -70,8 +70,6 @@ export const en: Texts = {
         examples: [
           'route optimization, shop-floor scheduling',
           'demand forecasting, pricing',
-          'targeting: the right offer, to the right customer, at the right time',
-          'anticipating failures (predictive maintenance)',
           'robotizing a workshop, automating a lab',
         ],
         before: [
@@ -96,7 +94,6 @@ export const en: Texts = {
         examples: [
           'setting up a data stack',
           'building custom business software',
-          'connecting software systems',
           'plugging AI into internal documentation: support, tender generation',
         ],
         before: [
@@ -122,7 +119,6 @@ export const en: Texts = {
           'chasing payments, invoicing',
           'sorting email, writing meeting notes',
           'accounting: entering invoices, bank reconciliation',
-          'HR: tracking leave, preparing payroll',
         ],
         before: [{ style: 'outline', title: 'SaaS vendors', caption: 'One tool per function' }],
         now: [
@@ -150,15 +146,15 @@ export const en: Texts = {
           'Forecasting demand, setting prices',
           'Targeting the right offer, to the right customer, at the right time',
           'Anticipating failures',
-          'Robotizing a workshop, automating a biotech lab',
-          'Data science for biotech: choosing the next experiments based on previous ones',
+          'Robotizing a workshop, automating a laboratory',
+          'Modeling and statistics: understanding what drives your results',
         ],
       },
       {
         title: 'Production problems with a strong R&D component',
         goal: 'productivity on your core business.',
         items: [
-          'Setting up a data stack and making use of your data (data science)',
+          'Setting up a data stack',
           'Building custom business software',
           'Connecting your software systems',
           'Plugging AI into your internal documentation: support, tender responses',

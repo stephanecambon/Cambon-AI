@@ -50,8 +50,8 @@ export const fr = {
     title: "L'offre remonte.",
     paragraphs: [
       "Hier, optimiser des tournées ou prévoir finement sa demande demandait une équipe de R&D. Aujourd'hui, une PME peut s'y attaquer.",
-      "Tout le marché monte d'un cran. Les fonctions support passent du logiciel aux agents IA, que les équipes apprennent à utiliser elles-mêmes. Le développement sur mesure devient plus rapide et moins cher. Et des problèmes autrefois réservés aux laboratoires et aux grands groupes deviennent accessibles.",
-      "C'est là que je travaille : sur les problèmes qui font bouger la marge, les marchés et les produits.",
+      "Tout le marché monte d'un cran. Les fonctions support passent du logiciel aux agents IA. Le développement sur mesure devient plus rapide et moins cher. Et des problèmes autrefois réservés aux laboratoires et aux grands groupes deviennent accessibles.",
+      "Moi aussi, je dois monter d'un cran. J'ai passé ma carrière à consacrer 5 % de mon temps à la recherche et 95 % à l'exécution : écrire du code, rédiger des spécifications, livrer. Aujourd'hui, l'IA prend en charge une grande partie de cette exécution. Je peux enfin inverser la proportion, et consacrer l'essentiel de mon temps à ce qui crée la valeur : comprendre votre problème et trouver la solution qui rapporte.",
     ],
   },
 
@@ -70,8 +70,6 @@ export const fr = {
         examples: [
           'optimiser des tournées, ordonnancer un atelier',
           'prévoir la demande, fixer les prix',
-          'cibler : la bonne offre, au bon client, au bon moment',
-          'anticiper les pannes (maintenance prédictive)',
           'robotiser un atelier, automatiser un labo',
         ],
         before: [
@@ -96,7 +94,6 @@ export const fr = {
         examples: [
           'mettre en place une data stack',
           'développer un logiciel métier sur mesure',
-          'connecter les logiciels entre eux',
           "brancher l'IA sur la documentation interne : assistance, génération d'appels d'offres",
         ],
         before: [
@@ -122,7 +119,6 @@ export const fr = {
           'relancer les clients, facturer',
           'trier les mails, rédiger les comptes rendus',
           'compta : saisir les factures, rapprocher la banque',
-          'RH : suivre les congés, préparer la paie',
         ],
         before: [
           { style: 'outline', title: 'Éditeurs SaaS', caption: 'Un logiciel par fonction' },
@@ -153,15 +149,15 @@ export const fr = {
           'Prévoir la demande, fixer les prix',
           'Cibler la bonne offre, au bon client, au bon moment',
           'Anticiper les pannes',
-          'Robotiser un atelier, automatiser un laboratoire de biotech',
-          'Data science pour la biotech : choisir les prochaines expériences à partir des précédentes',
+          'Robotiser un atelier, automatiser un laboratoire',
+          'Modélisation et statistiques : comprendre ce qui pilote vos résultats',
         ],
       },
       {
         title: 'Problèmes de production à forte composante R&D',
         goal: 'de la productivité sur votre cœur de métier.',
         items: [
-          'Mettre en place une data stack et exploiter vos données (data science)',
+          'Mettre en place une data stack',
           'Développer un logiciel métier sur mesure',
           'Connecter vos logiciels entre eux',
           "Brancher l'IA sur votre documentation interne : assistance, réponses aux appels d'offres",
