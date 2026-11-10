@@ -9,7 +9,7 @@ Site vitrine de Cambon AI (SASU, Paris), R&D appliquée pour PME et ETI. Propri�
 - **Anonymisation.** Aucun nom de client. Le cabinet de maîtrise d'ouvrage n'est ni nommé ni situé.
 - **Biotech : rester strictement vague.** Jamais de test (au sens de produit de diagnostic), de diagnostic, de domaine vétérinaire, d'ELISA, de plaques, de réactifs ni de dilutions. Uniquement « biotech », « expériences », « paramètres ».
 - **Première personne du singulier** (« je »). Exceptions voulues : « Nous avons construit… » (l'équipe d'Ownpage, section 05) et « à notre connaissance » (JouetSwap, projet mené avec son fils).
-- **Surligneur ambre : un seul mot ou une seule expression par bloc** (« rapportent » dans l'accroche, le résultat de chaque projet).
+- **Surligneur ambre : un seul mot ou une seule expression par bloc** (« à l'échelle de votre entreprise » dans l'accroche, le résultat de chaque projet).
 - **Version anglaise** : adaptation naturelle de site professionnel, pas de traduction littérale ; mêmes règles que le français. Tout nouveau texte EN est validé par Stéphane avant publication.
 - Vérification avant chaque publication : `grep -rliE "claude|anthropic|cambea|elisa|v[ée]t[ée]rinaire|innovative" dist` ne doit rien trouver.
 

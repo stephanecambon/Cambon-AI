@@ -51,7 +51,9 @@ function typoFr(text: string): string {
     .replace(/(\d) (?=\d{3}\b)/g, `$1${NBSP}`)
     .replace(/(\d) (?=[%€\p{L}])/gu, `$1${NBSP}`)
     .replace(/≈ /g, `≈${NBSP}`)
-    .replace(/ →/g, `${NBSP}→`);
+    .replace(/ →/g, `${NBSP}→`)
+    // « à » ne reste jamais seul en fin de ligne
+    .replace(/(^|[\s=])([àÀ]) /g, `$1$2${NBSP}`);
 }
 
 /** Remplace les placeholders et applique la typographie. Renvoie du texte simple. */

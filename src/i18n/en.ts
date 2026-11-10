@@ -1,12 +1,12 @@
-// English texts. Wrap a word in == to highlight it in amber (e.g. ==pay==).
+// English texts. Wrap a word in == to highlight it in amber (e.g. ==at the scale of your business==).
 // Any bracketed marker is replaced via src/config.ts.
 import type { Texts } from './fr';
 
 export const en: Texts = {
   meta: {
-    homeTitle: 'Cambon AI · Applied R&D for small and mid-sized companies',
+    homeTitle: 'Cambon AI · Big-company R&D, at the scale of your business',
     homeDescription:
-      'PhD in AI and entrepreneur, I solve the hard problems of small and mid-sized companies: optimization, forecasting, targeting, decision support.',
+      'Optimizing, forecasting, targeting, robotizing: big-company R&D, made accessible to small and mid-sized companies. PhD in AI, ROI quantified from day one.',
     projectsTitle: 'Projects · Cambon AI, applied R&D',
     projectsDescription:
       'Tender responses, biotech, robotics, press economics, SaaS products: six projects, from a well-framed problem to a measured result.',
@@ -17,7 +17,7 @@ export const en: Texts = {
     legalDescription:
       'Legal notice for the cambon.ai website: publisher CAMBON AI (SASU, Paris), registration, publication director and hosting provider.',
     notFoundTitle: 'Page not found · Cambon AI',
-    ogImageAlt: 'Cambon AI: Your hardest problems are the ones that pay the most.',
+    ogImageAlt: 'Cambon AI: Big-company R&D, at the scale of your business.',
   },
   nav: {
     approach: 'Approach',
@@ -31,10 +31,11 @@ export const en: Texts = {
 
   // ---------- Home page ----------
   hero: {
-    eyebrow: 'Cambon AI · Applied R&D for small and mid-sized companies',
-    title: 'Your hardest problems are the ones that ==pay== the most.',
+    eyebrow: 'Cambon AI · Applied artificial intelligence',
+    title: 'Big-company R&D, ==at the scale of your business==.',
+    subtitleLead: 'Your hardest problems are the ones that pay the most.',
     subtitle:
-      'A researcher to frame the problem, an entrepreneur to turn it into value. With a PhD in AI and more than ten years as an entrepreneur, I tackle what weighs on your margins: optimization, forecasting, targeting, decision support. From a well-framed problem to a solution running in production.',
+      'Optimizing, forecasting, targeting, robotizing: they used to be reserved for large corporations. A PhD in AI, an entrepreneur, twenty-five years in the field: I make them accessible to small and mid-sized companies, with a quantified return on investment from day one.',
     ctaPrimary: "Let's talk about your problem",
     ctaSecondary: 'See the projects',
     factsLabel: "What I bring",

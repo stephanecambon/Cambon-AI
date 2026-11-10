@@ -1,12 +1,12 @@
 // Textes du site en français (textes validés : ne pas reformuler).
-// Pour surligner un mot en ambre, entourez-le de == (ex. : ==rapportent==).
+// Pour surligner un mot en ambre, entourez-le de == (ex. : ==à l'échelle de votre entreprise==).
 // Un repère entre crochets éventuel est remplacé via src/config.ts.
 
 export const fr = {
   meta: {
-    homeTitle: 'Cambon AI · R&D appliquée pour PME et ETI',
+    homeTitle: "Cambon AI · La R&D d'un grand groupe, à votre échelle",
     homeDescription:
-      "Docteur en IA et entrepreneur, je m'attaque aux problèmes difficiles des PME et ETI : optimisation, prévision, ciblage, aide à la décision.",
+      "Optimiser, prévoir, cibler, robotiser : la R&D des grands groupes, accessible aux PME et ETI. Docteur en IA et entrepreneur, ROI chiffré dès le départ.",
     projectsTitle: 'Projets · Cambon AI, R&D appliquée',
     projectsDescription:
       "Appels d'offres, biotech, robotique, économie de la presse, logiciels SaaS : six projets, du problème formalisé au résultat mesuré.",
@@ -17,7 +17,7 @@ export const fr = {
     legalDescription:
       'Mentions légales du site cambon.ai : éditeur CAMBON AI (SASU, Paris), immatriculation, directeur de la publication et hébergeur.',
     notFoundTitle: 'Page introuvable · Cambon AI',
-    ogImageAlt: 'Cambon AI : Vos problèmes difficiles sont ceux qui rapportent le plus.',
+    ogImageAlt: "Cambon AI : La R&D d'un grand groupe, à l'échelle de votre entreprise.",
   },
   nav: {
     approach: 'Approche',
@@ -31,10 +31,11 @@ export const fr = {
 
   // ---------- Page d'accueil ----------
   hero: {
-    eyebrow: 'Cambon AI · R&D appliquée pour PME et ETI',
-    title: 'Vos problèmes difficiles sont ceux qui ==rapportent== le plus.',
+    eyebrow: 'Cambon AI · Intelligence artificielle appliquée',
+    title: "La R&D d'un grand groupe, ==à l'échelle de votre entreprise==.",
+    subtitleLead: 'Vos problèmes difficiles sont ceux qui rapportent le plus.',
     subtitle:
-      "Un chercheur pour poser le problème, un entrepreneur pour en tirer de la valeur. Docteur en IA et entrepreneur depuis plus de dix ans, je m'attaque à ce qui pèse sur votre marge : optimisation, prévision, ciblage, aide à la décision. Du problème formalisé à la solution en production.",
+      "Optimiser, prévoir, cibler, robotiser : ils étaient réservés aux grands groupes. Docteur en IA, entrepreneur, vingt-cinq ans dans le domaine : je les rends accessibles aux PME et aux ETI, avec un retour sur investissement chiffré dès le départ.",
     ctaPrimary: 'Parlons de votre problème',
     ctaSecondary: 'Voir les projets',
     factsLabel: "Ce que j'apporte",

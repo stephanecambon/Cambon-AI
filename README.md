@@ -17,7 +17,7 @@ Ouvrez le fichier, trouvez la phrase et modifiez-la entre les guillemets. Les de
 
 Deux règles :
 
-- **Surligner un mot en ambre** : entourez-le de `==`. Exemple : `ceux qui ==rapportent== le plus`.
+- **Surligner un mot en ambre** : entourez-le de `==`. Exemple : `==à l'échelle de votre entreprise==`.
 - **Apostrophes** : si la phrase est entre guillemets doubles `"…"`, vous pouvez écrire `l'accueil` librement. Si elle est entre guillemets simples `'…'`, utilisez des guillemets doubles à la place dès que la phrase contient une apostrophe.
 
 Les mentions légales sont aussi dans `fr.ts` et `en.ts`, rubrique `legal`.

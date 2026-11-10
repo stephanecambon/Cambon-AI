@@ -14,7 +14,7 @@ const t = texts[lang].hero;
     <div class="hero__text">
       <p class="eyebrow"><span class="eyebrow__num">00 /</span><span>{plain(t.eyebrow, lang)}</span></p>
       <h1 class="hero__title" set:html={rich(t.title, lang)} />
-      <p class="hero__subtitle">{plain(t.subtitle, lang)}</p>
+      <p class="hero__subtitle"><strong class="hero__lead">{plain(t.subtitleLead, lang)}</strong> {plain(t.subtitle, lang)}</p>
       <div class="hero__actions">
         <a class="btn btn--primary" href={bookingHref}>{t.ctaPrimary}</a>
         <a class="btn btn--outline" href={routes.projects[lang]}>{t.ctaSecondary}</a>
@@ -56,6 +56,10 @@ const t = texts[lang].hero;
     margin-top: clamp(24px, 4vw, 36px);
     font-size: clamp(1.0625rem, 1.6vw, 1.2rem);
     line-height: 1.6;
+  }
+  .hero__lead {
+    font-weight: 700;
+    color: var(--ink);
   }
   .hero__actions {
     display: flex;
