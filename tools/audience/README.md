@@ -35,7 +35,7 @@ Ce dossier contient le script qui reçoit la mesure d'audience du site et la ran
    - cliquez sur **Autoriser**.
 3. Dans le tableur, deux onglets apparaissent :
    - **Événements** : les données brutes, une ligne par événement ;
-   - **Tableau de bord** : les statistiques des 30 derniers jours. Il affiche « Pas encore de données » tant que personne n'est venu.
+   - **Tableau de bord** : les statistiques des 30 derniers jours. Tant que personne n'est venu, les tableaux n'affichent que leurs intitulés.
 
    Un troisième onglet, `_visites`, est masqué : il sert aux calculs. Ne le modifiez pas.
 

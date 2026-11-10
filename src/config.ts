@@ -29,7 +29,8 @@ export const NEWSLETTER_URL =
  * d'audience maison, sans cookie (voir tools/audience/README.md).
  * Vide = mesure désactivée (aucun script ajouté aux pages).
  */
-export const AUDIENCE_URL = '';
+export const AUDIENCE_URL =
+  'https://script.google.com/macros/s/AKfycbzmMFOIjqlGT_VGzVQNeS7Raef9OVs1SyhHUM-OY1pCcELIiw-zOFKZS85NlWmNMQTSqA/exec';
 
 /**
  * Version du texte de consentement de la newsletter. À changer (ex. v2-2027-01)

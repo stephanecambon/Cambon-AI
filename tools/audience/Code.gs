@@ -139,8 +139,8 @@ function buildRow_(d) {
   return [
     new Date(),
     type,
-    visite,
-    vue,
+    safe_(visite),
+    safe_(vue),
     safe_(page),
     langue,
     safe_(provenance),
@@ -201,9 +201,13 @@ function id_(v) {
   return /^[A-Za-z0-9-]{1,64}$/.test(s) ? s : '';
 }
 
-/** Empêche qu'une valeur soit interprétée comme une formule par le tableur. */
+/**
+ * Enregistre la valeur telle quelle, en texte : l'apostrophe initiale (invisible
+ * dans la cellule) empêche le tableur d'y voir une formule, un nombre ou une
+ * date (« 2026-12 » resterait sinon une date).
+ */
 function safe_(s) {
-  return /^[=+\-@]/.test(s) ? "'" + s : s;
+  return s ? "'" + s : s;
 }
 
 function text_(s) {
@@ -217,9 +221,15 @@ function eventsSheet_() {
     sh = ss.insertSheet(CONFIG.EVENTS_SHEET, 0);
     sh.getRange(1, 1, 1, CONFIG.HEADERS.length).setValues([CONFIG.HEADERS]).setFontWeight('bold');
     sh.setFrozenRows(1);
-    sh.getRange('A:A').setNumberFormat('yyyy-mm-dd hh:mm:ss');
+    formaterEvenements_(sh);
   }
   return sh;
+}
+
+/** Date en colonne A ; colonnes B à L en texte brut (sinon « 2026-12 » deviendrait une date). */
+function formaterEvenements_(sh) {
+  sh.getRange('A:A').setNumberFormat('yyyy-mm-dd hh:mm:ss');
+  sh.getRange('B:L').setNumberFormat('@');
 }
 
 /* ---------- Mise en place ---------- */
@@ -231,12 +241,12 @@ function eventsSheet_() {
 function setup() {
   var ss = SpreadsheetApp.getActive();
   ss.setSpreadsheetTimeZone(CONFIG.TIMEZONE);
-  eventsSheet_();
+  formaterEvenements_(eventsSheet_());
 
   // Onglet de calcul : une ligne par visite des 30 derniers jours.
   var helper = ss.getSheetByName(CONFIG.HELPER_SHEET) || ss.insertSheet(CONFIG.HELPER_SHEET);
   helper.clear();
-  helper.getRange('A1').setFormula(FORMULE_VISITES);
+  ecrireFormule_(helper.getRange('A1'), FORMULE_VISITES);
   helper.hideSheet();
 
   // Tableau de bord
@@ -260,7 +270,7 @@ function setup() {
   blocs.forEach(function (b) {
     var titre = db.getRange(b[0]);
     titre.setValue(b[1]).setFontWeight('bold');
-    titre.offset(1, 0).setFormula(b[2]);
+    ecrireFormule_(titre.offset(1, 0), b[2]);
   });
   db.setFrozenRows(2);
   db.getRange('5:5').setFontWeight('bold');
@@ -268,6 +278,30 @@ function setup() {
   // NOW() (fenêtre de 30 jours) est recalculé à chaque modification et toutes les heures.
   ss.setRecalculationInterval(SpreadsheetApp.RecalculationInterval.HOUR);
   db.activate();
+}
+
+/**
+ * Écrit une formule rédigée avec des virgules. Un tableur réglé en français
+ * attend des points-virgules : si la formule n'est pas comprise (#ERROR!),
+ * on la réécrit avec « ; » entre les arguments.
+ */
+function ecrireFormule_(range, formule) {
+  range.setFormula(formule);
+  SpreadsheetApp.flush();
+  if (range.getDisplayValue() !== '#ERROR!') return;
+  range.setFormula(pointsVirgules_(formule));
+}
+
+/** Remplace les virgules hors des textes entre guillemets par des points-virgules. */
+function pointsVirgules_(formule) {
+  var out = '';
+  var dansTexte = false;
+  for (var i = 0; i < formule.length; i++) {
+    var c = formule.charAt(i);
+    if (c === '"') dansTexte = !dansTexte;
+    out += c === ',' && !dansTexte ? ';' : c;
+  }
+  return out;
 }
 
 /* ---------- Conservation : 13 mois ---------- */
@@ -307,31 +341,33 @@ function purge() {
  * - Durée : somme, sur les vues de la visite, du plus grand duree_s de chaque vue.
  */
 var FORMULE_VISITES = [
-  '=ARRAYFORMULA(LET(',
+  '=LET(',
   "ev, 'Événements'!A2:M,",
   'depuis, NOW() - 30,',
   'entetes, HSTACK("visite", "jour", "source", "provenance", "utm_source", "utm_campaign", "appareil", "duree_s"),',
-  'v, SORT(FILTER(ev, INDEX(ev, 0, 2) = "vue", INDEX(ev, 0, 1) >= depuis), 1, TRUE),',
-  'cle, IF(INDEX(v, 0, 3) = "", INDEX(v, 0, 4), INDEX(v, 0, 3)),',
-  'tab, HSTACK(cle, TEXT(INDEX(v, 0, 1), "yyyy-mm-dd"), INDEX(v, 0, 7), INDEX(v, 0, 9), INDEX(v, 0, 11), INDEX(v, 0, 12)),',
+  'v, SORT(FILTER(ev, INDEX(ev, 0, 2) = "vue", INDEX(ev, 0, 1) >= depuis), 1, 1),',
+  'nv, IFERROR(ROWS(v), 0),',
+  'cle, ARRAYFORMULA(IF(INDEX(v, 0, 3) = "", INDEX(v, 0, 4), INDEX(v, 0, 3))),',
+  'tab, HSTACK(cle, ARRAYFORMULA(TEXT(INDEX(v, 0, 1), "yyyy-mm-dd")), INDEX(v, 0, 7), INDEX(v, 0, 9), INDEX(v, 0, 11), INDEX(v, 0, 12)),',
   'cles, UNIQUE(cle),',
-  'prem, VLOOKUP(cles, tab, SEQUENCE(1, 5, 2), FALSE),',
+  'prem, ARRAYFORMULA(VLOOKUP(cles, tab, SEQUENCE(1, 5, 2), 0)),',
   'f, FILTER(ev, INDEX(ev, 0, 2) = "fin", INDEX(ev, 0, 1) >= depuis, ISNUMBER(INDEX(ev, 0, 13))),',
-  'fcle, IF(INDEX(f, 0, 3) = "", INDEX(f, 0, 4), INDEX(f, 0, 3)),',
+  'fcle, ARRAYFORMULA(IF(INDEX(f, 0, 3) = "", INDEX(f, 0, 4), INDEX(f, 0, 3))),',
   "parVue, QUERY(HSTACK(INDEX(f, 0, 4), fcle, INDEX(f, 0, 13)), \"select Col1, Col2, max(Col3) group by Col1, Col2 label Col1 '', Col2 '', max(Col3) ''\", 0),",
   "parVisite, QUERY(parVue, \"select Col2, sum(Col3) group by Col2 label Col2 '', sum(Col3) ''\", 0),",
-  'duree, MAP(cles, LAMBDA(k, IFERROR(VLOOKUP(k, parVisite, 2, FALSE), 0))),',
+  'duree, MAP(cles, LAMBDA(k, IFERROR(VLOOKUP(k, parVisite, 2, 0), 0))),',
   'utmSource, INDEX(prem, 0, 3),',
-  'source, IF(utmSource <> "", utmSource, INDEX(prem, 0, 2)),',
-  'corps, HSTACK(cles, INDEX(prem, 0, 1),',
+  'source, ARRAYFORMULA(IF(utmSource <> "", utmSource, INDEX(prem, 0, 2))),',
+  'corps, ARRAYFORMULA(HSTACK(cles, INDEX(prem, 0, 1),',
   '  IF(source = "", "(aucune)", source),',
   '  IF(INDEX(prem, 0, 2) = "", "(aucune)", INDEX(prem, 0, 2)),',
   '  IF(utmSource = "", "(aucune)", utmSource),',
   '  IF(INDEX(prem, 0, 4) = "", "(aucune)", INDEX(prem, 0, 4)),',
   '  IF(INDEX(prem, 0, 5) = "", "(aucune)", INDEX(prem, 0, 5)),',
-  '  duree),',
-  'IFERROR(VSTACK(entetes, corps), entetes)',
-  '))',
+  '  duree)),',
+  // Hors ARRAYFORMULA : choisit le tableau entier (en-têtes seuls s'il n'y a aucune visite).
+  'IF(nv = 0, entetes, VSTACK(entetes, corps))',
+  ')',
 ].join('\n');
 
 var VIDE = '"Pas encore de données"';
