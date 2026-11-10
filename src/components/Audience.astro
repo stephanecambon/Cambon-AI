@@ -2,13 +2,20 @@
 // Mesure d'audience maison, sans cookie (voir tools/audience/README.md).
 // Aucun script n'est ajouté tant que AUDIENCE_URL est vide.
 import { AUDIENCE_URL } from '../config';
+
+// Domaine du site en ligne (astro.config : site). Ailleurs (aperçu local…), aucune mesure.
+const domaine = Astro.site ? Astro.site.hostname : '';
 ---
 {AUDIENCE_URL && (
-  <script is:inline define:vars={{ endpoint: AUDIENCE_URL }}>
+  <script is:inline define:vars={{ endpoint: AUDIENCE_URL, domaine }}>
     try {
       var nav = navigator;
-      // Pas de mesure : signal GPC ou Do Not Track, navigateur piloté, ou refus enregistré.
-      var refus = nav.globalPrivacyControl === true || nav.doNotTrack === '1' || nav.webdriver === true;
+      // Pas de mesure : hors du site en ligne, signal GPC ou Do Not Track, navigateur piloté, ou refus enregistré.
+      var refus =
+        location.hostname !== domaine ||
+        nav.globalPrivacyControl === true ||
+        nav.doNotTrack === '1' ||
+        nav.webdriver === true;
       try {
         if (localStorage.getItem('cambon-no-audience') === '1') refus = true;
       } catch (e) {}

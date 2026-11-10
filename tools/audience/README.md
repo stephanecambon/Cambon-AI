@@ -88,7 +88,7 @@ Tous les tableaux portent sur les **30 derniers jours** et se mettent à jour se
 
 « (aucune) » signifie que la valeur est vide, par exemple pour une visite sans `utm_source`.
 
-**Quelques visites sont invisibles**, et c'est voulu. Le site ne mesure pas les visiteurs qui :
+**Quelques visites sont invisibles**, et c'est voulu. Seules les pages servies depuis cambon.ai sont mesurées : un aperçu du site sur un ordinateur de travail n'envoie rien. Le site ne mesure pas non plus les visiteurs qui :
 - envoient le signal **Global Privacy Control** ou **Do Not Track** ;
 - ont cliqué sur « Ne pas être mesuré » dans la page Confidentialité ;
 - sont des robots qui se déclarent comme tels.
