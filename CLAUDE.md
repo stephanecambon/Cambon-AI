@@ -9,7 +9,7 @@ Site vitrine de Cambon AI (SASU, Paris), R&D appliquée pour PME et ETI. Propri�
 - **Anonymisation.** Aucun nom de client. Le cabinet de maîtrise d'ouvrage n'est ni nommé ni situé.
 - **Biotech : rester strictement vague.** Jamais de test (au sens de produit de diagnostic), de diagnostic, de domaine vétérinaire, d'ELISA, de plaques, de réactifs ni de dilutions. Uniquement « biotech », « expériences », « paramètres ».
 - **Première personne du singulier** (« je »). Exceptions voulues : « Nous avons construit… » (l'équipe d'Ownpage, section 05) et « à notre connaissance » (JouetSwap, projet mené avec son fils).
-- **Surligneur ambre : un seul mot ou une seule expression par bloc** (« à l'échelle de votre entreprise » dans l'accroche, le résultat de chaque projet).
+- **Surligneur orange : un seul mot ou une seule expression par bloc** (« à l'échelle de votre entreprise » dans l'accroche, le résultat de chaque projet).
 - **Version anglaise** : adaptation naturelle de site professionnel, pas de traduction littérale ; mêmes règles que le français. Tout nouveau texte EN est validé par Stéphane avant publication.
 - Vérification avant chaque publication : `grep -rliE "claude|anthropic|cambea|elisa|v[ée]t[ée]rinaire|innovative" dist` ne doit rien trouver.
 
@@ -68,9 +68,9 @@ Tout est dans `src/config.ts` :
 
 ## Accueil (`src/components/Home.astro`)
 
-Sections numérotées en ambre foncé : 00 accroche + encart « Fiche » (`Hero.astro`), 01 Le constat + schéma des trois couches (`Layers.astro`), 02 Ce que je fais, 03 Comment je travaille (ancre `#approche`), 04 Pourquoi moi, 05 Qui je suis (`#a-propos`), 06 Projets (6 cartes), 07 appel à l'action (`Cta.astro`).
+Sections numérotées en brun rouge (`--amber-dark`) : 00 accroche + encart « Fiche » (`Hero.astro`), 01 Le constat + schéma des trois couches (`Layers.astro`), 02 Ce que je fais, 03 Comment je travaille (ancre `#approche`), 04 Pourquoi moi, 05 Qui je suis (`#a-propos`), 06 Projets (6 cartes), 07 appel à l'action (`Cta.astro`).
 
-Schéma des trois couches : bloc sombre en HTML/CSS (fond `--plan-bg` `#0E2E55`, texte `--plan-text` `#EAF2FF`, secondaire `--plan-muted` `#A4BCDD`, traits `--plan-rule` `#3F6698`). L'ambre y est **réservé à Cambon AI**. La barre verticale « Cambon AI » couvre la couche 3 et la moitié haute de la couche 2 (chaque couche occupe 2 lignes de grille, la barre en couvre 3). Entre 720 et 900 px : une pile par couche, libellés « Avant / Maintenant » visibles. Sous 720 px : accordéon `<details>/<summary>` (bloc `.lm` dédié, sans JS), couche 3 ouverte par défaut, barre ambre en pseudo-élément du `<details>` pour rester visible couche repliée. Sur ordinateur, la grille est inchangée.
+Schéma des trois couches : bloc sombre en HTML/CSS (fond `--plan-bg` `#4A190F`, texte `--plan-text` `#FFF8F0`, secondaire `--plan-muted` `#EBA18B`, traits `--plan-rule` `#A54631`). L'orange y est **réservé à Cambon AI** (texte posé dessus : `--on-amber`). La barre verticale « Cambon AI » couvre la couche 3 et la moitié haute de la couche 2 (chaque couche occupe 2 lignes de grille, la barre en couvre 3). Entre 720 et 900 px : une pile par couche, libellés « Avant / Maintenant » visibles. Sous 720 px : accordéon `<details>/<summary>` (bloc `.lm` dédié, sans JS), couche 3 ouverte par défaut, barre orange en pseudo-élément du `<details>` pour rester visible couche repliée. Sur ordinateur, la grille est inchangée.
 
 ## Contenu : collection `projets`
 
@@ -87,16 +87,21 @@ Tokens dans `src/styles/global.css` (`:root`). Toujours utiliser les variables, 
 
 | Variable        | Valeur    | Usage                                                     |
 | --------------- | --------- | --------------------------------------------------------- |
-| `--paper`       | `#F3F1EA` | fond                                                      |
-| `--ink`         | `#0E2E55` | titres, traits forts, bordures de boutons                 |
-| `--text-2`      | `#24395A` | texte courant                                             |
-| `--text-muted`  | `#4A5D78` | texte discret                                             |
-| `--rule`        | `#C9CFD8` | traits fins                                               |
-| `--amber`       | `#FFB347` | boutons d'action et surligneur **uniquement**             |
-| `--amber-dark`  | `#8A4B00` | petits textes d'accent (numéros de section « 00 / »)      |
+| `--paper`       | `#FFF8F0` | fond (blanc chaud)                                        |
+| `--ink`         | `#782114` | titres, traits forts, bordures de boutons (rouge brun)    |
+| `--text-2`      | `#4A190F` | texte courant (bordeaux noir)                             |
+| `--text-muted`  | `#A54631` | texte discret (brun rouge)                                |
+| `--rule`        | `#EBA18B` | traits fins (corail doux)                                 |
+| `--amber`       | `#F17143` | orange papaye : boutons d'action et surligneur **uniquement** |
+| `--on-amber`    | `#4A190F` | texte posé sur l'orange (5:1)                             |
+| `--amber-soft`  | `#FFD2BA` | fond d'accent doux (pêche clair, message de succès)       |
+| `--amber-dark`  | `#A54631` | petits textes d'accent (numéros de section « 00 / »)      |
+| `--surface`     | `#FFFFFF` | tétière, pied de page, encadrés                           |
 
-- **Picto et logo** : picto « C » bleu de plan autour du carré ambre « AI », en SVG en ligne (`src/components/Picto.astro`). Logo de la tétière = picto + « CAMBON » + « AI » sur fond ambre (`Logo.astro`, choix de Stéphane) ; petit picto dans le pied de page ; favicons (`public/favicon.svg`, `favicon-32.png`, `apple-touch-icon.png`, `icon-512.png`) régénérés sans métadonnées. Les originaux (`public/brand/`) contiennent des métadonnées de provenance qui nomment l'outil de création : ils sont exclus du dépôt (`.gitignore`) et ne doivent pas être publiés tels quels.
-- **Animation du logo** (en-tête) : une fois au chargement de chaque page (400 ms après `load`, ordinateur et mobile), puis au survol (souris uniquement, `hover: hover`) ou au focus clavier du lien, le groupe `.logo-ai` du picto (carré ambre + « AI ») ressort de 60 unités vers la droite puis s'emboîte (`@keyframes logo-emboite`, 0,7 s, aucun rebond, ne dépasse jamais le bord ouvert du « C » ni la barre). Classe `.is-animating` posée en JS et retirée à `animationend` : l'animation va toujours au bout et ne se relance pas en cours. Sans JS ou avec `prefers-reduced-motion` : logo statique. Sur mobile, pas de relance au toucher. Lien libellé « Cambon AI, accueil » / « Cambon AI, home ».
+Palette Cambon AI (novembre 2026, choix de Stéphane) : rouge brun `#782114`, orange papaye `#F17143`, blanc chaud `#FFF8F0`, avec bordeaux noir `#4A190F`, brun rouge `#A54631`, corail doux `#EBA18B`, pêche clair `#FFD2BA`. Les noms `--amber…` sont historiques (ancienne palette bleu / ambre) : ils désignent l'accent orange. Les illustrations maison des projets (appels d'offres, biotech) ont leur source SVG dans `tools/illustrations/` ; elles sont rendues en PNG 3200 × 2000 sans métadonnées dans `src/assets/projets/`.
+
+- **Picto et logo** : picto « C » rouge brun autour du carré orange « AI », en SVG en ligne (`src/components/Picto.astro`). Logo de la tétière = picto + « CAMBON » + « AI » sur fond orange (`Logo.astro`, choix de Stéphane) ; petit picto dans le pied de page ; favicons (`public/favicon.svg`, `favicon-32.png`, `apple-touch-icon.png`, `icon-512.png`) régénérés sans métadonnées. Les originaux (`public/brand/`) contiennent des métadonnées de provenance qui nomment l'outil de création : ils sont exclus du dépôt (`.gitignore`) et ne doivent pas être publiés tels quels.
+- **Animation du logo** (en-tête) : une fois au chargement de chaque page (400 ms après `load`, ordinateur et mobile), puis au survol (souris uniquement, `hover: hover`) ou au focus clavier du lien, le groupe `.logo-ai` du picto (carré orange + « AI ») ressort de 60 unités vers la droite puis s'emboîte (`@keyframes logo-emboite`, 0,7 s, aucun rebond, ne dépasse jamais le bord ouvert du « C » ni la barre). Classe `.is-animating` posée en JS et retirée à `animationend` : l'animation va toujours au bout et ne se relance pas en cours. Sans JS ou avec `prefers-reduced-motion` : logo statique. Sur mobile, pas de relance au toucher. Lien libellé « Cambon AI, accueil » / « Cambon AI, home ».
 - Polices : Barlow Condensed 600 en capitales pour les titres (`--font-title`), Barlow 400/500/600/700 pour le texte (`--font-text`).
 - Fond : lignes de cahier (gradient 1 px, pas de 34 px) sur `body`.
 - **Pas de liserés foncés** (choix de Stéphane, novembre 2026) : aucun trait `--ink` sur les sections, cartes, blocs ou images. Les sections sont séparées par l'espacement ; seuls des traits gris clairs (`--rule`) sont permis là où un repère est utile (tétière, pied de page, listes). Les contours `--ink` sont réservés aux boutons et aux filtres.
@@ -105,7 +110,7 @@ Tokens dans `src/styles/global.css` (`:root`). Toujours utiliser les variables, 
 - Tétière (`Header.astro`) : fond blanc (`--header-bg`), `position: sticky` en haut ; `--header-h` + `scroll-padding-top` décalent les ancres sous la tétière (à ajuster si sa hauteur change).
 - Classes : `.section` (espacement vertical, sans trait), `.eyebrow` + `.eyebrow__num`, `.surligne`, `.btn` + `.btn--primary` / `.btn--outline` / `.btn--small`, `.container`, `.lead`, `.prose`, `.list`, `.cards`.
 - Angles : `--radius` (2 px).
-- Accessibilité : contraste ≥ 4,5:1 pour le texte. **Jamais `#FFB347` comme couleur de texte** sur le papier. Focus visible conservé.
+- Accessibilité : contraste ≥ 4,5:1 pour le texte. **Jamais l'orange `#F17143` comme couleur de texte** (2,8:1 sur le fond) ; sur l'orange, texte en `--on-amber`. Focus visible conservé.
 - Responsive : doit fonctionner à 375 px sans défilement horizontal. Sur mobile (≤ 860 px), toute zone cliquable fait au moins 44 px de haut (menu, FR · EN, case et lien de la newsletter, liens du pied de page), sans changer le rendu sur ordinateur.
 
 ## Règles Git

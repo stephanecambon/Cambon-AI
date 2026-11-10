@@ -5,13 +5,16 @@
 
 :root {
   /* Couleurs */
-  --paper: #f3f1ea;        /* fond papier */
-  --ink: #0e2e55;          /* encre principale, bleu de plan */
-  --text-2: #24395a;       /* texte secondaire */
-  --text-muted: #4a5d78;   /* texte discret */
-  --rule: #c9cfd8;         /* traits fins */
-  --amber: #ffb347;        /* accent : boutons d'action et surligneur UNIQUEMENT (jamais en couleur de texte) */
-  --amber-dark: #8a4b00;   /* petits textes d'accent (numéros de section) */
+  /* Palette Cambon AI : rouge brun, orange papaye, blanc chaud */
+  --paper: #fff8f0;        /* fond : blanc chaud */
+  --ink: #782114;          /* encre principale : rouge brun (titres, traits forts, contours) */
+  --text-2: #4a190f;       /* texte courant : bordeaux noir */
+  --text-muted: #a54631;   /* texte discret : brun rouge */
+  --rule: #eba18b;         /* traits fins : corail doux */
+  --amber: #f17143;        /* accent orange papaye : boutons d'action et surligneur UNIQUEMENT (jamais en couleur de texte) */
+  --on-amber: #4a190f;     /* texte posé sur l'accent (bordeaux noir, 5:1) */
+  --amber-soft: #ffd2ba;   /* fond d'accent doux : pêche clair */
+  --amber-dark: #a54631;   /* petits textes d'accent (numéros de section) */
 
   /* Polices (chargées par Astro, voir astro.config.mjs) */
   --font-title: var(--font-barlow-condensed), 'Arial Narrow', sans-serif;
@@ -26,7 +29,7 @@
   --rule-thin: 1px solid var(--rule);
 
   /* Cahier */
-  --notebook-line: rgba(14, 46, 85, 0.07);
+  --notebook-line: rgba(120, 33, 20, 0.08);
   --notebook-step: 34px;
 
   /* Mise en page */
@@ -126,9 +129,9 @@ a:hover {
 
 /* ---------- Éléments du design ---------- */
 
-/* Surligneur ambre sur un mot clé */
+/* Surligneur orange sur un mot clé */
 .surligne {
-  background: linear-gradient(transparent 58%, rgba(255, 179, 71, 0.7) 58%);
+  background: linear-gradient(transparent 58%, rgba(241, 113, 67, 0.55) 58%);
   padding-inline: 0.06em;
   -webkit-box-decoration-break: clone;
   box-decoration-break: clone;
@@ -182,6 +185,7 @@ a:hover {
 
 .btn--primary {
   background: var(--amber);
+  color: var(--on-amber);
   box-shadow: 2px 2px 0 var(--ink);
 }
 
@@ -200,7 +204,7 @@ a:hover {
 }
 
 .btn--outline:hover {
-  background: rgba(14, 46, 85, 0.06);
+  background: rgba(120, 33, 20, 0.06);
 }
 
 .btn--small {
@@ -230,10 +234,10 @@ a:hover {
 
 :root {
   /* Bloc sombre « plan » (schéma des trois couches) */
-  --plan-bg: #0e2e55;
-  --plan-text: #eaf2ff;
-  --plan-muted: #a4bcdd;
-  --plan-rule: #3f6698;
+  --plan-bg: #4a190f;
+  --plan-text: #fff8f0;
+  --plan-muted: #eba18b;
+  --plan-rule: #a54631;
 }
 
 h2 {

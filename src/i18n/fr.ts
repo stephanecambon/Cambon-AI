@@ -1,5 +1,5 @@
 // Textes du site en français (textes validés : ne pas reformuler).
-// Pour surligner un mot en ambre, entourez-le de == (ex. : ==à l'échelle de votre entreprise==).
+// Pour surligner un mot en orange, entourez-le de == (ex. : ==à l'échelle de votre entreprise==).
 // Un repère entre crochets éventuel est remplacé via src/config.ts.
 
 export const fr = {
