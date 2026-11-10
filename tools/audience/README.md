@@ -146,3 +146,9 @@ Voir la même section dans `tools/newsletter/README.md` : le réglage de la cons
 - Quand la page passe en arrière-plan ou se ferme, il envoie un événement « fin » avec le temps de visibilité cumulé, en secondes. Plusieurs « fin » peuvent arriver pour une même page : le tableau de bord ne garde que la plus grande valeur.
 - Un identifiant de **visite**, tiré au hasard, relie les pages d'une même visite. Il est gardé dans l'onglet du navigateur (`sessionStorage`) et effacé à sa fermeture. Une nouvelle visite commence quand le visiteur arrive depuis un autre site.
 - Le script n'accepte que les champs connus, tronque chaque valeur à 200 caractères et ignore le reste. Il n'enregistre ni l'adresse IP ni le navigateur.
+- Les envois partent sans aucun cookie : même un visiteur connecté à son compte Google n'est pas reconnaissable par Google à travers cette mesure.
+- Garde-fous contre les fausses données :
+  - un événement est refusé si la page n'est pas une adresse du site, ou si la provenance n'est pas « direct », « interne » ou un simple nom de domaine ;
+  - les paramètres utm ne gardent que lettres, chiffres, espaces, tirets, « _ » et « + » ;
+  - au plus 10 000 événements par jour et 400 000 lignes en tout (`MAX_EVENTS_PER_DAY` et `MAX_ROWS` en haut de `Code.gs`). Au-delà, les événements sont ignorés.
+- Les liens qui apparaissent dans le tableur (noms de domaine) viennent des visiteurs : ne cliquez pas dessus.

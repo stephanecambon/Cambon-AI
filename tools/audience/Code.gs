@@ -67,6 +67,9 @@ var CONFIG = {
   MAX_DURATION_S: 86400, // durée au-delà de 24 h : ignorée
   RETENTION_MONTHS: 13,
   TIMEZONE: 'Europe/Paris',
+  // Plafonds contre l'envoi massif de fausses données. Au-delà : événements ignorés.
+  MAX_EVENTS_PER_DAY: 10000, // très au-dessus du trafic réel du site
+  MAX_ROWS: 400000, // l'onglet « Événements » ne dépasse jamais ce nombre de lignes
 };
 
 /* ---------- Réception des événements ---------- */
@@ -83,7 +86,15 @@ function doPost(e) {
     var lock = LockService.getScriptLock();
     if (!lock.tryLock(10000)) return text_('occupé');
     try {
-      eventsSheet_().appendRow(row);
+      // Compteur du jour (meilleur effort : le cache peut être vidé par Google).
+      var cache = CacheService.getScriptCache();
+      var cle = 'jour-' + Utilities.formatDate(new Date(), CONFIG.TIMEZONE, 'yyyy-MM-dd');
+      var n = Number(cache.get(cle)) || 0;
+      if (n >= CONFIG.MAX_EVENTS_PER_DAY) return text_('ignoré');
+      var sh = eventsSheet_();
+      if (sh.getLastRow() >= CONFIG.MAX_ROWS) return text_('ignoré');
+      sh.appendRow(row);
+      cache.put(cle, String(n + 1), 90000); // 25 h
     } finally {
       lock.releaseLock();
     }
@@ -117,8 +128,9 @@ function buildRow_(d) {
   if (!vue) return null;
   var visite = id_(d.visite); // peut être vide (stockage du navigateur inaccessible)
 
+  // Chemin de page : uniquement les caractères d'une adresse du site.
   var page = clean_(d.page);
-  if (page.charAt(0) !== '/') page = '';
+  if (!/^\/[A-Za-z0-9\/._~%-]*$/.test(page)) return null;
 
   var langue = clean_(d.langue);
   if (langue !== 'fr' && langue !== 'en') langue = '';
@@ -126,7 +138,11 @@ function buildRow_(d) {
   var appareil = clean_(d.appareil);
   if (appareil !== 'mobile' && appareil !== 'ordinateur') appareil = '';
 
+  // Provenance : « direct », « interne » ou un simple nom de domaine (jamais une adresse complète).
   var brute = clean_(d.provenance).toLowerCase();
+  if (brute && brute !== 'direct' && brute !== 'interne' && !/^[a-z0-9-]+(\.[a-z0-9-]+)+$/.test(brute)) {
+    return null;
+  }
   var provenance = normaliserProvenance_(brute);
 
   var duree = '';
@@ -145,9 +161,9 @@ function buildRow_(d) {
     langue,
     safe_(provenance),
     safe_(brute),
-    safe_(clean_(d.utm_source)),
-    safe_(clean_(d.utm_medium)),
-    safe_(clean_(d.utm_campaign)),
+    safe_(utm_(d.utm_source)),
+    safe_(utm_(d.utm_medium)),
+    safe_(utm_(d.utm_campaign)),
     appareil,
     duree,
   ];
@@ -193,6 +209,14 @@ function clean_(v) {
   if (v === null || v === undefined) return '';
   if (typeof v !== 'string' && typeof v !== 'number') return '';
   return String(v).replace(/[\u0000-\u001f\u007f]/g, '').trim().slice(0, CONFIG.MAX_LENGTH);
+}
+
+/**
+ * Paramètre utm : lettres (accents compris), chiffres, espaces, tirets, « _ » et « + ».
+ * Le reste est retiré, pour qu'aucune adresse cliquable n'arrive dans le tableur.
+ */
+function utm_(v) {
+  return clean_(v).replace(/[^\p{L}\p{N} _+-]/gu, '').trim().slice(0, 100);
 }
 
 /** Identifiant aléatoire : lettres, chiffres et tirets uniquement. */
