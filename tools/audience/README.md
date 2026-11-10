@@ -152,3 +152,13 @@ Voir la même section dans `tools/newsletter/README.md` : le réglage de la cons
   - les paramètres utm ne gardent que lettres, chiffres, espaces, tirets, « _ » et « + » ;
   - au plus 10 000 événements par jour et 400 000 lignes en tout (`MAX_EVENTS_PER_DAY` et `MAX_ROWS` en haut de `Code.gs`). Au-delà, les événements sont ignorés.
 - Les liens qui apparaissent dans le tableur (noms de domaine) viennent des visiteurs : ne cliquez pas dessus.
+
+## Lecture pour le tableau de bord du site (/admin/, en local)
+
+La page `/admin/` du site, qui n'existe que sur l'ordinateur de travail (`npm run dev`), lit les données du tableur avec une **clé de lecture**. Sans cette clé, le script ne renvoie rien.
+
+1. Dans l'éditeur Apps Script, choisissez la fonction **creerCleLecture**, puis **Exécuter**. Le journal affiche « Clé de lecture : … ». Relancer la fonction réaffiche la même clé.
+2. Recopiez cette clé dans le fichier `.env` du site, sur la ligne `AUDIENCE_CLE_LECTURE=`. Ce fichier n'est jamais publié.
+3. Pour changer de clé : **Paramètres du projet › Propriétés du script**, supprimez `CLE_LECTURE`, relancez **creerCleLecture**, puis mettez à jour `.env`.
+
+Le script renvoie les événements des 90 derniers jours : identifiants aléatoires, pages, provenances, utm, appareils, durées. Ni adresse IP, ni navigateur.

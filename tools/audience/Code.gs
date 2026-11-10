@@ -107,6 +107,7 @@ function doPost(e) {
 /** Vérification du déploiement : ?format=json */
 function doGet(e) {
   var p = (e && e.parameter) || {};
+  if (p.format === 'stats') return lireEvenements_(p);
   if (p.format === 'json') {
     return ContentService.createTextOutput(JSON.stringify({ ok: true, service: 'audience' }))
       .setMimeType(ContentService.MimeType.JSON);
@@ -433,3 +434,57 @@ var FORMULES = {
     '), ' + VIDE + ')',
   ].join('\n'),
 };
+
+/**
+ * Événements des N derniers jours (90 par défaut, 400 au plus), pour la page
+ * /admin/ du site. Clé de lecture obligatoire. Ces données ne contiennent ni
+ * adresse IP ni navigateur : identifiants aléatoires, pages, provenances, durées.
+ */
+function lireEvenements_(p) {
+  if (!cleValide_(p.cle)) return json_({ ok: false });
+  var jours = Math.min(Math.max(Math.round(Number(p.jours)) || 90, 1), 400);
+  var depuis = Date.now() - jours * 86400000;
+  var sh = eventsSheet_();
+  var n = sh.getLastRow() - 1;
+  var rows = n > 0 ? sh.getRange(2, 1, n, CONFIG.HEADERS.length).getValues() : [];
+  var evenements = [];
+  rows.forEach(function (r) {
+    if (!(r[0] instanceof Date) || r[0].getTime() < depuis) return;
+    evenements.push([r[0].toISOString()].concat(r.slice(1)));
+  });
+  return json_({ ok: true, jours: jours, colonnes: CONFIG.HEADERS, evenements: evenements });
+}
+
+/* ---------- Lecture protégée (page /admin/ du site, en local uniquement) ---------- */
+
+/**
+ * La lecture des données (?format=stats&cle=…) n'aboutit qu'avec la clé
+ * enregistrée dans la propriété de script CLE_LECTURE (voir creerCleLecture).
+ */
+function cleValide_(cle) {
+  var attendue = PropertiesService.getScriptProperties().getProperty('CLE_LECTURE') || '';
+  if (attendue.length < 32 || typeof cle !== 'string' || cle.length !== attendue.length) return false;
+  var diff = 0;
+  for (var i = 0; i < cle.length; i++) diff |= cle.charCodeAt(i) ^ attendue.charCodeAt(i);
+  return diff === 0;
+}
+
+/**
+ * À lancer une fois depuis l'éditeur : crée la clé de lecture (si elle n'existe
+ * pas) et l'affiche dans le journal d'exécution. Elle se recopie dans le fichier
+ * .env du site, sur l'ordinateur de travail uniquement (jamais dans le dépôt).
+ * Pour changer de clé : supprimer la propriété CLE_LECTURE, puis relancer.
+ */
+function creerCleLecture() {
+  var props = PropertiesService.getScriptProperties();
+  var cle = props.getProperty('CLE_LECTURE');
+  if (!cle) {
+    cle = (Utilities.getUuid() + Utilities.getUuid()).replace(/-/g, '');
+    props.setProperty('CLE_LECTURE', cle);
+  }
+  console.log('Clé de lecture : ' + cle);
+}
+
+function json_(obj) {
+  return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON);
+}

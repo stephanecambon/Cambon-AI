@@ -98,6 +98,7 @@ function doPost(e) {
 /** Ouverture de l'adresse dans un navigateur, ou test de déploiement (?format=json). */
 function doGet(e) {
   var p = (e && e.parameter) || {};
+  if (p.format === 'stats') return lireInscriptions_(p);
   if (p.format === 'json') {
     return ContentService.createTextOutput(JSON.stringify({ ok: true, service: 'newsletter' }))
       .setMimeType(ContentService.MimeType.JSON);
@@ -235,4 +236,56 @@ function escapeHtml_(s) {
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;');
+}
+
+/**
+ * Inscriptions pour la page /admin/ du site : date, langue et page seulement.
+ * Les adresses e-mail ne sortent jamais du tableur. Clé de lecture obligatoire.
+ */
+function lireInscriptions_(p) {
+  if (!cleValide_(p.cle)) return json_({ ok: false });
+  var sheet = getSheet_();
+  var n = sheet.getLastRow() - 1;
+  var rows = n > 0 ? sheet.getRange(2, 1, n, CONFIG.HEADERS.length).getDisplayValues() : [];
+  var iDate = CONFIG.HEADERS.indexOf('date');
+  var iLangue = CONFIG.HEADERS.indexOf('langue');
+  var iPage = CONFIG.HEADERS.indexOf('page');
+  var inscriptions = rows.map(function (r) {
+    return { date: r[iDate], langue: r[iLangue], page: r[iPage] };
+  });
+  return json_({ ok: true, total: inscriptions.length, inscriptions: inscriptions });
+}
+
+/* ---------- Lecture protégée (page /admin/ du site, en local uniquement) ---------- */
+
+/**
+ * La lecture des données (?format=stats&cle=…) n'aboutit qu'avec la clé
+ * enregistrée dans la propriété de script CLE_LECTURE (voir creerCleLecture).
+ */
+function cleValide_(cle) {
+  var attendue = PropertiesService.getScriptProperties().getProperty('CLE_LECTURE') || '';
+  if (attendue.length < 32 || typeof cle !== 'string' || cle.length !== attendue.length) return false;
+  var diff = 0;
+  for (var i = 0; i < cle.length; i++) diff |= cle.charCodeAt(i) ^ attendue.charCodeAt(i);
+  return diff === 0;
+}
+
+/**
+ * À lancer une fois depuis l'éditeur : crée la clé de lecture (si elle n'existe
+ * pas) et l'affiche dans le journal d'exécution. Elle se recopie dans le fichier
+ * .env du site, sur l'ordinateur de travail uniquement (jamais dans le dépôt).
+ * Pour changer de clé : supprimer la propriété CLE_LECTURE, puis relancer.
+ */
+function creerCleLecture() {
+  var props = PropertiesService.getScriptProperties();
+  var cle = props.getProperty('CLE_LECTURE');
+  if (!cle) {
+    cle = (Utilities.getUuid() + Utilities.getUuid()).replace(/-/g, '');
+    props.setProperty('CLE_LECTURE', cle);
+  }
+  console.log('Clé de lecture : ' + cle);
+}
+
+function json_(obj) {
+  return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON);
 }

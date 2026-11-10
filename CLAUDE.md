@@ -37,6 +37,13 @@ Site vitrine de Cambon AI (SASU, Paris), R&D appliquée pour PME et ETI. Propri�
 - **Tableau de bord** : formules uniquement (`QUERY … GROUP BY`, onglet de calcul masqué `_visites`, une ligne par visite des 30 derniers jours). Aucune valeur en dur. `setup()` le recrée sans toucher aux événements.
 - **Conservation** : 13 mois, `purge()` lancée chaque mois par un déclencheur temporel.
 
+## Tableau de bord privé `/admin/` (local uniquement)
+
+- `src/pages/[admin].astro` + `src/lib/admin.ts` : chiffres de l'audience (visites par jour, sources, provenances, pages, campagnes, appareils, langues, durée médiane) et de la newsletter (inscrits, inscriptions par jour, langues, pages), sur 7, 30 ou 90 jours (onglets en CSS pur).
+- **N'existe qu'avec `npm run dev`** : `getStaticPaths` ne renvoie rien au build, la page n'est jamais publiée. Textes en dur en français (exception voulue : page privée).
+- Lecture : `?format=stats&cle=…` sur les deux scripts Apps Script (`lireEvenements_`, `lireInscriptions_`). Sans la bonne clé (propriété de script `CLE_LECTURE`, créée par `creerCleLecture()`), réponse `{"ok":false}`. La newsletter ne renvoie jamais les e-mails (date, langue, page seulement).
+- Clés dans `.env` (exclu du dépôt) : `AUDIENCE_CLE_LECTURE`, `NEWSLETTER_CLE_LECTURE`. Ne jamais les écrire dans le dépôt public.
+
 ## Réglages et repères
 
 Tout est dans `src/config.ts` :

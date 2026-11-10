@@ -1,0 +1,322 @@
+---
+// Tableau de bord privé : audience et newsletter.
+// N'existe qu'en local (npm run dev) : la page n'est jamais générée pour le site
+// en ligne. Données lues dans les deux scripts Google avec les clés du fichier .env.
+import Base from '../layouts/Base.astro';
+import { chargerTableauDeBord, PERIODES, type Ligne } from '../lib/admin';
+
+export function getStaticPaths() {
+  return import.meta.env.DEV ? [{ params: { admin: 'admin' } }] : [];
+}
+
+const { audience, newsletter, misAJour } = await chargerTableauDeBord();
+const max = (l: Ligne[]) => Math.max(1, ...l.map((x) => x.valeur));
+const jourCourt = (iso: string) => `${iso.slice(8, 10)}/${iso.slice(5, 7)}`;
+---
+<Base lang="fr" title="Tableau de bord · Cambon AI" noindex>
+  <main class="container adm">
+    <p class="eyebrow"><span class="eyebrow__num">§</span> Privé · en local uniquement</p>
+    <h1 class="adm__title">Tableau de bord</h1>
+    <p class="adm__meta">Données lues le {misAJour}. Rechargez la page pour les actualiser.</p>
+
+    <fieldset class="adm__periodes">
+      <legend>Période</legend>
+      {PERIODES.map((j, i) => (
+        <label class="adm__periode">
+          <input type="radio" name="periode" value={String(j)} checked={i === 1} />
+          <span>{j} jours</span>
+        </label>
+      ))}
+    </fieldset>
+
+    {PERIODES.map((j, i) => (
+      <div class="adm__vue" data-periode={String(j)}>
+        <section class="adm__bloc">
+          <h2 class="adm__h2">Audience</h2>
+          {'erreur' in audience ? (
+            <p class="adm__erreur">{audience.erreur}</p>
+          ) : (() => {
+            const a = audience.parPeriode[i];
+            return (
+              <>
+                <div class="adm__kpis">
+                  <div class="adm__kpi"><strong>{a.visites}</strong><span>visites</span></div>
+                  <div class="adm__kpi"><strong>{a.pagesVues}</strong><span>pages vues</span></div>
+                  <div class="adm__kpi"><strong>{a.pagesParVisite}</strong><span>pages par visite</span></div>
+                  <div class="adm__kpi"><strong>{a.dureeMediane} s</strong><span>durée médiane</span></div>
+                  <div class="adm__kpi"><strong>{a.partMobile} %</strong><span>sur mobile</span></div>
+                </div>
+
+                <h3 class="adm__h3">Visites par jour</h3>
+                <div class="adm__jours" style={`--n:${a.parJour.length}`}>
+                  {a.parJour.map((d) => (
+                    <div class="adm__jour" title={`${d.libelle} : ${d.valeur}`}>
+                      <span class="adm__barre-v" style={`height:${(d.valeur / max(a.parJour)) * 100}%`}></span>
+                    </div>
+                  ))}
+                </div>
+                <div class="adm__axe">
+                  <span>{jourCourt(a.parJour[0].libelle)}</span>
+                  <span>{jourCourt(a.parJour.at(-1)!.libelle)}</span>
+                </div>
+
+                <div class="adm__grille">
+                  {[
+                    ['Sources', a.sources, 'utm_source du lien, sinon provenance'],
+                    ['Provenances', a.provenances, 'site d’où vient le visiteur'],
+                    ['Pages vues', a.pages, ''],
+                    ['Campagnes (utm)', a.campagnes, 'source · campagne'],
+                    ['Appareils', a.appareils, ''],
+                    ['Langues', a.langues, ''],
+                  ].map(([titre, lignes, aide]) => (
+                    <div class="adm__liste">
+                      <h3 class="adm__h3">{titre as string}</h3>
+                      {aide && <p class="adm__aide">{aide as string}</p>}
+                      {(lignes as Ligne[]).length === 0 ? (
+                        <p class="adm__vide">Aucune donnée sur la période.</p>
+                      ) : (
+                        <ul>
+                          {(lignes as Ligne[]).slice(0, 12).map((l) => (
+                            <li>
+                              <span class="adm__lib">{l.libelle}{l.detail && <em> · {l.detail}</em>}</span>
+                              <span class="adm__val">{l.valeur}</span>
+                              <span class="adm__barre" style={`width:${(l.valeur / max(lignes as Ligne[])) * 100}%`}></span>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </>
+            );
+          })()}
+        </section>
+
+        <section class="adm__bloc">
+          <h2 class="adm__h2">Newsletter</h2>
+          {'erreur' in newsletter ? (
+            <p class="adm__erreur">{newsletter.erreur}</p>
+          ) : (() => {
+            const n = newsletter.parPeriode[i];
+            return (
+              <>
+                <div class="adm__kpis">
+                  <div class="adm__kpi"><strong>{n.total}</strong><span>inscrits au total</span></div>
+                  <div class="adm__kpi"><strong>{n.periode}</strong><span>sur la période</span></div>
+                  <div class="adm__kpi"><strong>{n.derniere ? jourCourt(n.derniere) : '–'}</strong><span>dernière inscription</span></div>
+                </div>
+                <h3 class="adm__h3">Inscriptions par jour</h3>
+                <div class="adm__jours" style={`--n:${n.parJour.length}`}>
+                  {n.parJour.map((d) => (
+                    <div class="adm__jour" title={`${d.libelle} : ${d.valeur}`}>
+                      <span class="adm__barre-v" style={`height:${(d.valeur / max(n.parJour)) * 100}%`}></span>
+                    </div>
+                  ))}
+                </div>
+                <div class="adm__grille">
+                  {[['Langues', n.langues], ['Page d’inscription', n.pages]].map(([titre, lignes]) => (
+                    <div class="adm__liste">
+                      <h3 class="adm__h3">{titre as string}</h3>
+                      {(lignes as Ligne[]).length === 0 ? (
+                        <p class="adm__vide">Aucune inscription sur la période.</p>
+                      ) : (
+                        <ul>
+                          {(lignes as Ligne[]).map((l) => (
+                            <li>
+                              <span class="adm__lib">{l.libelle}</span>
+                              <span class="adm__val">{l.valeur}</span>
+                              <span class="adm__barre" style={`width:${(l.valeur / max(lignes as Ligne[])) * 100}%`}></span>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
+                  ))}
+                </div>
+                <p class="adm__aide">Les adresses e-mail restent dans le tableur Google : elles ne sont jamais lues ici.</p>
+              </>
+            );
+          })()}
+        </section>
+      </div>
+    ))}
+  </main>
+</Base>
+
+<style>
+  .adm {
+    padding-block: clamp(32px, 6vw, 64px);
+  }
+  .adm__title {
+    font-family: var(--font-title);
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--ink);
+    font-size: clamp(2rem, 5vw, 3rem);
+    line-height: 1;
+    margin: 8px 0 6px;
+  }
+  .adm__meta,
+  .adm__aide,
+  .adm__vide {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+  }
+  .adm__periodes {
+    display: flex;
+    gap: 8px;
+    border: 0;
+    padding: 0;
+    margin: 24px 0 8px;
+  }
+  .adm__periodes legend {
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 8px;
+  }
+  .adm__periode input {
+    position: absolute;
+    opacity: 0;
+  }
+  .adm__periode span {
+    display: inline-block;
+    padding: 8px 14px;
+    border: 1px solid var(--ink);
+    border-radius: var(--radius);
+    cursor: pointer;
+    color: var(--ink);
+    font-weight: 600;
+  }
+  .adm__periode input:checked + span {
+    background: var(--ink);
+    color: var(--paper);
+  }
+  .adm__periode input:focus-visible + span {
+    outline: 3px solid var(--amber);
+    outline-offset: 2px;
+  }
+  /* Une seule période visible (sans :has(), les trois s'affichent à la suite) */
+  .adm:has(input[value='7']:checked) .adm__vue:not([data-periode='7']),
+  .adm:has(input[value='30']:checked) .adm__vue:not([data-periode='30']),
+  .adm:has(input[value='90']:checked) .adm__vue:not([data-periode='90']) {
+    display: none;
+  }
+  .adm__bloc {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    padding: clamp(16px, 3vw, 28px);
+    margin-top: 24px;
+  }
+  .adm__h2 {
+    font-family: var(--font-title);
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--ink);
+    font-size: 1.6rem;
+    margin: 0 0 16px;
+  }
+  .adm__h3 {
+    font-weight: 700;
+    color: var(--ink);
+    font-size: 1rem;
+    margin: 24px 0 8px;
+  }
+  .adm__erreur {
+    background: var(--amber-soft);
+    color: var(--text-2);
+    padding: 12px 16px;
+    border-radius: var(--radius);
+  }
+  .adm__kpis {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px;
+  }
+  .adm__kpi {
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    padding: 12px 14px;
+    display: flex;
+    flex-direction: column;
+  }
+  .adm__kpi strong {
+    font-family: var(--font-title);
+    font-weight: 600;
+    font-size: 2rem;
+    color: var(--ink);
+    line-height: 1.1;
+  }
+  .adm__kpi span {
+    color: var(--text-muted);
+    font-size: 0.875rem;
+  }
+  .adm__jours {
+    display: grid;
+    grid-template-columns: repeat(var(--n), 1fr);
+    align-items: end;
+    gap: 2px;
+    height: 140px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .adm__jour {
+    height: 100%;
+    display: flex;
+    align-items: flex-end;
+  }
+  .adm__barre-v {
+    display: block;
+    width: 100%;
+    min-height: 1px;
+    background: var(--amber);
+    border-radius: 2px 2px 0 0;
+  }
+  .adm__axe {
+    display: flex;
+    justify-content: space-between;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    margin-top: 4px;
+  }
+  .adm__grille {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 8px 32px;
+  }
+  .adm__liste ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .adm__liste li {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 6px 8px;
+    margin-bottom: 4px;
+    font-size: 0.95rem;
+    color: var(--text-2);
+    z-index: 0;
+  }
+  .adm__lib {
+    overflow-wrap: anywhere;
+  }
+  .adm__lib em {
+    font-style: normal;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+  }
+  .adm__val {
+    font-weight: 700;
+    color: var(--ink);
+  }
+  .adm__barre {
+    position: absolute;
+    inset: 0 auto 0 0;
+    background: var(--amber-soft);
+    border-radius: var(--radius);
+    z-index: -1;
+  }
+</style>

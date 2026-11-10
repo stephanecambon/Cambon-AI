@@ -74,3 +74,13 @@ Les libellés exacts peuvent varier légèrement selon la version de la console.
   - le formulaire a été envoyé moins de 3 secondes après l'affichage de la page.
 - **Doublons** : une adresse déjà inscrite n'est pas ajoutée une seconde fois. Le message de succès est le même, pour ne pas révéler qui est inscrit.
 - **Consentement** : sans la case cochée, le navigateur bloque l'envoi, et le script refuse aussi.
+
+## Lecture pour le tableau de bord du site (/admin/, en local)
+
+La page `/admin/` du site, qui n'existe que sur l'ordinateur de travail (`npm run dev`), lit les données du tableur avec une **clé de lecture**. Sans cette clé, le script ne renvoie rien.
+
+1. Dans l'éditeur Apps Script, choisissez la fonction **creerCleLecture**, puis **Exécuter**. Le journal affiche « Clé de lecture : … ». Relancer la fonction réaffiche la même clé.
+2. Recopiez cette clé dans le fichier `.env` du site, sur la ligne `NEWSLETTER_CLE_LECTURE=`. Ce fichier n'est jamais publié.
+3. Pour changer de clé : **Paramètres du projet › Propriétés du script**, supprimez `CLE_LECTURE`, relancez **creerCleLecture**, puis mettez à jour `.env`.
+
+Le script ne renvoie que la date, la langue et la page de chaque inscription. **Les adresses e-mail ne sortent jamais du tableur.**
