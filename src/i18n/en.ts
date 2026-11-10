@@ -294,6 +294,14 @@ export const en: Texts = {
     intro:
       'This page explains what data the cambon.ai website and its newsletter collect, why, for how long, and how to exercise your rights.',
     updated: 'Last updated: November 2026.',
+    optOut: {
+      stop: 'Opt out of measurement on this site',
+      resume: 'Allow measurement again',
+      active: 'Current status: audience measurement is on in this browser.',
+      refused: 'Current status: you have opted out. This choice is stored in this browser only.',
+      browser:
+        'Current status: your browser sends the Global Privacy Control or Do Not Track signal, so audience measurement is off.',
+    },
     sections: [
       {
         title: 'Data controller',
@@ -344,8 +352,9 @@ export const en: Texts = {
       },
       {
         title: 'The website itself',
+        optOut: true,
         paragraphs: [
-          'The cambon.ai website sets no cookies and uses no audience measurement tools. Its fonts are served from cambon.ai: your browser contacts no other site during your visit.',
+          "The website sets no cookies. It measures its audience with an in-house tool, for statistical purposes only: page viewed, referring site, visit duration, device type. A random identifier, erased when you close the tab, links the pages of a single visit. This data is never cross-referenced, shared or used for any other purpose; it is stored in a private Google spreadsheet and kept for 13 months at most. To do this, your browser contacts Google's servers (script.google.com). Measurement is turned off if your browser sends the Global Privacy Control or Do Not Track signal.",
           'The website is hosted by GitHub Pages (GitHub Inc.). As GitHub states, visitors\' IP addresses are logged and stored for security purposes, whether or not the visitor is signed in to GitHub.',
         ],
       },
@@ -369,7 +378,7 @@ export const en: Texts = {
         'GitHub Inc., 88 Colin P. Kelly Jr. Street, San Francisco, CA 94107, United States',
       ],
     ],
-    privacy: 'This website sets no cookies and uses no audience measurement tools.',
+    privacy: 'This website sets no cookies. It measures its audience anonymously, with an in-house tool.',
   },
   notFound: {
     title: 'Page not found',

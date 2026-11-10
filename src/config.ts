@@ -25,6 +25,13 @@ export const NEWSLETTER_URL =
   'https://script.google.com/macros/s/AKfycbzJmJo0UCv28f6QQXlD-aLPmpbkFmjyT8LQYJt13lksvDrdDfk5ldHj9rwuQW75AIoFSg/exec';
 
 /**
+ * Adresse de l'application web Google Apps Script qui reçoit la mesure
+ * d'audience maison, sans cookie (voir tools/audience/README.md).
+ * Vide = mesure désactivée (aucun script ajouté aux pages).
+ */
+export const AUDIENCE_URL = '';
+
+/**
  * Version du texte de consentement de la newsletter. À changer (ex. v2-2027-01)
  * si le texte de la case à cocher change, et à ajouter dans CONSENT_VERSIONS
  * du script Apps Script.

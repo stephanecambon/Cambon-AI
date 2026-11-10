@@ -17,7 +17,7 @@ Site vitrine de Cambon AI (SASU, Paris), R&D appliquée pour PME et ETI. Propri�
 
 - **Données minimales** : le tableur ne reçoit que `date`, `email`, `langue`, `page`, `consentement` (version du texte, ex. `v1-2026-11`). Jamais d'adresse IP, de navigateur ni d'autre champ. Toute donnée en plus impose de mettre à jour la page Confidentialité.
 - **Consentement obligatoire** : case non précochée, `required` côté site, revérifiée par le script (`consentement=oui` + version listée dans `CONSENT_VERSIONS`). Si le texte de la case change : nouvelle `NEWSLETTER_CONSENT_VERSION` dans `src/config.ts` et dans `Code.gs`.
-- **Aucun service tiers hors Google Workspace, aucun cookie, aucun traceur.** Le seul JavaScript du site est l'amélioration progressive du formulaire (`src/components/Newsletter.astro`), servi depuis cambon.ai.
+- **Aucun service tiers hors Google Workspace, aucun cookie.** Le JavaScript de la newsletter est l'amélioration progressive du formulaire (`src/components/Newsletter.astro`), servi depuis cambon.ai.
 - **Fonctionne sans JavaScript** : `<form method="post" action={NEWSLETTER_URL}>` classique ; le script renvoie alors une page HTML bilingue (lien de retour en `target="_top"`, car Apps Script sert le HTML dans un cadre).
 - **Avec JavaScript** : `fetch` POST de type « simple » (`URLSearchParams`, aucun en-tête personnalisé) pour éviter la pré-vérification CORS qu'Apps Script ne gère pas ; `format=json` et `sent` ajoutés. La réponse arrive après redirection vers `script.googleusercontent.com` (`Access-Control-Allow-Origin: *`). Si la réponse est illisible, retour à l'envoi classique (doublons ignorés côté script).
 - Anti-robots : champ piège `website` et horodatage `t` (+ `sent` côté JS) : moins de 3 s = ignoré en silence. Doublon = pas de ligne, même message de succès.
@@ -25,22 +25,34 @@ Site vitrine de Cambon AI (SASU, Paris), R&D appliquée pour PME et ETI. Propri�
 - Tant que `NEWSLETTER_URL` commence par `[`, le formulaire et la ligne « Recevez mes analyses » du bloc d'appel à l'action ne sont pas affichés.
 - Pages `/confidentialite/` et `/en/privacy/` (textes dans `privacy` de `fr.ts`/`en.ts`), liées depuis le pied de page et la case de consentement.
 
+## Mesure d'audience (maison, sans cookie)
+
+- Même modèle que la newsletter : `src/components/Audience.astro` (script en ligne, sans dépendance, inclus dans `Base.astro`) envoie des événements à un Apps Script séparé, `tools/audience/Code.gs` (le dépôt fait foi), qui les écrit dans le tableur privé « Cambon AI · Audience » (onglet « Événements »). Mode d'emploi : `tools/audience/README.md`.
+- **Événements** : « vue » au chargement ; « fin » avec la durée visible cumulée (`visibilitychange` → `hidden`, `pagehide`). Envoi `sendBeacon` en `text/plain`, repli `fetch` `keepalive` `no-cors`. Tout en `try/catch`, aucune erreur visible.
+- **Champs** (et rien d'autre) : `type`, `visite`, `vue`, `page`, `langue`, `provenance`, `utm_source`, `utm_medium`, `utm_campaign`, `appareil` (< 760 px = mobile), `duree_s`. Le script ajoute `horodatage` et `provenance_brute`, tronque à 200 caractères, n'enregistre ni IP ni navigateur. Toute donnée en plus impose de mettre à jour la page Confidentialité.
+- **Visite** : identifiant aléatoire dans `sessionStorage['cambon-visite']`, renouvelé à chaque arrivée depuis un autre site. **Vue** : identifiant en mémoire. Stockage inaccessible : vue mesurée sans visite.
+- **Pas de mesure** si : `AUDIENCE_URL` vide, Global Privacy Control, `doNotTrack === '1'`, `navigator.webdriver`, page en prérendu (attente de l'activation), ou `localStorage['cambon-no-audience'] === '1'` (bouton « Ne pas être mesuré sur ce site » de la page Confidentialité ; le refus coupe aussi les envois de la page en cours).
+- **Provenances** : table `PROVENANCES` en haut de `Code.gs` (linkedin, google, gmail, facebook, x, bing, duckduckgo, qwant ; le reste tel quel sans `www.`). Pas de nom d'assistant IA dans cette table (dépôt public) : ces domaines apparaissent tels quels.
+- **Tableau de bord** : formules uniquement (`QUERY … GROUP BY`, onglet de calcul masqué `_visites`, une ligne par visite des 30 derniers jours). Aucune valeur en dur. `setup()` le recrée sans toucher aux événements.
+- **Conservation** : 13 mois, `purge()` lancée chaque mois par un déclencheur temporel.
+
 ## Réglages et repères
 
 Tout est dans `src/config.ts` :
 
 - `BOOKING_URL` : page de rendez-vous Google Agenda (tous les boutons « Prendre rendez-vous »).
 - `NEWSLETTER_URL` : application web Apps Script de la newsletter. `NEWSLETTER_CONSENT_VERSION` : version du texte de consentement.
+- `AUDIENCE_URL` : application web Apps Script de la mesure d'audience. Vide = mesure désactivée (aucun script dans les pages).
 - `URL_PLACEHOLDERS` / `TEXT_PLACEHOLDERS` : mécanisme de repères entre crochets (`[MON_REPÈRE]`), vide aujourd'hui. Un lien dont l'URL commence par `[` n'est pas affiché ; un `BOOKING_URL` ou `NEWSLETTER_URL` qui commence par `[` bascule en `mailto:` ou masque le formulaire.
 - `PHOTO_PATH` : photo de « Qui je suis ». **Reste à fournir** : `public/images/stephane-cambon.jpg` (sinon cadre « Photo à venir »).
 
 ## Pile technique
 
-- Astro 7, sortie 100 % statique. Pas de framework JS côté client ; deux petits `<script>` en amélioration progressive : formulaire newsletter (`Newsletter.astro`) et masquage de la ligne de navigation mobile au défilement (`Header.astro`, classe `js-hdr` sur `<html>`, en-tête `fixed` + `--header-full-h` seulement avec JS ; sans JS, en-tête collé classique). Les filtres de la page Projets sont en CSS pur (boutons radio + `:has()`) : sans `:has()` ni JS, tous les projets restent visibles.
+- Astro 7, sortie 100 % statique. Pas de framework JS côté client ; de petits `<script>` en amélioration progressive : formulaire newsletter (`Newsletter.astro`), mesure d'audience (`Audience.astro`), bouton d'opposition de la page Confidentialité (`Privacy.astro`), animation du logo et masquage de la ligne de navigation mobile au défilement (`Header.astro`, classe `js-hdr` sur `<html>`, en-tête `fixed` + `--header-full-h` seulement avec JS ; sans JS, en-tête collé classique). Les filtres de la page Projets sont en CSS pur (boutons radio + `:has()`) : sans `:has()` ni JS, tous les projets restent visibles.
 - Hébergement : GitHub Pages, dépôt public `stephanecambon/Cambon-AI`. Le workflow `.github/workflows/deploy.yml` (`withastro/action` puis `actions/deploy-pages`) se déclenche à chaque push sur `main`.
 - Domaine `cambon.ai` (apex), `www` redirige vers l'apex. Le fichier `public/CNAME` doit rester présent.
 - **Ne jamais toucher aux DNS MX/TXT** : la messagerie Google Workspace tourne sur ce domaine.
-- Pas d'analytics, pas de cookies, pas de formulaire, pas de ressource tierce (polices auto-hébergées via l'API `fonts` d'Astro). En ajouter impose de revoir le RGPD et les mentions légales.
+- Pas de cookies, pas d'analytics tiers, pas de ressource tierce (polices auto-hébergées via l'API `fonts` d'Astro). Seuls services externes : les deux scripts Apps Script (newsletter, mesure d'audience). En ajouter impose de revoir le RGPD et les mentions légales.
 - `npm run build` lance `astro check` (types) puis le build : il doit passer avant toute publication.
 
 ## Langues et pages

@@ -28,6 +28,7 @@ Ils sont regroupés dans `src/config.ts` :
 
 - `BOOKING_URL` : le lien de prise de rendez-vous (Google Agenda), utilisé par tous les boutons « Prendre rendez-vous ».
 - `NEWSLETTER_URL` : l'adresse du script Google qui enregistre les inscriptions à la newsletter.
+- `AUDIENCE_URL` : l'adresse du script Google de mesure d'audience (voir `tools/audience/README.md`). Vide = mesure désactivée.
 - `CONTACT_EMAIL` : l'adresse affichée en pied de page.
 - **La photo** : déposez votre photo sous le nom `public/images/stephane-cambon.jpg` (format portrait, environ 800 × 1000 px). Elle remplace automatiquement le cadre « Photo à venir ».
 

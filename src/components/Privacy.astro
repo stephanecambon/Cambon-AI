@@ -17,11 +17,54 @@ const t = texts[lang].privacy;
       <section class="privacy__block">
         <h2>{plain(s.title, lang)}</h2>
         {s.paragraphs.map((p) => <p>{plain(p, lang)}</p>)}
+        {'optOut' in s && s.optOut && (
+          <div
+            class="optout"
+            hidden
+            data-optout
+            data-stop={t.optOut.stop}
+            data-resume={t.optOut.resume}
+            data-active={plain(t.optOut.active, lang)}
+            data-refused={plain(t.optOut.refused, lang)}
+            data-browser={plain(t.optOut.browser, lang)}
+          >
+            <p class="optout__state" aria-live="polite"></p>
+            <button class="btn btn--outline btn--small" type="button"></button>
+          </div>
+        )}
       </section>
     ))}
     <p class="privacy__updated">{plain(t.updated, lang)}</p>
   </div>
 </section>
+
+<script is:inline>
+  // Choix d'opposition à la mesure d'audience, enregistré dans ce navigateur.
+  (function () {
+    try {
+      var box = document.querySelector('[data-optout]');
+      if (!box) return;
+      var KEY = 'cambon-no-audience';
+      var state = box.querySelector('.optout__state');
+      var btn = box.querySelector('button');
+      var signal = navigator.globalPrivacyControl === true || navigator.doNotTrack === '1';
+      var render = function () {
+        var refused = localStorage.getItem(KEY) === '1';
+        state.textContent = refused ? box.dataset.refused : signal ? box.dataset.browser : box.dataset.active;
+        btn.textContent = refused ? box.dataset.resume : box.dataset.stop;
+      };
+      btn.addEventListener('click', function () {
+        try {
+          if (localStorage.getItem(KEY) === '1') localStorage.removeItem(KEY);
+          else localStorage.setItem(KEY, '1');
+        } catch (e) {}
+        render();
+      });
+      render();
+      box.hidden = false; // sans JavaScript ni stockage, le bloc reste masqué
+    } catch (e) {}
+  })();
+</script>
 
 <style>
   .privacy {
@@ -47,6 +90,23 @@ const t = texts[lang].privacy;
   }
   .privacy__block p + p {
     margin-top: 0.8em;
+  }
+  .optout {
+    margin-top: 20px;
+    padding: 16px 20px;
+    background: var(--surface);
+    border-radius: var(--radius);
+  }
+  .optout[hidden] {
+    display: none;
+  }
+  .optout__state {
+    margin-bottom: 12px;
+  }
+  @media (max-width: 860px) {
+    .optout button {
+      min-height: 44px;
+    }
   }
   .privacy__updated {
     margin-top: 40px;

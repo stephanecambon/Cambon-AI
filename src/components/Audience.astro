@@ -1,0 +1,116 @@
+---
+// Mesure d'audience maison, sans cookie (voir tools/audience/README.md).
+// Aucun script n'est ajouté tant que AUDIENCE_URL est vide.
+import { AUDIENCE_URL } from '../config';
+---
+{AUDIENCE_URL && (
+  <script is:inline define:vars={{ endpoint: AUDIENCE_URL }}>
+    try {
+      var nav = navigator;
+      // Pas de mesure : signal GPC ou Do Not Track, navigateur piloté, ou refus enregistré.
+      var refus = nav.globalPrivacyControl === true || nav.doNotTrack === '1' || nav.webdriver === true;
+      try {
+        if (localStorage.getItem('cambon-no-audience') === '1') refus = true;
+      } catch (e) {}
+
+      var demarrer = function () {
+        try {
+          var id = function () {
+            try {
+              return crypto.randomUUID();
+            } catch (e) {
+              return Date.now().toString(36) + '-' + Math.random().toString(36).slice(2);
+            }
+          };
+          var envoyer = function (data) {
+            try {
+              // Refus exprimé pendant la visite (page Confidentialité) : plus aucun envoi.
+              try {
+                if (localStorage.getItem('cambon-no-audience') === '1') return;
+              } catch (e) {}
+              var body = JSON.stringify(data);
+              var ok = false;
+              try {
+                ok = nav.sendBeacon(endpoint, new Blob([body], { type: 'text/plain' }));
+              } catch (e) {}
+              if (!ok) fetch(endpoint, { method: 'POST', body: body, keepalive: true, mode: 'no-cors' }).catch(function () {});
+            } catch (e) {}
+          };
+
+          // Provenance : domaine du site d'origine, « direct » ou « interne ».
+          var refHost = '';
+          try {
+            if (document.referrer) refHost = new URL(document.referrer).hostname;
+          } catch (e) {}
+          var nu = function (h) {
+            return h.replace(/^www\./, '');
+          };
+          var interne = !!refHost && nu(refHost) === nu(location.hostname);
+          var provenance = !refHost ? 'direct' : interne ? 'interne' : refHost;
+
+          // Visite : identifiant aléatoire gardé dans l'onglet, effacé à sa fermeture.
+          var visite = '';
+          try {
+            visite = sessionStorage.getItem('cambon-visite') || '';
+            if (!interne || !visite) {
+              visite = id();
+              sessionStorage.setItem('cambon-visite', visite);
+            }
+          } catch (e) {
+            visite = '';
+          }
+
+          var q = new URLSearchParams(location.search);
+          var base = {
+            visite: visite,
+            vue: id(),
+            page: location.pathname,
+            langue: document.documentElement.lang,
+            provenance: provenance,
+            utm_source: q.get('utm_source') || '',
+            utm_medium: q.get('utm_medium') || '',
+            utm_campaign: q.get('utm_campaign') || '',
+            appareil: window.innerWidth < 760 ? 'mobile' : 'ordinateur',
+          };
+          var avec = function (extra) {
+            var o = {};
+            for (var k in base) o[k] = base[k];
+            for (var k2 in extra) o[k2] = extra[k2];
+            return o;
+          };
+
+          // Durée : temps cumulé pendant lequel la page est visible.
+          var cumul = 0;
+          var depuis = document.visibilityState === 'visible' ? performance.now() : null;
+          var dernier = -1;
+          var fin = function () {
+            if (depuis !== null) {
+              cumul += performance.now() - depuis;
+              depuis = null;
+            }
+            var s = Math.round(cumul / 1000);
+            if (s === dernier) return;
+            dernier = s;
+            envoyer(avec({ type: 'fin', duree_s: s }));
+          };
+          document.addEventListener('visibilitychange', function () {
+            if (document.visibilityState === 'hidden') fin();
+            else if (depuis === null) depuis = performance.now();
+          });
+          window.addEventListener('pagehide', fin);
+          window.addEventListener('pageshow', function (e) {
+            if (e.persisted && document.visibilityState === 'visible' && depuis === null) depuis = performance.now();
+          });
+
+          envoyer(avec({ type: 'vue' }));
+        } catch (e) {}
+      };
+
+      if (!refus) {
+        // Page préchargée par le navigateur : on attend qu'elle soit réellement affichée.
+        if (document.prerendering) document.addEventListener('prerenderingchange', demarrer, { once: true });
+        else demarrer();
+      }
+    } catch (e) {}
+  </script>
+)}

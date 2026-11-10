@@ -298,6 +298,15 @@ export const fr = {
     intro:
       'Cette page explique quelles données le site cambon.ai et sa newsletter collectent, pourquoi, combien de temps, et comment exercer vos droits.',
     updated: 'Dernière mise à jour : novembre 2026.',
+    optOut: {
+      stop: 'Ne pas être mesuré sur ce site',
+      resume: 'Mesurer à nouveau',
+      active: "État actuel : la mesure d'audience est active dans ce navigateur.",
+      refused:
+        'État actuel : vous avez choisi de ne pas être mesuré. Ce choix est enregistré dans ce navigateur uniquement.',
+      browser:
+        "État actuel : votre navigateur envoie le signal Global Privacy Control ou Do Not Track, la mesure d'audience est donc désactivée.",
+    },
     sections: [
       {
         title: 'Responsable du traitement',
@@ -348,8 +357,9 @@ export const fr = {
       },
       {
         title: 'Le site lui-même',
+        optOut: true,
         paragraphs: [
-          "Le site cambon.ai ne dépose aucun cookie et n'utilise aucun outil de mesure d'audience. Ses polices de caractères sont servies depuis cambon.ai : votre navigateur ne contacte aucun autre site pendant la visite.",
+          "Le site ne dépose aucun cookie. Il mesure son audience avec un outil maison, à des fins de statistiques uniquement : page consultée, site de provenance, durée de visite, type d'appareil. Un identifiant aléatoire, effacé à la fermeture de l'onglet, relie les pages d'une même visite. Ces données ne sont ni recoupées, ni partagées, ni utilisées à d'autres fins ; elles sont stockées dans un tableur Google privé et conservées 13 mois au plus. Votre navigateur contacte pour cela les serveurs de Google (script.google.com). La mesure est désactivée si votre navigateur envoie le signal Global Privacy Control ou Do Not Track.",
           "Le site est hébergé par GitHub Pages (GitHub Inc.). Comme l'indique GitHub, l'adresse IP des visiteurs est enregistrée et conservée à des fins de sécurité, que le visiteur soit connecté à GitHub ou non.",
         ],
       },
@@ -371,7 +381,7 @@ export const fr = {
       ],
     ],
     privacy:
-      "Ce site ne dépose aucun cookie et n'utilise aucun outil de mesure d'audience.",
+      "Ce site ne dépose aucun cookie. Il mesure son audience de façon anonyme, avec un outil maison.",
   },
   notFound: {
     title: 'Page introuvable',
