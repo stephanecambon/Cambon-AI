@@ -196,9 +196,9 @@ const otherHref = alternates[other];
   }
 
   /* ---------- Logo : le carré « AI » ressort puis s'emboîte (0,7 s) ----------
-     Déclenché par JavaScript (classe .is-animating) au survol ou au focus
-     clavier du lien. Sans JS, sur mobile ou si l'utilisateur réduit les
-     animations : logo statique. 60px = 60 unités du dessin (viewBox 240),
+     Déclenché par JavaScript (classe .is-animating) une fois au chargement de
+     la page, puis au survol (souris) ou au focus clavier du lien. Sans JS ou
+     si l'utilisateur réduit les animations : logo statique. 60px = 60 unités du dessin (viewBox 240),
      donc proportionnel à la taille d'affichage. */
   @keyframes logo-emboite {
     0% {
@@ -226,7 +226,8 @@ const otherHref = alternates[other];
 <script>
   // Mobile : masque la ligne de navigation en descendant, la réaffiche en remontant.
   // Le logo et « Prendre rendez-vous » restent toujours visibles.
-  // Logo : animation d'emboîtement, une fois par survol (ou focus clavier).
+  // Logo : animation d'emboîtement, une fois au chargement de la page,
+  // puis une fois par survol (ou focus clavier).
   // Elle se joue toujours en entier : la classe n'est retirée qu'à la fin.
   const logoLink = document.querySelector<HTMLAnchorElement>('.site-header__logo');
   const logoAi = logoLink?.querySelector('.logo-ai');
@@ -244,6 +245,10 @@ const otherHref = alternates[other];
       if (logoLink.matches(':focus-visible')) play();
     });
     logoAi.addEventListener('animationend', () => logoLink.classList.remove('is-animating'));
+    // Au chargement : court délai pour que la page soit affichée avant le mouvement
+    const playOnLoad = () => setTimeout(play, 400);
+    if (document.readyState === 'complete') playOnLoad();
+    else window.addEventListener('load', playOnLoad, { once: true });
   }
 
   const header = document.querySelector<HTMLElement>('.site-header');
