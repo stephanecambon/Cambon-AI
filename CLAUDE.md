@@ -44,6 +44,13 @@ Site vitrine de Cambon AI (SASU, Paris), R&D appliquée pour PME et ETI. Propri�
 - Lecture : `?format=stats&cle=…` sur les deux scripts Apps Script (`lireEvenements_`, `lireInscriptions_`). Sans la bonne clé (propriété de script `CLE_LECTURE`, créée par `creerCleLecture()`), réponse `{"ok":false}`. La newsletter ne renvoie jamais les e-mails (date, langue, page seulement).
 - Clés dans `.env` (exclu du dépôt) : `AUDIENCE_CLE_LECTURE`, `NEWSLETTER_CLE_LECTURE`. Ne jamais les écrire dans le dépôt public.
 
+## Signature e-mail
+
+- Fichier source : `tools/signature/signature-cambon-ai.html` (ouvrir dans un navigateur, tout sélectionner, copier, coller dans Gmail › Paramètres › Signature). **Exclu du dépôt** (`.gitignore`) car il contient le numéro de téléphone : il n'existe que sur l'ordinateur de travail.
+- Picto hébergé à `https://cambon.ai/signature/cambon-ai-picto.png` (`public/signature/`, PNG 192 × 192, fond transparent, sans métadonnées) : **ne jamais le déplacer ni le renommer**, sinon toutes les signatures déjà envoyées affichent une image cassée.
+- Deux couleurs seulement : rouge brun `#782114` et vermillon `#E02A00` (réservé à « Prendre rendez-vous »).
+- Police Helvetica/Arial : Barlow ne s'affiche pas dans les messageries.
+
 ## Réglages et repères
 
 Tout est dans `src/config.ts` :
