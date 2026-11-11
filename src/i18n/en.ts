@@ -1,4 +1,4 @@
-// English texts. Wrap a word in == to highlight it in orange (e.g. ==at the scale of your business==).
+// English texts. Wrap a word in == to highlight it in vermilion (e.g. ==at the scale of your business==).
 // Any bracketed marker is replaced via src/config.ts.
 import type { Texts } from './fr';
 

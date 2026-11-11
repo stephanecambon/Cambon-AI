@@ -5,14 +5,14 @@
 
 :root {
   /* Couleurs */
-  /* Palette Cambon AI : rouge brun, orange papaye, blanc chaud */
-  --paper: #fff8f0;        /* fond : blanc chaud */
+  /* Palette Cambon AI : rouge brun, vermillon, blanc chaud */
+  --paper: #fffbf7;        /* fond : blanc chaud */
   --ink: #782114;          /* encre principale : rouge brun (titres, traits forts, contours) */
   --text-2: #4a190f;       /* texte courant : bordeaux noir */
   --text-muted: #a54631;   /* texte discret : brun rouge */
   --rule: #eba18b;         /* traits fins : corail doux */
-  --amber: #f17143;        /* accent orange papaye : boutons d'action et surligneur UNIQUEMENT (jamais en couleur de texte) */
-  --on-amber: #4a190f;     /* texte posé sur l'accent (bordeaux noir, 5:1) */
+  --amber: #e02a00;        /* accent vermillon : boutons d'action et surligneur UNIQUEMENT (texte en vermillon : titres et 18 px et plus seulement) */
+  --on-amber: #ffffff;     /* texte posé sur l'accent (blanc, 4,7:1) */
   --amber-soft: #ffd2ba;   /* fond d'accent doux : pêche clair */
   --amber-dark: #a54631;   /* petits textes d'accent (numéros de section) */
 
@@ -29,8 +29,6 @@
   --rule-thin: 1px solid var(--rule);
 
   /* Cahier */
-  --notebook-line: rgba(120, 33, 20, 0.08);
-  --notebook-step: 34px;
 
   /* Mise en page */
   --max-width: 1120px;
@@ -66,8 +64,6 @@ body {
   display: flex;
   flex-direction: column;
   background-color: var(--paper);
-  background-image: linear-gradient(var(--notebook-line) 1px, transparent 1px);
-  background-size: 100% var(--notebook-step);
   color: var(--text-2);
   font-family: var(--font-text);
   font-size: 1.0625rem;
@@ -129,9 +125,9 @@ a:hover {
 
 /* ---------- Éléments du design ---------- */
 
-/* Surligneur orange sur un mot clé */
+/* Surligneur vermillon sur un mot clé */
 .surligne {
-  background: linear-gradient(transparent 58%, rgba(241, 113, 67, 0.55) 58%);
+  background: linear-gradient(transparent 58%, rgba(224, 42, 0, 0.33) 58%);
   padding-inline: 0.06em;
   -webkit-box-decoration-break: clone;
   box-decoration-break: clone;
@@ -235,7 +231,7 @@ a:hover {
 :root {
   /* Bloc sombre « plan » (schéma des trois couches) */
   --plan-bg: #4a190f;
-  --plan-text: #fff8f0;
+  --plan-text: #fffbf7;
   --plan-muted: #eba18b;
   --plan-rule: #a54631;
 }
