@@ -2,6 +2,7 @@ import { getRelativeLocaleUrl } from 'astro:i18n';
 import { fr } from './fr';
 import { en } from './en';
 import { TEXT_PLACEHOLDERS } from '../config';
+import { typoFr } from '../lib/typo';
 
 export const LANGS = ['fr', 'en'] as const;
 export type Lang = (typeof LANGS)[number];
@@ -24,6 +25,10 @@ export const routes = {
     fr: getRelativeLocaleUrl('fr', 'confidentialite'),
     en: getRelativeLocaleUrl('en', 'privacy'),
   },
+  blog: {
+    fr: getRelativeLocaleUrl('fr', 'blog'),
+    en: getRelativeLocaleUrl('en', 'blog'),
+  },
 } satisfies Record<string, Alternates>;
 
 export type PageKey = keyof typeof routes;
@@ -32,29 +37,14 @@ export type PageKey = keyof typeof routes;
 export const projectUrl = (lang: Lang, slug: string) =>
   `${routes.projects[lang]}${slug}/`;
 
+/** Adresse d'un article du blog. */
+export const articleUrl = (lang: Lang, slug: string) => `${routes.blog[lang]}${slug}/`;
+
 /** Ancres des sections de l'accueil. */
 export const anchors = {
   fr: { approach: 'approche', about: 'a-propos', projects: 'projets', contact: 'contact' },
   en: { approach: 'approach', about: 'about', projects: 'projects', contact: 'contact' },
 } satisfies Record<Lang, Record<string, string>>;
-
-const NBSP = ' ';
-const NNBSP = ' ';
-
-/** Espaces insécables de la typographie française (sans changer aucun mot). */
-function typoFr(text: string): string {
-  return text
-    .replace(/ :/g, `${NBSP}:`)
-    .replace(/ ([;!?])/g, `${NNBSP}$1`)
-    .replace(/« /g, `«${NNBSP}`)
-    .replace(/ »/g, `${NNBSP}»`)
-    .replace(/(\d) (?=\d{3}\b)/g, `$1${NBSP}`)
-    .replace(/(\d) (?=[%€\p{L}])/gu, `$1${NBSP}`)
-    .replace(/≈ /g, `≈${NBSP}`)
-    .replace(/ →/g, `${NBSP}→`)
-    // « à » ne reste jamais seul en fin de ligne
-    .replace(/(^|[\s=])([àÀ]) /g, `$1$2${NBSP}`);
-}
 
 /** Remplace les placeholders et applique la typographie. Renvoie du texte simple. */
 export function plain(text: string, lang: Lang): string {

@@ -119,13 +119,31 @@ function statsAudience(evenements: unknown[][], jours: number) {
 
 export type StatsNewsletter = ReturnType<typeof statsNewsletter>;
 
-function statsNewsletter(inscriptions: { date: string; langue: string; page: string }[], jours: number) {
+type Inscription = {
+  date: string;
+  langue: string;
+  page: string;
+  site?: boolean;
+  veille_r?: boolean;
+  exports?: boolean;
+  desinscrit?: boolean;
+};
+
+function statsNewsletter(inscriptions: Inscription[], jours: number) {
   const depuis = Date.now() - jours * 86400000;
   const dans = inscriptions.filter((i) => new Date(i.date).getTime() >= depuis);
   const derniere = inscriptions.map((i) => i.date).sort().at(-1);
+  const actifs = inscriptions.filter((i) => !i.desinscrit);
   return {
     jours,
     total: inscriptions.length,
+    actifs: actifs.length,
+    desinscrits: inscriptions.length - actifs.length,
+    listes: [
+      { libelle: 'Inscription site', valeur: actifs.filter((i) => i.site).length },
+      { libelle: 'Veille paramètre r', valeur: actifs.filter((i) => i.veille_r).length },
+      { libelle: 'Exports', valeur: actifs.filter((i) => i.exports).length },
+    ] as Ligne[],
     periode: dans.length,
     derniere: derniere ? jourParis(new Date(derniere)) : '',
     parJour: parJour(dans.map((i) => jourParis(new Date(i.date))), jours),

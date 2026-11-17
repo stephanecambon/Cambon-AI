@@ -1,6 +1,7 @@
 // Données structurées Schema.org (JSON-LD) : aident Google à comprendre
 // qui édite le site, ce que fait Cambon AI et comment les pages s'organisent.
-import { texts, routes, projectUrl, plain, type Lang } from '../i18n';
+import { texts, routes, projectUrl, articleUrl, plain, type Lang } from '../i18n';
+import { articleSlug, type Article } from './articles';
 import { CONTACT_EMAIL, LINKEDIN_URL } from '../config';
 
 const SITE = 'https://cambon.ai';
@@ -127,6 +128,56 @@ export function projectJsonLd(
         image: abs(p.imageUrl),
         inLanguage: LOCALE[lang],
         keywords: p.keywords,
+        author: { '@type': 'Person', '@id': PERSON_ID, name: 'Stéphane Cambon' },
+        publisher: { '@type': 'Organization', '@id': ORG_ID, name: 'Cambon AI' },
+      },
+    ],
+  };
+}
+
+/** Blog : liste des articles, ou article seul (BlogPosting). */
+export function blogJsonLd(lang: Lang, article: Article | null, articles: Article[]) {
+  const t = texts[lang];
+  const crumbs: Array<[string, string]> = [
+    ['Cambon AI', routes.home[lang]],
+    [t.blog.title, routes.blog[lang]],
+  ];
+  if (!article) {
+    return {
+      '@context': 'https://schema.org',
+      '@graph': [
+        breadcrumb(lang, crumbs),
+        {
+          '@type': 'Blog',
+          name: `${t.blog.title} · Cambon AI`,
+          url: abs(routes.blog[lang]),
+          inLanguage: LOCALE[lang],
+          publisher: { '@type': 'Organization', '@id': ORG_ID, name: 'Cambon AI' },
+          blogPost: articles.map((a) => ({
+            '@type': 'BlogPosting',
+            headline: plain(a.data.title, lang),
+            url: abs(articleUrl(lang, articleSlug(a))),
+            datePublished: a.data.date.toISOString().slice(0, 10),
+          })),
+        },
+      ],
+    };
+  }
+  const d = article.data;
+  const path = articleUrl(lang, articleSlug(article));
+  return {
+    '@context': 'https://schema.org',
+    '@graph': [
+      breadcrumb(lang, [...crumbs, [plain(d.title, lang), path]]),
+      {
+        '@type': 'BlogPosting',
+        '@id': `${abs(path)}#article`,
+        headline: plain(d.title, lang),
+        description: plain(d.summary, lang),
+        url: abs(path),
+        datePublished: d.date.toISOString().slice(0, 10),
+        ...(d.updated ? { dateModified: d.updated.toISOString().slice(0, 10) } : {}),
+        inLanguage: LOCALE[lang],
         author: { '@type': 'Person', '@id': PERSON_ID, name: 'Stéphane Cambon' },
         publisher: { '@type': 'Organization', '@id': ORG_ID, name: 'Cambon AI' },
       },

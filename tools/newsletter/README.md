@@ -84,3 +84,10 @@ La page `/admin/` du site, qui n'existe que sur l'ordinateur de travail (`npm ru
 3. Pour changer de clé : **Paramètres du projet › Propriétés du script**, supprimez `CLE_LECTURE`, relancez **creerCleLecture**, puis mettez à jour `.env`.
 
 Le script ne renvoie que la date, la langue et la page de chaque inscription. **Les adresses e-mail ne sortent jamais du tableur.**
+
+## Listes, désinscription et onglet « content »
+
+- Colonnes ajoutées après `consentement` : `optin_site`, `optin_veille_r`, `optin_exports`, `desinscription`. Chaque `optin_*` contient la date d'inscription à la liste (`optin_exports` : date et origine de l'import, par exemple `2026-11-20 linkedin`). `desinscription` contient la date de désinscription : la personne ne reçoit plus rien.
+- **setup** ajoute les colonnes manquantes sans toucher aux données, remplit `optin_site` pour les inscrits venus du site, et crée l'onglet **content** (sommaire éditorial). On peut le relancer sans risque.
+- Lien de désinscription : `…/exec?format=desinscription&langue=fr&id=<jeton>`. Le jeton est calculé à partir de l'adresse et d'une clé secrète du script (propriété `CLE_DESINSCRIPTION`, créée automatiquement) : l'adresse n'apparaît jamais dans le lien. Le clic affiche une page de confirmation ; seul le bouton « Me désinscrire » enregistre la date.
+- Une personne désinscrite qui se réinscrit par le formulaire du site est réactivée sur la même ligne.

@@ -7,8 +7,13 @@
  * « Accès : tout le monde ».
  *
  * Reçoit le formulaire du site cambon.ai et ajoute une ligne :
- *   date | email | langue | page | consentement
+ *   date | email | langue | page | consentement |
+ *   optin_site | optin_veille_r | optin_exports | desinscription
+ * Les colonnes optin_* contiennent la date d'inscription à chaque liste
+ * (optin_exports : date et origine de l'import). desinscription : date à
+ * laquelle la personne s'est désinscrite (elle ne reçoit plus rien).
  * Rien d'autre n'est enregistré (ni adresse IP, ni navigateur).
+ * L'onglet « content » sert de sommaire éditorial (articles du blog, envois).
  * À chaque nouvelle inscription, un e-mail de notification est envoyé à
  * NOTIFY_EMAIL (pas pour les doublons ni les robots).
  *
@@ -19,7 +24,12 @@
 
 var CONFIG = {
   SHEET_NAME: 'Inscriptions',
-  HEADERS: ['date', 'email', 'langue', 'page', 'consentement'],
+  HEADERS: [
+    'date', 'email', 'langue', 'page', 'consentement',
+    'optin_site', 'optin_veille_r', 'optin_exports', 'desinscription',
+  ],
+  CONTENT_SHEET: 'content',
+  CONTENT_HEADERS: ['titre', 'url', 'langue', 'statut', 'date_publication', 'date_envoi', 'listes', 'notes'],
   SITE_URL: 'https://cambon.ai',
   // Versions du texte de consentement acceptées. Si le texte de la case
   // à cocher change sur le site, ajouter ici la nouvelle version.
@@ -39,6 +49,9 @@ var MESSAGES = {
     error: 'Une erreur est survenue. Écrivez-moi directement à stephane@cambon.ai.',
     back: 'Retour au site',
     endpoint: 'Cette adresse reçoit les inscriptions à la newsletter du site cambon.ai.',
+    unsubAsk: 'Vous ne recevrez plus la newsletter de Cambon AI. Confirmez-vous votre désinscription ?',
+    unsubButton: 'Me désinscrire',
+    unsubDone: 'C’est fait : vous ne recevrez plus la newsletter de Cambon AI.',
   },
   en: {
     title: 'Cambon AI newsletter',
@@ -48,12 +61,16 @@ var MESSAGES = {
     error: 'Something went wrong. Email me directly at stephane@cambon.ai.',
     back: 'Back to the website',
     endpoint: 'This address receives newsletter sign-ups from the cambon.ai website.',
+    unsubAsk: 'You will no longer receive the Cambon AI newsletter. Do you confirm?',
+    unsubButton: 'Unsubscribe',
+    unsubDone: 'Done: you will no longer receive the Cambon AI newsletter.',
   },
 };
 
 /** Réception du formulaire. */
 function doPost(e) {
   var p = (e && e.parameter) || {};
+  if (p.format === 'desinscription') return desinscrire_(p);
   var lang = p.langue === 'en' ? 'en' : 'fr';
   var wantsJson = p.format === 'json'; // ajouté par le JavaScript du site
   var page = cleanPage_(p.page, lang);
@@ -72,17 +89,29 @@ function doPost(e) {
     var email = String(p.email || '').replace(/\s+/g, '').toLowerCase();
     if (!isValidEmail_(email)) return respond_('email', lang, page, wantsJson);
 
-    // 4. Écriture, une à la fois. Doublon : pas de nouvelle ligne,
-    //    mais même message de succès (ne pas révéler qui est inscrit).
+    // 4. Écriture, une à la fois. Déjà inscrit via le site : pas de nouvelle
+    //    ligne, mais même message de succès (ne pas révéler qui est inscrit).
+    //    Déjà présent mais désinscrit, ou venu d'une autre liste : la ligne
+    //    existante est mise à jour (nouvelle inscription via le site).
     var lock = LockService.getScriptLock();
     if (!lock.tryLock(10000)) return respond_('error', lang, page, wantsJson);
     var added = null;
     try {
       var sheet = getSheet_();
-      if (!alreadySubscribed_(sheet, email)) {
-        var date = Utilities.formatDate(new Date(), CONFIG.TIMEZONE, "yyyy-MM-dd'T'HH:mm:ssXXX");
-        sheet.appendRow([date, email, lang, page, version]);
+      var date = maintenant_();
+      var row = findRow_(sheet, email);
+      if (!row) {
+        sheet.appendRow([date, email, lang, page, version, date, '', '', '']);
         added = { date: date, total: sheet.getLastRow() - 1 };
+      } else {
+        var c = colonnes_();
+        var r = sheet.getRange(row, 1, 1, CONFIG.HEADERS.length).getValues()[0];
+        if (r[c.desinscription] !== '' || r[c.optin_site] === '') {
+          sheet.getRange(row, c.consentement + 1).setValue(version);
+          sheet.getRange(row, c.optin_site + 1).setValue(date);
+          sheet.getRange(row, c.desinscription + 1).setValue('');
+          added = { date: date, total: sheet.getLastRow() - 1 };
+        }
       }
     } finally {
       lock.releaseLock();
@@ -99,6 +128,7 @@ function doPost(e) {
 function doGet(e) {
   var p = (e && e.parameter) || {};
   if (p.format === 'stats') return lireInscriptions_(p);
+  if (p.format === 'desinscription') return pageDesinscription_(p);
   if (p.format === 'json') {
     return ContentService.createTextOutput(JSON.stringify({ ok: true, service: 'newsletter' }))
       .setMimeType(ContentService.MimeType.JSON);
@@ -112,8 +142,54 @@ function doGet(e) {
  * crée l'onglet et les en-têtes, et déclenche la demande d'autorisation.
  */
 function setup() {
-  getSheet_();
-  console.log('Tableur prêt : onglet « ' + CONFIG.SHEET_NAME + ' ».');
+  var sheet = getSheet_();
+  migrer_(sheet);
+  contentSheet_();
+  console.log('Tableur prêt : onglets « ' + CONFIG.SHEET_NAME + ' » et « ' + CONFIG.CONTENT_SHEET + ' ».');
+}
+
+/**
+ * Ajoute les colonnes manquantes (en-têtes en ligne 1, format texte brut)
+ * et remplit optin_site pour les inscrits venus du site avant leur création.
+ * Peut être relancée sans risque.
+ */
+function migrer_(sheet) {
+  var n = CONFIG.HEADERS.length;
+  var entetes = sheet.getRange(1, 1, 1, n).getValues()[0];
+  for (var i = 0; i < n; i++) {
+    if (entetes[i] === '') {
+      sheet.getRange(1, i + 1).setValue(CONFIG.HEADERS[i]);
+      sheet.getRange(1, i + 1, sheet.getMaxRows(), 1).setNumberFormat('@');
+    } else if (entetes[i] !== CONFIG.HEADERS[i]) {
+      throw new Error('Colonne ' + (i + 1) + ' inattendue : « ' + entetes[i] + ' » au lieu de « ' + CONFIG.HEADERS[i] + ' ».');
+    }
+  }
+  var last = sheet.getLastRow();
+  if (last < 2) return;
+  var c = colonnes_();
+  var rows = sheet.getRange(2, 1, last - 1, n).getValues();
+  var remplies = 0;
+  rows.forEach(function (r, k) {
+    // Une ligne avec un consentement mais sans optin_site vient du formulaire du site.
+    if (r[c.optin_site] === '' && r[c.consentement] !== '' && r[c.optin_exports] === '' && r[c.optin_veille_r] === '') {
+      sheet.getRange(k + 2, c.optin_site + 1).setValue(String(r[c.date]));
+      remplies++;
+    }
+  });
+  console.log('optin_site rempli pour ' + remplies + ' inscrit(s).');
+}
+
+/** Onglet « content » : sommaire éditorial (articles du blog, dates d'envoi, listes visées). */
+function contentSheet_() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sh = ss.getSheetByName(CONFIG.CONTENT_SHEET);
+  if (!sh) {
+    sh = ss.insertSheet(CONFIG.CONTENT_SHEET);
+    sh.getRange(1, 1, sh.getMaxRows(), CONFIG.CONTENT_HEADERS.length).setNumberFormat('@');
+    sh.getRange(1, 1, 1, CONFIG.CONTENT_HEADERS.length).setValues([CONFIG.CONTENT_HEADERS]).setFontWeight('bold');
+    sh.setFrozenRows(1);
+  }
+  return sh;
 }
 
 /**
@@ -185,16 +261,29 @@ function getSheet_() {
   return sheet;
 }
 
-function alreadySubscribed_(sheet, email) {
+/** Numéro de ligne de l'adresse dans l'onglet, ou 0. */
+function findRow_(sheet, email) {
   var last = sheet.getLastRow();
-  if (last < 2) return false;
+  if (last < 2) return 0;
   var col = CONFIG.HEADERS.indexOf('email') + 1;
-  return !!sheet
+  var cell = sheet
     .getRange(2, col, last - 1, 1)
     .createTextFinder(email)
     .matchCase(false)
     .matchEntireCell(true)
     .findNext();
+  return cell ? cell.getRow() : 0;
+}
+
+/** Index (à partir de 0) de chaque colonne, par nom. */
+function colonnes_() {
+  var c = {};
+  CONFIG.HEADERS.forEach(function (h, i) { c[h] = i; });
+  return c;
+}
+
+function maintenant_() {
+  return Utilities.formatDate(new Date(), CONFIG.TIMEZONE, "yyyy-MM-dd'T'HH:mm:ssXXX");
 }
 
 function respond_(status, lang, page, wantsJson) {
@@ -205,25 +294,14 @@ function respond_(status, lang, page, wantsJson) {
   return htmlPage_(lang, MESSAGES[lang][status], CONFIG.SITE_URL + page + '#newsletter', status === 'ok');
 }
 
-function htmlPage_(lang, message, backUrl, success) {
+function htmlPage_(lang, message, backUrl, success, extra) {
   var m = MESSAGES[lang];
   var html =
     '<!doctype html><html lang="' + lang + '"><head><meta charset="utf-8">' +
-    '<style>' +
-    'body{margin:0;background:#F3F1EA;color:#24395A;font:17px/1.6 Barlow,system-ui,-apple-system,"Segoe UI",sans-serif;' +
-    'background-image:linear-gradient(rgba(14,46,85,.07) 1px,transparent 1px);background-size:100% 34px}' +
-    'main{max-width:560px;margin:0 auto;padding:56px 20px}' +
-    '.logo{font:600 24px/1 "Barlow Condensed","Arial Narrow",sans-serif;text-transform:uppercase;color:#0E2E55;letter-spacing:.02em}' +
-    '.logo b{background:#FFB347;padding:2px 5px;border-radius:2px;font-weight:600}' +
-    'p.msg{margin:40px 0 28px;padding:14px 16px;border-top:2px solid #0E2E55;color:#0E2E55;font-weight:600}' +
-    'p.ok{background:rgba(255,179,71,.7)}' +
-    'a.back{display:inline-flex;align-items:center;min-height:48px;padding:0 18px;border:2px solid #0E2E55;border-radius:2px;' +
-    'background:#FFB347;color:#0E2E55;font-weight:600;text-decoration:none;box-shadow:3px 3px 0 #0E2E55}' +
-    'a.back:focus-visible{outline:3px solid #0E2E55;outline-offset:3px}' +
-    '</style></head><body><main>' +
+    '<style>' + STYLE_PAGE_ + '</style></head><body><main>' +
     '<div class="logo">Cambon <b>AI</b></div>' +
     '<p class="msg' + (success ? ' ok' : '') + '" role="status">' + escapeHtml_(message) + '</p>' +
-    '<a class="back" href="' + escapeHtml_(backUrl) + '" target="_top">← ' + escapeHtml_(m.back) + '</a>' +
+    (extra || '<a class="btn" href="' + escapeHtml_(backUrl) + '" target="_top">← ' + escapeHtml_(m.back) + '</a>') +
     '</main></body></html>';
   return HtmlService.createHtmlOutput(html)
     .setTitle(m.title)
@@ -239,19 +317,26 @@ function escapeHtml_(s) {
 }
 
 /**
- * Inscriptions pour la page /admin/ du site : date, langue et page seulement.
- * Les adresses e-mail ne sortent jamais du tableur. Clé de lecture obligatoire.
+ * Inscriptions pour la page /admin/ du site : date, langue, page, listes et
+ * désinscription (oui / non). Les adresses e-mail ne sortent jamais du tableur.
+ * Clé de lecture obligatoire.
  */
 function lireInscriptions_(p) {
   if (!cleValide_(p.cle)) return json_({ ok: false });
   var sheet = getSheet_();
   var n = sheet.getLastRow() - 1;
   var rows = n > 0 ? sheet.getRange(2, 1, n, CONFIG.HEADERS.length).getDisplayValues() : [];
-  var iDate = CONFIG.HEADERS.indexOf('date');
-  var iLangue = CONFIG.HEADERS.indexOf('langue');
-  var iPage = CONFIG.HEADERS.indexOf('page');
+  var c = colonnes_();
   var inscriptions = rows.map(function (r) {
-    return { date: r[iDate], langue: r[iLangue], page: r[iPage] };
+    return {
+      date: r[c.date],
+      langue: r[c.langue],
+      page: r[c.page],
+      site: r[c.optin_site] !== '',
+      veille_r: r[c.optin_veille_r] !== '',
+      exports: r[c.optin_exports] !== '',
+      desinscrit: r[c.desinscription] !== '',
+    };
   });
   return json_({ ok: true, total: inscriptions.length, inscriptions: inscriptions });
 }
@@ -288,4 +373,87 @@ function creerCleLecture() {
 
 function json_(obj) {
   return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON);
+}
+
+/* ---------- Style des pages de réponse (charte Cambon AI) ---------- */
+
+var STYLE_PAGE_ =
+  'body{margin:0;background:#FFFBF7;color:#4A190F;font:17px/1.6 Barlow,system-ui,-apple-system,"Segoe UI",sans-serif}' +
+  'main{max-width:560px;margin:0 auto;padding:56px 20px}' +
+  '.logo{font:600 24px/1 "Barlow Condensed","Arial Narrow",sans-serif;text-transform:uppercase;color:#782114;letter-spacing:.02em}' +
+  '.logo b{background:#E02A00;color:#fff;padding:2px 5px;border-radius:2px;font-weight:600}' +
+  'p.msg{margin:40px 0 28px;padding:14px 16px;border-top:2px solid #782114;color:#782114;font-weight:600}' +
+  'p.ok{background:#FFD2BA}' +
+  '.btn{display:inline-flex;align-items:center;min-height:48px;padding:0 18px;border:2px solid #782114;border-radius:2px;' +
+  'background:#E02A00;color:#fff;font:600 17px/1 Barlow,system-ui,sans-serif;text-decoration:none;box-shadow:3px 3px 0 #782114;cursor:pointer}' +
+  '.btn:focus-visible{outline:3px solid #782114;outline-offset:3px}';
+
+/* ---------- Désinscription ---------- */
+
+/**
+ * Jeton de désinscription d'une adresse : HMAC avec une clé secrète du script
+ * (propriété CLE_DESINSCRIPTION, créée au premier appel). Le lien ne contient
+ * jamais l'adresse e-mail, et on ne peut pas fabriquer le jeton d'un autre.
+ */
+function jeton_(email) {
+  var props = PropertiesService.getScriptProperties();
+  var cle = props.getProperty('CLE_DESINSCRIPTION');
+  if (!cle) {
+    cle = (Utilities.getUuid() + Utilities.getUuid()).replace(/-/g, '');
+    props.setProperty('CLE_DESINSCRIPTION', cle);
+  }
+  var sig = Utilities.computeHmacSha256Signature(String(email).toLowerCase(), cle);
+  return Utilities.base64EncodeWebSafe(sig).replace(/=+$/, '').slice(0, 32);
+}
+
+/** Lien de désinscription à mettre dans chaque envoi. */
+function lienDesinscription_(email, lang) {
+  return ScriptApp.getService().getUrl() + '?format=desinscription&langue=' + (lang === 'en' ? 'en' : 'fr') +
+    '&id=' + jeton_(email);
+}
+
+/**
+ * GET (clic dans l'e-mail) : page de confirmation, sans rien modifier
+ * (les antivirus des messageries ouvrent les liens tout seuls).
+ * POST (bouton de confirmation) : la date de désinscription est enregistrée.
+ * Même réponse que l'adresse soit trouvée ou non.
+ */
+function pageDesinscription_(p) {
+  var lang = p.langue === 'en' ? 'en' : 'fr';
+  var m = MESSAGES[lang];
+  var id = String(p.id || '').replace(/[^A-Za-z0-9_-]/g, '').slice(0, 64);
+  var form =
+    '<form method="post" action="' + escapeHtml_(ScriptApp.getService().getUrl()) + '" target="_top">' +
+    '<input type="hidden" name="format" value="desinscription">' +
+    '<input type="hidden" name="langue" value="' + lang + '">' +
+    '<input type="hidden" name="id" value="' + escapeHtml_(id) + '">' +
+    '<button class="btn" type="submit">' + escapeHtml_(m.unsubButton) + '</button></form>';
+  return htmlPage_(lang, m.unsubAsk, '', false, form);
+}
+
+function desinscrire_(p) {
+  var lang = p.langue === 'en' ? 'en' : 'fr';
+  var id = String(p.id || '');
+  var lock = LockService.getScriptLock();
+  if (lock.tryLock(10000)) {
+    try {
+      var sheet = getSheet_();
+      var last = sheet.getLastRow();
+      if (id && last >= 2) {
+        var c = colonnes_();
+        var rows = sheet.getRange(2, 1, last - 1, CONFIG.HEADERS.length).getValues();
+        for (var i = 0; i < rows.length; i++) {
+          if (rows[i][c.email] && jeton_(rows[i][c.email]) === id) {
+            if (rows[i][c.desinscription] === '') sheet.getRange(i + 2, c.desinscription + 1).setValue(maintenant_());
+            break;
+          }
+        }
+      }
+    } catch (err) {
+      console.error('Désinscription impossible : ' + (err && err.message));
+    } finally {
+      lock.releaseLock();
+    }
+  }
+  return htmlPage_(lang, MESSAGES[lang].unsubDone, CONFIG.SITE_URL + (lang === 'en' ? '/en/' : '/'), true);
 }

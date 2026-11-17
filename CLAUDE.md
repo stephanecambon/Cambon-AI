@@ -15,7 +15,10 @@ Site vitrine de Cambon AI (SASU, Paris), R&D appliquée pour PME et ETI. Propri�
 
 ## Newsletter (formulaire)
 
-- **Données minimales** : le tableur ne reçoit que `date`, `email`, `langue`, `page`, `consentement` (version du texte, ex. `v1-2026-11`). Jamais d'adresse IP, de navigateur ni d'autre champ. Toute donnée en plus impose de mettre à jour la page Confidentialité.
+- **Données minimales** : colonnes `date`, `email`, `langue`, `page`, `consentement` (version du texte, ex. `v1-2026-11`), puis une colonne par liste : `optin_site` (rempli par le formulaire), `optin_veille_r` (veille sur le paramètre r), `optin_exports` (date et origine d'un import de contacts professionnels, base légale : intérêt légitime B2B), et `desinscription` (date ; plus aucun envoi). Jamais d'adresse IP, de navigateur ni d'autre champ. Toute donnée en plus impose de mettre à jour la page Confidentialité.
+- **Désinscription** : lien `?format=desinscription&id=<jeton>` (HMAC de l'adresse avec la propriété de script `CLE_DESINSCRIPTION`, jamais l'adresse dans le lien) ; un GET affiche une confirmation sans rien modifier (les antivirus ouvrent les liens), le POST du bouton enregistre la date. Réinscription par le formulaire : la ligne existante est réactivée.
+- **Onglet « content »** du même tableur : sommaire éditorial (`titre`, `url`, `langue`, `statut`, `date_publication`, `date_envoi`, `listes`, `notes`). Les articles eux-mêmes sont sur le site (blog).
+- **Envois** (à venir) : depuis le script Google, via l'API transactionnelle d'Ownpage (clé dans les propriétés du script, jamais dans le dépôt). Toujours un envoi de test à stephane@cambon.ai, puis l'accord explicite de Stéphane pour chaque envoi.
 - **Consentement obligatoire** : case non précochée, `required` côté site, revérifiée par le script (`consentement=oui` + version listée dans `CONSENT_VERSIONS`). Si le texte de la case change : nouvelle `NEWSLETTER_CONSENT_VERSION` dans `src/config.ts` et dans `Code.gs`.
 - **Aucun service tiers hors Google Workspace, aucun cookie.** Le JavaScript de la newsletter est l'amélioration progressive du formulaire (`src/components/Newsletter.astro`), servi depuis cambon.ai.
 - **Fonctionne sans JavaScript** : `<form method="post" action={NEWSLETTER_URL}>` classique ; le script renvoie alors une page HTML bilingue (lien de retour en `target="_top"`, car Apps Script sert le HTML dans un cadre).
@@ -43,6 +46,13 @@ Site vitrine de Cambon AI (SASU, Paris), R&D appliquée pour PME et ETI. Propri�
 - **N'existe qu'avec `npm run dev`** : `getStaticPaths` ne renvoie rien au build, la page n'est jamais publiée. Textes en dur en français (exception voulue : page privée).
 - Lecture : `?format=stats&cle=…` sur les deux scripts Apps Script (`lireEvenements_`, `lireInscriptions_`). Sans la bonne clé (propriété de script `CLE_LECTURE`, créée par `creerCleLecture()`), réponse `{"ok":false}`. La newsletter ne renvoie jamais les e-mails (date, langue, page seulement).
 - Clés dans `.env` (exclu du dépôt) : `AUDIENCE_CLE_LECTURE`, `NEWSLETTER_CLE_LECTURE`. Ne jamais les écrire dans le dépôt public.
+
+## Blog
+
+- Collection `articles` (`src/content.config.ts`) : `src/content/articles/fr/<slug>.md` → `/blog/<slug>/`, `src/content/articles/en/<slug>.md` → `/en/blog/<slug>/` (un fichier EN porte `translationOf`). Champs : `title`, `summary`, `kicker?`, `date`, `updated?`, `image?` + `imageAlt?` (dans `src/assets/articles/`), `seoTitle` (≤ 60), `seoDescription` (≤ 155), `draft`.
+- **Aucun article publié dans une langue : ni pages, ni lien « Blog » dans le menu** (`blogPaths` dans `src/lib/articles.ts`, `Header.astro`). Pages : `src/pages/blog/[...slug].astro` et `src/pages/en/blog/[...slug].astro` (liste + articles), composant `Blog.astro`, JSON-LD `Blog` / `BlogPosting` (`blogJsonLd`).
+- Textes intégrés mot pour mot. Le corps Markdown n'est pas passé par `plain()` : à l'intégration d'un article français, appliquer `typoFr` (`src/lib/typo.ts`) au texte, hors code (espaces insécables seulement, aucun mot changé).
+- Menu à quatre entrées : resserré sous 430 px pour tenir sur une ligne à 375 px.
 
 ## Signature e-mail
 

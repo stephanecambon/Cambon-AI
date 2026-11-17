@@ -1,0 +1,19 @@
+---
+// Blog (fr) : liste des articles et articles. Aucune page sans article publié.
+import Base from '../../layouts/Base.astro';
+import Blog from '../../components/Blog.astro';
+import { blogPaths, type Article } from '../../lib/articles';
+import { blogJsonLd } from '../../lib/seo';
+import { texts, plain, type Alternates } from '../../i18n';
+
+export const getStaticPaths = () => blogPaths('fr');
+
+const { article, articles, alternates } = Astro.props as { article: Article | null; articles: Article[]; alternates: Alternates };
+const t = texts.fr.blog;
+const title = article ? article.data.seoTitle : t.metaTitle;
+const description = article ? article.data.seoDescription : t.metaDescription;
+const jsonLd = blogJsonLd('fr', article, articles);
+---
+<Base lang="fr" alternates={alternates} title={plain(title, 'fr')} description={plain(description, 'fr')} jsonLd={jsonLd}>
+  <Blog lang="fr" article={article} articles={articles} />
+</Base>

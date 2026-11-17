@@ -265,6 +265,20 @@ export const fr = {
     back: 'Tous les projets',
   },
 
+  // ---------- Blog ----------
+  blog: {
+    nav: 'Blog',
+    label: 'Blog',
+    title: 'Blog',
+    intro: 'Analyses, notes de recherche et retours de terrain.',
+    metaTitle: 'Blog · Cambon AI',
+    metaDescription: "Analyses, notes de recherche et retours de terrain sur l'IA appliquée aux PME et aux ETI.",
+    back: 'Tous les articles',
+    published: 'Publié le',
+    updated: 'mis à jour le',
+    readMore: "Lire l'article",
+  },
+
   footer: {
     company: 'Cambon AI · SASU · Paris',
     legal: 'Mentions légales',

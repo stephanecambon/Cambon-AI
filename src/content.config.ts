@@ -62,4 +62,32 @@ const projets = defineCollection({
     }),
 });
 
-export const collections = { projets };
+// Un fichier Markdown par article et par langue :
+//   src/content/articles/fr/<slug>.md   →  /blog/<slug>/
+//   src/content/articles/en/<slug>.md   →  /en/blog/<slug>/
+// Tant qu'aucun article n'est publié dans une langue, le blog de cette langue
+// n'existe pas (ni pages, ni lien dans le menu).
+const articles = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/articles' }),
+  schema: z.object({
+    /** EN uniquement : nom du fichier français correspondant. */
+    translationOf: z.string().optional(),
+    title: z.string(),
+    /** Chapô : une ou deux phrases sous le titre, reprises dans la liste des articles. */
+    summary: z.string(),
+    /** Surtitre facultatif (thème). */
+    kicker: z.string().optional(),
+    /** Date de publication (AAAA-MM-JJ). */
+    date: z.coerce.date(),
+    updated: z.coerce.date().optional(),
+    /** Image facultative : nom du fichier (sans extension) dans src/assets/articles/, format 16:10. */
+    image: z.string().optional(),
+    imageAlt: z.string().optional(),
+    /** Référencement : 60 et 155 caractères maximum. */
+    seoTitle: z.string().max(60),
+    seoDescription: z.string().max(155),
+    draft: z.boolean().default(false),
+  }),
+});
+
+export const collections = { projets, articles };

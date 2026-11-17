@@ -1,0 +1,194 @@
+---
+// Blog : liste des articles (article = null) ou article seul.
+// Corps des articles en Markdown, mis en forme par les styles `.article-body`.
+import Cta from './Cta.astro';
+import SectionHead from './SectionHead.astro';
+import { texts, plain, routes, articleUrl, type Lang } from '../i18n';
+import { articleSlug, formatDate, type Article } from '../lib/articles';
+import { render } from 'astro:content';
+import { Image } from 'astro:assets';
+import { articleImage } from '../lib/articleImages';
+
+interface Props {
+  lang: Lang;
+  article: Article | null;
+  articles: Article[];
+}
+
+const { lang, article, articles } = Astro.props;
+const t = texts[lang].blog;
+const Content = article ? (await render(article)).Content : null;
+const d = article?.data;
+const img = d?.image ? articleImage(d.image) : null;
+---
+{article && d && Content ? (
+  <article class="article">
+    <div class="container article__inner">
+      <p class="article__back"><a href={routes.blog[lang]}>← {t.back}</a></p>
+      {d.kicker && <p class="eyebrow">{plain(d.kicker, lang)}</p>}
+      <h1>{plain(d.title, lang)}</h1>
+      <p class="lead article__summary">{plain(d.summary, lang)}</p>
+      <p class="article__date">
+        {t.published} <time datetime={d.date.toISOString().slice(0, 10)}>{formatDate(d.date, lang)}</time>
+        {d.updated && <>, {t.updated} <time datetime={d.updated.toISOString().slice(0, 10)}>{formatDate(d.updated, lang)}</time></>}
+      </p>
+      {img && <Image class="article__image" src={img} alt={plain(d.imageAlt ?? '', lang)} widths={[800, 1200, 1600]} sizes="(max-width: 860px) calc(100vw - 32px), 760px" quality={82} loading="eager" />}
+      <div class="article-body prose">
+        <Content />
+      </div>
+    </div>
+  </article>
+) : (
+  <section class="section">
+    <div class="container">
+      <SectionHead num="§" label={t.label} title={t.title} />
+      <p class="lead blog__intro">{plain(t.intro, lang)}</p>
+      <ul class="blog__list">
+        {articles.map((a) => (
+          <li class="blog__item">
+            {a.data.kicker && <p class="eyebrow">{plain(a.data.kicker, lang)}</p>}
+            <h2><a href={articleUrl(lang, articleSlug(a))}>{plain(a.data.title, lang)}</a></h2>
+            <p class="blog__date"><time datetime={a.data.date.toISOString().slice(0, 10)}>{formatDate(a.data.date, lang)}</time></p>
+            <p>{plain(a.data.summary, lang)}</p>
+            <p><a class="text-link" href={articleUrl(lang, articleSlug(a))}>{t.readMore}</a> <span aria-hidden="true">→</span></p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+)}
+<Cta lang={lang} />
+
+<style>
+  .article__inner {
+    max-width: 760px;
+    padding-block: clamp(32px, 6vw, 64px) 0;
+  }
+  .article__back a {
+    color: var(--ink);
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .article h1 {
+    font-family: var(--font-title);
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--ink);
+    font-size: clamp(2rem, 5vw, 3.25rem);
+    line-height: 1.02;
+    margin: 12px 0 16px;
+  }
+  .article__date,
+  .blog__date {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+  }
+  .article__date {
+    margin-bottom: 28px;
+  }
+  .article__image {
+    width: 100%;
+    height: auto;
+    margin: 24px 0;
+    border: 1px solid var(--rule);
+  }
+  .blog__intro {
+    max-width: 640px;
+  }
+  .blog__list {
+    list-style: none;
+    padding: 0;
+    margin: 32px 0 0;
+    max-width: 760px;
+  }
+  .blog__item {
+    padding: 24px 0;
+    border-top: 1px solid var(--rule);
+  }
+  .blog__item h2 {
+    font-family: var(--font-title);
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: clamp(1.4rem, 3vw, 1.9rem);
+    line-height: 1.1;
+    margin: 4px 0;
+  }
+  .blog__item h2 a {
+    color: var(--ink);
+    text-decoration: none;
+  }
+  .blog__item h2 a:hover {
+    text-decoration: underline;
+  }
+  /* Corps de l'article (Markdown) */
+  .article-body :global(h2) {
+    font-family: var(--font-title);
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--ink);
+    font-size: 1.6rem;
+    line-height: 1.15;
+    margin: 40px 0 12px;
+  }
+  .article-body :global(h3) {
+    color: var(--ink);
+    font-size: 1.15rem;
+    margin: 28px 0 8px;
+  }
+  .article-body :global(a) {
+    color: var(--ink);
+  }
+  .article-body :global(blockquote) {
+    margin: 24px 0;
+    padding: 4px 0 4px 18px;
+    border-left: 3px solid var(--amber);
+    color: var(--text-2);
+  }
+  .article-body :global(img) {
+    max-width: 100%;
+    height: auto;
+  }
+  .article-body :global(figure) {
+    margin: 24px 0;
+  }
+  .article-body :global(figcaption) {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    margin-top: 6px;
+  }
+  .article-body :global(code) {
+    font-size: 0.92em;
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    padding: 0.05em 0.3em;
+  }
+  .article-body :global(pre) {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    overflow-x: auto;
+  }
+  .article-body :global(pre code) {
+    border: 0;
+    padding: 0;
+  }
+  .article-body :global(table) {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 24px 0;
+    font-size: 0.95rem;
+    display: block;
+    overflow-x: auto;
+  }
+  .article-body :global(th),
+  .article-body :global(td) {
+    border-bottom: 1px solid var(--rule);
+    padding: 8px 10px;
+    text-align: left;
+  }
+  .article-body :global(th) {
+    color: var(--ink);
+  }
+</style>

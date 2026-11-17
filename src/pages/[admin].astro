@@ -102,7 +102,8 @@ const jourCourt = (iso: string) => `${iso.slice(8, 10)}/${iso.slice(5, 7)}`;
             return (
               <>
                 <div class="adm__kpis">
-                  <div class="adm__kpi"><strong>{n.total}</strong><span>inscrits au total</span></div>
+                  <div class="adm__kpi"><strong>{n.actifs}</strong><span>inscrits actifs</span></div>
+                  <div class="adm__kpi"><strong>{n.desinscrits}</strong><span>désinscrits</span></div>
                   <div class="adm__kpi"><strong>{n.periode}</strong><span>sur la période</span></div>
                   <div class="adm__kpi"><strong>{n.derniere ? jourCourt(n.derniere) : '–'}</strong><span>dernière inscription</span></div>
                 </div>
@@ -115,7 +116,7 @@ const jourCourt = (iso: string) => `${iso.slice(8, 10)}/${iso.slice(5, 7)}`;
                   ))}
                 </div>
                 <div class="adm__grille">
-                  {[['Langues', n.langues], ['Page d’inscription', n.pages]].map(([titre, lignes]) => (
+                  {[['Listes (inscrits actifs)', n.listes], ['Langues', n.langues], ['Page d’inscription', n.pages]].map(([titre, lignes]) => (
                     <div class="adm__liste">
                       <h3 class="adm__h3">{titre as string}</h3>
                       {(lignes as Ligne[]).length === 0 ? (

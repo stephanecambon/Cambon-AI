@@ -262,6 +262,20 @@ export const en: Texts = {
     back: 'All projects',
   },
 
+  // ---------- Blog ----------
+  blog: {
+    nav: 'Blog',
+    label: 'Blog',
+    title: 'Blog',
+    intro: 'Analysis, research notes and lessons from the field.',
+    metaTitle: 'Blog · Cambon AI',
+    metaDescription: 'Analysis, research notes and lessons from the field on applied AI for small and mid-sized companies.',
+    back: 'All articles',
+    published: 'Published',
+    updated: 'updated',
+    readMore: 'Read the article',
+  },
+
   footer: {
     company: 'Cambon AI · SASU · Paris',
     legal: 'Legal notice',

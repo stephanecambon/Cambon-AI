@@ -2,6 +2,7 @@
 import Logo from './Logo.astro';
 import { texts, routes, anchors, type Lang, type Alternates } from '../i18n';
 import { bookingHref } from '../config';
+import { getArticles } from '../lib/articles';
 
 interface Props {
   lang: Lang;
@@ -15,6 +16,8 @@ const home = routes.home[lang];
 const a = anchors[lang];
 const other: Lang = lang === 'fr' ? 'en' : 'fr';
 const otherHref = alternates[other];
+// Lien « Blog » seulement quand au moins un article est publié dans cette langue.
+const hasBlog = (await getArticles(lang)).length > 0;
 ---
 <header class="site-header">
   <div class="container site-header__inner">
@@ -24,6 +27,7 @@ const otherHref = alternates[other];
     <nav class="site-header__nav" aria-label={t.mainLabel}>
       <a href={`${home}#${a.approach}`}>{t.approach}</a>
       <a href={routes.projects[lang]}>{t.projects}</a>
+      {hasBlog && <a href={routes.blog[lang]}>{texts[lang].blog.nav}</a>}
       <a href={`${home}#${a.about}`}>{t.about}</a>
     </nav>
 
@@ -136,6 +140,16 @@ const otherHref = alternates[other];
   @media (max-width: 400px) {
     .site-header__nav {
       gap: 4px 16px;
+    }
+  }
+  /* Quatre entrées (avec « Blog ») : menu resserré sur les petits écrans */
+  @media (max-width: 430px) {
+    .site-header__nav:has(> a:nth-child(4)) {
+      gap: 4px 11px;
+      font-size: 0.95rem;
+    }
+    .site-header__bar:has(.site-header__nav > a:nth-child(4)) {
+      gap: 6px;
     }
   }
 
