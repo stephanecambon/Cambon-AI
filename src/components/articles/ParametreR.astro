@@ -111,7 +111,7 @@ const vingeAlt = "Citation de Vernor Vinge, « The Coming Technological Singular
     <button data-v="curve" aria-pressed="true">Courbe</button><button data-v="lap" aria-pressed="false">Tours de boucle</button><button data-v="cal" aria-pressed="false">Calendrier</button>
   </div>
   <div class="seg" role="group" aria-label="Unité de la courbe" id="unitSeg">
-    <button data-u="years" aria-pressed="true">Score de capacité</button><button data-u="x" aria-pressed="false">Efficacité du logiciel (×)</button>
+    <button data-u="years" aria-pressed="true">Score de capacité</button><button data-u="x" aria-pressed="false">Capacité des IA (×)</button>
   </div>
   <p class="statline" id="stat"></p>
   <div id="vCal" hidden>
@@ -121,7 +121,7 @@ const vingeAlt = "Citation de Vernor Vinge, « The Coming Technological Singular
     <p class="small" id="capC" style="margin-top:14px"></p></div>
   <div id="vLap" hidden><svg id="svgL" viewBox="0 0 760 130" role="img" aria-label="Durée de chaque doublement du logiciel"></svg>
     <p class="small">Chaque segment est un doublement du logiciel.</p></div>
-  <p class="small">Modèle simplifié : r constant, parc de machines fixe, pas de plafond ; une année de progrès vaut ×3 en efficacité du logiciel. La vitesse à laquelle la boucle s'emballe dépend aussi de β, l'épuisement des idées : r dit si ça s'emballe, β dit à quelle vitesse. Les estimations publiées ne donnent que r ; on fixe donc β = 0,25 pour elles. Ces courbes montrent la logique du mécanisme, pas une prévision.</p>
+  <p class="small">Modèle simplifié : r constant, parc de machines fixe, pas de plafond ; une année de progrès vaut ×3 en capacité des IA. La vitesse à laquelle la boucle s'emballe dépend aussi de β, l'épuisement des idées : r dit si ça s'emballe, β dit à quelle vitesse. Les estimations publiées ne donnent que r ; on fixe donc β = 0,25 pour elles. Ces courbes montrent la logique du mécanisme, pas une prévision.</p>
 </section>
 
 <section class="col">
@@ -551,8 +551,8 @@ function renderProj(){
     let h='';
     (isX?[0,10000,20000,30000,40000]:[0,10,20,30,40]).forEach(v=>{h+=`<line x1="${L}" x2="${W-R}" y1="${Y(v)}" y2="${Y(v)}" stroke="${grid}"/>`+txt(L-8,Y(v)+4,isX?(v?'×'+v.toLocaleString('fr-FR'):'×1'):v,{a:'end',f:MONO,c:mut});});
     for(let y=0;y<=5;y++) h+=txt(X(y),H-B+24,(N?'':'oct. ')+(2026+y),{a:'middle',f:MONO,c:mut});
-    h+=txt(N?0:L,H-B+58,isX?'efficacité du logiciel (× oct. 2026)':'années de progrès cumulées',{c:mut,s:13});
-    $('capC').textContent= isX ? "Efficacité du logiciel par rapport à octobre 2026, échelle linéaire : l'exponentielle (r = 1) devient visible. Au-delà de ×40 000, la courbe sort du cadre." : "Progrès cumulé depuis octobre 2026, en années de progrès au rythme d'avant : l'échelle des scores, logarithmique. Au-delà de 40, la courbe sort du cadre.";
+    h+=txt(N?0:L,H-B+58,isX?'capacité des IA (× oct. 2026)':'années de progrès cumulées',{c:mut,s:13});
+    $('capC').textContent= isX ? "Capacité des IA par rapport à octobre 2026, échelle linéaire : l'exponentielle (r = 1) devient visible. Au-delà de ×40 000, la courbe sort du cadre." : "Progrès cumulé depuis octobre 2026, en années de progrès au rythme d'avant : l'échelle des scores, logarithmique. Au-delà de 40, la courbe sort du cadre.";
     const path=rr=>{ let d='',on=false; for(let i=0;i<=400;i++){ const t=5*i/400, v=V(t,rr); if(!isFinite(v)||v>yMax*1.02){ if(on) d+=`L${X(t).toFixed(1)},${Y(yMax).toFixed(1)}`; break;} d+=(on?'L':'M')+X(t).toFixed(1)+','+Y(v).toFixed(1); on=true; } return d; };
     h+=`<path d="${path(0.6)}" fill="none" stroke="${line}" stroke-width="2" stroke-dasharray="5 5"/><path d="${path(1)}" fill="none" stroke="${sig}" stroke-width="2"/>`;
     { // étiquettes à droite du bout des courbes, écartées d'au moins 16 px
