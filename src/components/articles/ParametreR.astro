@@ -530,7 +530,7 @@ function renderProj(){
   const p5=P(5,r,b), m5=fmtX(Math.exp(GH*p5));
   let st;
   if(ts<5) st=`Avec r = ${fr(r,2)}, le modèle explose vers ${dateAt(ts)}.`;
-  else if(r>1.005) st=`Avec r = ${fr(r,2)}, ${fr(p5,0)} années de progrès d'ici 2031 (logiciel ${m5}), et une explosion du modèle vers ${dateAt(ts)}.`;
+  else if(r>1.005) st=`Avec r = ${fr(r,2)}, ${fr(p5,0)} années de progrès d'ici 2031 (logiciel ${m5}), et une singularité vers ${dateAt(ts)}.`;
   else if(r<0.995) st=`Avec r = ${fr(r,2)}, l'accélération s'éteint : ${fr(p5,0)} années de progrès d'ici 2031 (logiciel ${m5}).`;
   else st=`Avec r = 1, le rythme de 1,9 an par an se maintient : 9,5 années de progrès d'ici 2031, soit un logiciel ${m5} plus efficace.`;
   $('stat').textContent=st;
