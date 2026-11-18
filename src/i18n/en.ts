@@ -301,8 +301,10 @@ export const en: Texts = {
     ctaLink: 'Get my analyses.',
     veilleR: {
       emailLabel: 'Your email',
-      consent: 'I agree to receive Cambon AI updates on the r parameter. I can unsubscribe at any time.',
       button: 'Follow the r watch',
+      alsoSite: 'Also get my other analyses (Cambon AI newsletter)',
+      notice:
+        'By subscribing, you agree to receive Cambon AI updates on the r parameter. One-click unsubscribe, at any time.',
       success: "Thanks, you're on the list. I'll write as soon as a signal moves.",
     },
   },

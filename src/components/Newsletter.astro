@@ -17,7 +17,8 @@ interface Props {
 const { lang, path, liste = 'site' } = Astro.props;
 const veille = liste === 'veille_r';
 const base = texts[lang].newsletter;
-const t = veille ? { ...base, ...base.veilleR } : base;
+const t = base;
+const v = base.veilleR;
 const version = veille ? VEILLE_R_CONSENT_VERSION : NEWSLETTER_CONSENT_VERSION;
 const id = (name: string) => `nl-${veille ? 'veille-' : ''}${name}`;
 // Sans JavaScript, « t » vaut l'heure du build (toujours > 3 s) ;
@@ -38,37 +39,57 @@ const builtAt = Date.now();
     method="post"
     action={NEWSLETTER_URL}
     data-newsletter
-    data-msg-success={plain(t.success, lang)}
+    data-msg-success={plain(veille ? v.success : t.success, lang)}
     data-msg-error={plain(t.error, lang)}
     data-msg-email={plain(t.errorEmail, lang)}
     data-msg-consent={plain(t.errorConsent, lang)}
     data-msg-sending={t.sending}
   >
     <div class="nl__fields">
-      <div class="nl__row">
-        <label class="nl__label" for={id('email')}>{t.emailLabel}</label>
-        <input
-            class="nl__input"
-            id={id('email')}
-            name="email"
-            type="email"
-            inputmode="email"
-            autocomplete="email"
-            autocapitalize="off"
-            spellcheck="false"
-            maxlength="254"
-            required
-          />
-      </div>
+      {veille ? (
+        <>
+          {/* Veille : le bouton vaut consentement (texte d'information juste dessous) */}
+          <div class="nl__ligne">
+            <label class="nl__sr" for={id('email')}>{v.emailLabel}</label>
+            <input class="nl__input" id={id('email')} name="email" type="email" inputmode="email" autocomplete="email"
+              autocapitalize="off" spellcheck="false" maxlength="254" required placeholder={v.emailLabel} />
+            <button class="btn btn--primary nl__button" type="submit">{v.button}</button>
+          </div>
+          <div class="nl__consent nl__aussi">
+            <input class="nl__check" id={id('aussi')} name="aussi" type="checkbox" value="site" />
+            <label for={id('aussi')}>{plain(v.alsoSite, lang)}</label>
+          </div>
+          <p class="nl__notice">{plain(v.notice, lang)} <a href={routes.privacy[lang]}>{t.privacyLink}</a></p>
+          <input type="hidden" name="consentement" value="oui" />
+        </>
+      ) : (
+        <>
+          <div class="nl__row">
+            <label class="nl__label" for={id('email')}>{t.emailLabel}</label>
+            <input
+                class="nl__input"
+                id={id('email')}
+                name="email"
+                type="email"
+                inputmode="email"
+                autocomplete="email"
+                autocapitalize="off"
+                spellcheck="false"
+                maxlength="254"
+                required
+              />
+          </div>
 
-      <div class="nl__consent">
-        <input class="nl__check" id={id('consent')} name="consentement" type="checkbox" value="oui" required />
-        <label for={id('consent')}>
-          {plain(t.consent, lang)} <a href={routes.privacy[lang]}>{t.privacyLink}</a>
-        </label>
-      </div>
+          <div class="nl__consent">
+            <input class="nl__check" id={id('consent')} name="consentement" type="checkbox" value="oui" required />
+            <label for={id('consent')}>
+              {plain(t.consent, lang)} <a href={routes.privacy[lang]}>{t.privacyLink}</a>
+            </label>
+          </div>
 
-      <button class="btn btn--primary nl__button" type="submit">{t.button}</button>
+          <button class="btn btn--primary nl__button" type="submit">{t.button}</button>
+        </>
+      )}
 
       <!-- Champ piège : invisible pour les humains, rempli par les robots -->
       <div class="nl__hp" aria-hidden="true">
@@ -286,12 +307,53 @@ const builtAt = Date.now();
     margin-top: 0;
   }
 
-  /* Formulaire seul (veille dans l'article) : ni titre, ni trait, ni marges */
+  /* Formulaire seul (veille dans l'article) : ni titre, ni trait, ni marges ;
+     e-mail et bouton sur une ligne, centrés */
   .nl--seul {
     display: block;
     padding-block: 0;
     border-bottom: 0;
-    max-width: 34rem;
+    width: 100%;
+    max-width: 36rem;
+    margin-inline: auto;
+  }
+  .nl__ligne {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .nl__ligne .nl__input {
+    flex: 1 1 15rem;
+    width: auto;
+  }
+  .nl__ligne .nl__button {
+    margin-top: 0;
+    flex: none;
+  }
+  .nl__aussi {
+    justify-content: center;
+    text-align: left;
+  }
+  .nl__notice {
+    margin-top: 4px;
+    font-size: 0.8125rem;
+    line-height: 1.45;
+    color: var(--text-muted);
+    text-align: center;
+  }
+  .nl__notice a {
+    font-weight: 600;
+  }
+  .nl--seul .nl__status {
+    text-align: center;
+  }
+  .nl__sr {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
   }
 
   @media (max-width: 760px) {
@@ -300,7 +362,8 @@ const builtAt = Date.now();
     }
   }
   @media (max-width: 420px) {
-    .nl__button {
+    .nl__button,
+    .nl__ligne .nl__button {
       width: 100%;
     }
   }

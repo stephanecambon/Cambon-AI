@@ -305,9 +305,10 @@ export const fr = {
     ctaLink: 'Recevez mes analyses.',
     veilleR: {
       emailLabel: 'Votre e-mail',
-      consent:
-        "J'accepte de recevoir la veille de Cambon AI sur le paramètre r. Je peux me désinscrire à tout moment.",
       button: "M'abonner à la veille",
+      alsoSite: 'Recevoir aussi mes autres analyses (newsletter de Cambon AI)',
+      notice:
+        'En vous abonnant, vous acceptez de recevoir la veille de Cambon AI sur le paramètre r. Désinscription en un clic, à tout moment.',
       success: "Merci, c'est noté. Je vous écris dès qu'un signal bouge.",
     },
   },
