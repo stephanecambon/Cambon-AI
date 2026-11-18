@@ -529,7 +529,7 @@ function renderProj(){
   $('vCal').hidden=view!=='cal'; $('vCurve').hidden=view!=='curve'; $('vLap').hidden=view!=='lap'; $('unitSeg').hidden=view!=='curve';
   const p5=P(5,r,b), m5=fmtX(Math.exp(GH*p5));
   let st;
-  if(ts<5) st=`Avec r = ${fr(r,2)}, le modèle explose vers ${dateAt(ts)}.`;
+  if(ts<5) st=`Avec r = ${fr(r,2)}, singularité vers ${dateAt(ts)}.`;
   else if(r>1.005) st=`Avec r = ${fr(r,2)}, ${fr(p5,0)} années de progrès d'ici 2031 (logiciel ${m5}), et une singularité vers ${dateAt(ts)}.`;
   else if(r<0.995) st=`Avec r = ${fr(r,2)}, l'accélération s'éteint : ${fr(p5,0)} années de progrès d'ici 2031 (logiciel ${m5}).`;
   else st=`Avec r = 1, le rythme de 1,9 an par an se maintient : 9,5 années de progrès d'ici 2031, soit un logiciel ${m5} plus efficace.`;
@@ -558,7 +558,7 @@ function renderProj(){
       const y1=Y(V(5,1)), y6=Math.max(Y(V(5,0.6)), y1+16);
       h+=txt(X(5)+8,y1+4,'r = 1',{w:700,s:13,c:sig})+txt(X(5)+8,y6+4,'r = 0,6',{s:13,c:mut}); }
     h+=`<path d="${path(r)}" fill="none" stroke="${acc}" stroke-width="4"/>`;
-    if(ts<5){ const right=ts>(N?2.5:3.5); h+=`<line x1="${X(ts)}" x2="${X(ts)}" y1="${T}" y2="${H-B}" stroke="${acc}" stroke-dasharray="4 4"/>`+txt(X(ts)+(right?-6:6),T+14,'explosion · '+dateAt(ts),{a:right?'end':'start',w:700,s:13,c:acc}); }
+    if(ts<5){ const right=ts>(N?2.5:3.5); h+=`<line x1="${X(ts)}" x2="${X(ts)}" y1="${T}" y2="${H-B}" stroke="${acc}" stroke-dasharray="4 4"/>`+txt(X(ts)+(right?-6:6),T+14,'singularité · '+dateAt(ts),{a:right?'end':'start',w:700,s:13,c:acc}); }
     $('svgC').innerHTML=h; }
 
   // Tours de boucle
