@@ -8,6 +8,7 @@ import { articleSlug, formatDate, type Article } from '../lib/articles';
 import { render } from 'astro:content';
 import { Image } from 'astro:assets';
 import { articleImage } from '../lib/articleImages';
+import { articleComponents } from '../lib/articleComponents';
 
 interface Props {
   lang: Lang;
@@ -20,8 +21,16 @@ const t = texts[lang].blog;
 const Content = article ? (await render(article)).Content : null;
 const d = article?.data;
 const img = d?.image ? articleImage(d.image) : null;
+// Article interactif : sa propre mise en page remplace le gabarit standard.
+const Custom = d?.component ? articleComponents[d.component] : null;
+if (d?.component && !Custom) throw new Error(`Composant d'article inconnu : ${d.component}`);
 ---
-{article && d && Content ? (
+{article && Custom ? (
+  <article class="article article--custom">
+    <div class="container"><p class="article__back"><a href={routes.blog[lang]}>← {t.back}</a></p></div>
+    <Custom />
+  </article>
+) : article && d && Content ? (
   <article class="article">
     <div class="container article__inner">
       <p class="article__back"><a href={routes.blog[lang]}>← {t.back}</a></p>
@@ -63,6 +72,10 @@ const img = d?.image ? articleImage(d.image) : null;
   .article__inner {
     max-width: 760px;
     padding-block: clamp(32px, 6vw, 64px) 0;
+  }
+  .article--custom .article__back {
+    margin: clamp(24px, 4vw, 40px) auto 0;
+    max-width: 920px;
   }
   .article__back a {
     color: var(--ink);

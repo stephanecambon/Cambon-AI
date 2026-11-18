@@ -6,12 +6,16 @@ Site vitrine de Cambon AI (SASU, Paris), R&D appliquée pour PME et ETI. Propri�
 
 - **Textes français validés : intégrer mot pour mot.** Ne rien reformuler. Une faute ou une incohérence se signale à Stéphane, elle ne se corrige pas d'office.
 - **Le site ne mentionne jamais Claude**, ni aucun nom de modèle ou d'éditeur d'IA. On dit « IA », de manière générique. Cette règle vaut pour tout le dépôt public (README, commentaires, noms de fichiers), sauf ce fichier.
+- **Exception : les articles du blog** (choix de Stéphane, novembre 2026). Un article d'analyse peut citer les entreprises et modèles d'IA qu'il étudie (ex. Anthropic, OpenAI, les modèles Claude dans « Tout dépend de r »). Uniquement dans le contenu des articles (`src/content/articles/`, `src/components/articles/`) ; jamais ailleurs (pages, projets, interface, commentaires de code).
 - **Anonymisation.** Aucun nom de client. Le cabinet de maîtrise d'ouvrage n'est ni nommé ni situé.
 - **Biotech : rester strictement vague.** Jamais de test (au sens de produit de diagnostic), de diagnostic, de domaine vétérinaire, d'ELISA, de plaques, de réactifs ni de dilutions. Uniquement « biotech », « expériences », « paramètres ».
 - **Première personne du singulier** (« je »). Exceptions voulues : « Nous avons construit… » (l'équipe d'Ownpage, section 05) et « à notre connaissance » (JouetSwap, projet mené avec son fils).
 - **Surligneur vermillon : un seul mot ou une seule expression par bloc** (« à l'échelle de votre entreprise » dans l'accroche, le résultat de chaque projet).
 - **Version anglaise** : adaptation naturelle de site professionnel, pas de traduction littérale ; mêmes règles que le français. Tout nouveau texte EN est validé par Stéphane avant publication.
-- Vérification avant chaque publication : `grep -rliE "claude|anthropic|cambea|elisa|v[ée]t[ée]rinaire|innovative" dist` ne doit rien trouver.
+- Vérification avant chaque publication, les deux commandes ne doivent rien trouver :
+  - `grep -rlaiE "claude|anthropic|cambea|elisa|v[ée]t[ée]rinaire|innovative" dist --exclude-dir=blog --exclude-dir=brand` (tout le site hors blog, **images comprises** grâce à `-a` : le `grep` de ce Mac ignore sinon les fichiers binaires ; `dist/brand/` vient de `public/brand/`, exclu du dépôt et jamais publié) ;
+  - `grep -rlaiE "cambea|elisa|v[ée]t[ée]rinaire|innovative" dist/blog dist/en/blog` (le blog, sans les noms d'IA autorisés). Si `dist/en/blog` n'existe pas encore, ne vérifier que `dist/blog`.
+- **Images** : toute image ajoutée doit être sans métadonnées. Les fichiers produits par un outil d'IA portent souvent un bloc de provenance (C2PA : bloc `caBX` en PNG, extension `C2PA_GIF` en GIF) qui nomme l'outil : le retirer avant de commiter (novembre 2026 : nettoyé sans perte sur les 3 images de `public/newsletter/`, les anciennes versions restent dans l'historique Git).
 
 ## Newsletter (formulaire)
 
@@ -51,6 +55,8 @@ Site vitrine de Cambon AI (SASU, Paris), R&D appliquée pour PME et ETI. Propri�
 
 - Collection `articles` (`src/content.config.ts`) : `src/content/articles/fr/<slug>.md` → `/blog/<slug>/`, `src/content/articles/en/<slug>.md` → `/en/blog/<slug>/` (un fichier EN porte `translationOf`). Champs : `title`, `summary`, `kicker?`, `date`, `updated?`, `image?` + `imageAlt?` (dans `src/assets/articles/`), `seoTitle` (≤ 60), `seoDescription` (≤ 155), `draft`.
 - **Aucun article publié dans une langue : ni pages, ni lien « Blog » dans le menu** (`blogPaths` dans `src/lib/articles.ts`, `Header.astro`). Pages : `src/pages/blog/[...slug].astro` et `src/pages/en/blog/[...slug].astro` (liste + articles), composant `Blog.astro`, JSON-LD `Blog` / `BlogPosting` (`blogJsonLd`).
+- **Article interactif** (mise en page, styles et script propres) : champ `component` dans l'article, composant dans `src/components/articles/` déclaré dans `src/lib/articleComponents.ts`, rendu par `Blog.astro` à la place du gabarit standard. Styles en `<style is:global>` préfixés par `.pr` (isolés du site), titres remis en casse normale ; script `is:inline` qui lit les couleurs sur `.pr`. Polices propres à l'article servies depuis `public/fonts/parametre-r/` (jamais Google Fonts). Premier cas : « Tout dépend de r » (`parametre-r`), source HTML d'origine sans mode édition ni mode sombre.
+- **`.gitignore` global** de Stéphane : il ignore les dossiers `articles` ; le `.gitignore` du site les réinclut (`!articles/`). Vérifier avec `git status` que les fichiers d'un nouvel article sont bien suivis.
 - Textes intégrés mot pour mot. Le corps Markdown n'est pas passé par `plain()` : à l'intégration d'un article français, appliquer `typoFr` (`src/lib/typo.ts`) au texte, hors code (espaces insécables seulement, aucun mot changé).
 - Menu à quatre entrées : resserré sous 430 px pour tenir sur une ligne à 375 px.
 

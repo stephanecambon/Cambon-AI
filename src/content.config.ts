@@ -86,6 +86,11 @@ const articles = defineCollection({
     /** Référencement : 60 et 155 caractères maximum. */
     seoTitle: z.string().max(60),
     seoDescription: z.string().max(155),
+    /**
+     * Article interactif avec sa propre mise en page : nom du composant dans
+     * src/components/articles/ (voir articleComponents.ts). Le corps Markdown est alors ignoré.
+     */
+    component: z.string().optional(),
     draft: z.boolean().default(false),
   }),
 });

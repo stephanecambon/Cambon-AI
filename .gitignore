@@ -22,3 +22,6 @@ public/brand/
 
 # Signature e-mail : contient le numéro de téléphone, reste sur l’ordinateur de travail.
 tools/signature/
+
+# Le .gitignore global ignore les dossiers « articles » : on les garde ici (blog).
+!articles/
