@@ -299,6 +299,8 @@
 .pr .dots{display:flex;gap:6px;flex:1;justify-content:center}
 .pr .dots button{width:10px;height:10px;padding:0;border-radius:50%;border:1px solid var(--f-mut);background:transparent}
 .pr .dots button[aria-current=true]{background:var(--f-a);border-color:var(--f-a)}
+.pr .pr-tip{position:fixed;z-index:30;pointer-events:none;background:var(--sig);color:#fff;font:600 14px/1.3 var(--f-body);padding:6px 10px;border-radius:4px;white-space:nowrap;box-shadow:0 4px 14px rgba(74,25,15,.25)}
+.pr #svgMetr g.pt{cursor:pointer}
 .pr .fnote{font-size:14px;color:var(--f-mut);margin:0}
 </style>
 
@@ -344,7 +346,7 @@ function renderMetr(){
   else h+=txt(X(TE)+12,Y(C(TE))+26,'pente : +29 par an',{c:acc,s:13,w:700})+txt(X(TE)+12,Y(C(TE))+42,'au lieu de +15',{c:acc,s:13,w:700});
   if(metrMode==='models'){
     MODELS.forEach(([n,d,v,int,fr0,lab])=>{ const c=int?acc:sig, x=X(d), y=Y(v);
-      h+=`<g><title>${n} : ${fr(v,1)}</title><circle cx="${x}" cy="${y}" r="6" fill="${fr0?c:bg}" stroke="${c}" stroke-width="2"/>${lab?(d>TB?txt(x-10,y+4,n.replace('Claude ',''),{a:'end',s:12,w:600,c:c}):txt(x,y-12,n.replace('Claude ',''),{a:'middle',s:12,w:600,c:c})):''}</g>`; });
+      h+=`<g class="pt" data-tip="${n} : ${fr(v,1)}"><circle cx="${x}" cy="${y}" r="14" fill="transparent"/><circle cx="${x}" cy="${y}" r="6" fill="${fr0?c:bg}" stroke="${c}" stroke-width="2"/>${lab?(d>TB?txt(x-10,y+4,n.replace('Claude ',''),{a:'end',s:12,w:600,c:c}):txt(x,y-12,n.replace('Claude ',''),{a:'middle',s:12,w:600,c:c})):''}</g>`; });
     h+=txt(X(TE)+12,Y(178.6)+4,'Model 4 · 178,6',{c:acc,s:14,w:700});
   } else {
     h+=`<circle cx="${X(TE)}" cy="${Y(A(TE))}" r="6" fill="${acc}"/>`+txt(X(TE)+12,Y(A(TE))+4,'Model 4 · 178,6',{c:acc,s:14,w:700});
@@ -637,6 +639,18 @@ function deco(root){ if(!root||!root.ownerDocument) return;
       el.textContent=w; frag.append(el); last=st+w.length; WORD.lastIndex=last; }
     frag.append(s.slice(last)); n.replaceWith(frag); }); }
 const MO=new MutationObserver(ms=>{ MO.disconnect(); const seen=new Set(); ms.forEach(m=>{ const t=m.type==='characterData'?m.target.parentNode:m.target; if(t&&!seen.has(t)){ seen.add(t); deco(t); } }); MO.observe(document.querySelector('.wrap'),{childList:true,subtree:true,characterData:true}); });
+/* ---- Info-bulle des points du graphique 01 (survol à la souris, toucher sur mobile) ---- */
+(function(){
+  const svg=$('svgMetr'), tip=document.createElement('div');
+  tip.className='pr-tip'; tip.hidden=true; tip.setAttribute('role','tooltip'); document.querySelector('.pr').appendChild(tip);
+  const show=(g,x,y)=>{ tip.textContent=g.dataset.tip; tip.hidden=false;
+    const w=tip.offsetWidth, left=Math.min(Math.max(8,x-w/2),innerWidth-w-8); tip.style.left=left+'px'; tip.style.top=(y-44)+'px'; };
+  const hide=()=>{ tip.hidden=true; };
+  svg.addEventListener('pointermove',e=>{ if(e.pointerType==='touch') return; const g=e.target.closest('g.pt'); g?show(g,e.clientX,e.clientY):hide(); });
+  svg.addEventListener('pointerleave',e=>{ if(e.pointerType!=='touch') hide(); });
+  svg.addEventListener('click',e=>{ const g=e.target.closest('g.pt'); if(g){ const r=g.querySelector('circle').getBoundingClientRect(); show(g,r.left+r.width/2,r.top+r.height/2); } else hide(); });
+  addEventListener('scroll',hide,{passive:true});
+})();
 all();
 deco(document.querySelector('.wrap'));
 MO.observe(document.querySelector('.wrap'),{childList:true,subtree:true,characterData:true});
