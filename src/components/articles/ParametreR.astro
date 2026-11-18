@@ -117,8 +117,8 @@ const vingeAlt = "Citation de Vernor Vinge, « The Coming Technological Singular
   <div id="vCal" hidden>
     <div class="legend"><span><i style="background:var(--sig)"></i>au rythme actuel (r = 1)</span><span><i style="background:var(--accent)"></i>en plus grâce à r</span><span><i style="box-shadow:inset 0 0 0 1.5px var(--line)"></i>perdu si r &lt; 1</span><span>Un cube = une année de progrès au rythme d'octobre 2023 à octobre 2025</span></div>
     <div class="years" id="calB"></div></div>
-  <div id="vCurve"><svg id="svgC" viewBox="0 0 760 360" role="img" aria-label="Progrès cumulé selon r"></svg>
-    <p class="small" id="capC"></p></div>
+  <div id="vCurve"><svg id="svgC" viewBox="0 0 760 380" role="img" aria-label="Progrès cumulé selon r"></svg>
+    <p class="small" id="capC" style="margin-top:14px"></p></div>
   <div id="vLap" hidden><svg id="svgL" viewBox="0 0 760 130" role="img" aria-label="Durée de chaque doublement du logiciel"></svg>
     <p class="small">Chaque segment est un doublement du logiciel.</p></div>
   <p class="small">Modèle simplifié : r constant, parc de machines fixe, pas de plafond ; une année de progrès vaut ×3 en efficacité du logiciel. La vitesse à laquelle la boucle s'emballe dépend aussi de β, l'épuisement des idées : r dit si ça s'emballe, β dit à quelle vitesse. Les estimations publiées ne donnent que r ; on fixe donc β = 0,25 pour elles. Ces courbes montrent la logique du mécanisme, pas une prévision.</p>
@@ -519,15 +519,17 @@ function renderProj(){
 
   // Courbe
   { const isX=unit==='x', V=(t,rr)=>{const p=P(t,rr,b); return isX?Math.exp(GH*p):p;}, yMax=isX?40000:40, L=isX?84:56;
-    const W=760,H=360,R=24,T=20,B=48, X=t=>L+t/5*(W-L-R), Y=v=>T+(1-Math.min(v,yMax)/yMax)*(H-T-B);
+    const W=760,H=380,R=66,T=20,B=72, X=t=>L+t/5*(W-L-R), Y=v=>T+(1-Math.min(v,yMax)/yMax)*(H-T-B);
     let h='';
     (isX?[0,10000,20000,30000,40000]:[0,10,20,30,40]).forEach(v=>{h+=`<line x1="${L}" x2="${W-R}" y1="${Y(v)}" y2="${Y(v)}" stroke="${grid}"/>`+txt(L-8,Y(v)+4,isX?(v?'×'+v.toLocaleString('fr-FR'):'×1'):v,{a:'end',f:MONO,c:mut});});
-    for(let y=0;y<=5;y++) h+=txt(X(y),H-22,'oct. '+(2026+y),{a:y===5?'end':y===0?'start':'middle',f:MONO,c:mut});
-    h+=txt(L,H-4,isX?'efficacité du logiciel (× oct. 2026)':'années de progrès cumulées',{c:mut,s:13});
+    for(let y=0;y<=5;y++) h+=txt(X(y),H-B+24,'oct. '+(2026+y),{a:'middle',f:MONO,c:mut});
+    h+=txt(L,H-B+58,isX?'efficacité du logiciel (× oct. 2026)':'années de progrès cumulées',{c:mut,s:13});
     $('capC').textContent= isX ? "Efficacité du logiciel par rapport à octobre 2026, échelle linéaire : l'exponentielle (r = 1) devient visible. Au-delà de ×40 000, la courbe sort du cadre." : "Progrès cumulé depuis octobre 2026, en années de progrès au rythme d'avant : l'échelle des scores, logarithmique. Au-delà de 40, la courbe sort du cadre.";
     const path=rr=>{ let d='',on=false; for(let i=0;i<=400;i++){ const t=5*i/400, v=V(t,rr); if(!isFinite(v)||v>yMax*1.02){ if(on) d+=`L${X(t).toFixed(1)},${Y(yMax).toFixed(1)}`; break;} d+=(on?'L':'M')+X(t).toFixed(1)+','+Y(v).toFixed(1); on=true; } return d; };
     h+=`<path d="${path(0.6)}" fill="none" stroke="${line}" stroke-width="2" stroke-dasharray="5 5"/><path d="${path(1)}" fill="none" stroke="${sig}" stroke-width="2"/>`;
-    h+=txt(X(5)-4,Y(V(5,1))-8,'r = 1',{a:'end',w:700,s:13,c:sig})+txt(X(5)-4,Math.min(Y(V(5,0.6))+18,H-B-6),'r = 0,6',{a:'end',s:13,c:mut});
+    { // étiquettes à droite du bout des courbes, écartées d'au moins 16 px
+      const y1=Y(V(5,1)), y6=Math.max(Y(V(5,0.6)), y1+16);
+      h+=txt(X(5)+8,y1+4,'r = 1',{w:700,s:13,c:sig})+txt(X(5)+8,y6+4,'r = 0,6',{s:13,c:mut}); }
     h+=`<path d="${path(r)}" fill="none" stroke="${acc}" stroke-width="4"/>`;
     if(ts<5) h+=`<line x1="${X(ts)}" x2="${X(ts)}" y1="${T}" y2="${H-B}" stroke="${acc}" stroke-dasharray="4 4"/>`+txt(X(ts)+(ts>3.5?-6:6),T+14,'explosion · '+dateAt(ts),{a:ts>3.5?'end':'start',w:700,s:13,c:acc});
     $('svgC').innerHTML=h; }
