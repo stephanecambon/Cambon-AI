@@ -85,16 +85,16 @@
     <button data-r="0.83">Échecs 0,83</button><button data-r="1">Tillman 1,0</button><button data-r="1.2">Forethought 1,2</button><button data-r="1.4">Vision 1,4</button><button data-r="dial">Vos réglages</button>
   </div>
   <div class="seg" role="group" aria-label="Mode de lecture" id="viewSeg">
-    <button data-v="cal" aria-pressed="true">Calendrier</button><button data-v="curve" aria-pressed="false">Courbe</button><button data-v="lap" aria-pressed="false">Tours de boucle</button>
+    <button data-v="curve" aria-pressed="true">Courbe</button><button data-v="lap" aria-pressed="false">Tours de boucle</button><button data-v="cal" aria-pressed="false">Calendrier</button>
   </div>
-  <div class="seg" role="group" aria-label="Unité de la courbe" id="unitSeg" hidden>
+  <div class="seg" role="group" aria-label="Unité de la courbe" id="unitSeg">
     <button data-u="years" aria-pressed="true">Score de capacité</button><button data-u="x" aria-pressed="false">Efficacité du logiciel (×)</button>
   </div>
   <p class="statline" id="stat"></p>
-  <div id="vCal">
+  <div id="vCal" hidden>
     <div class="legend"><span><i style="background:var(--sig)"></i>au rythme actuel (r = 1)</span><span><i style="background:var(--accent)"></i>en plus grâce à r</span><span><i style="box-shadow:inset 0 0 0 1.5px var(--line)"></i>perdu si r &lt; 1</span><span>Un cube = une année de progrès au rythme d'octobre 2023 à octobre 2025</span></div>
     <div class="years" id="calB"></div></div>
-  <div id="vCurve" hidden><svg id="svgC" viewBox="0 0 760 360" role="img" aria-label="Progrès cumulé selon r"></svg>
+  <div id="vCurve"><svg id="svgC" viewBox="0 0 760 360" role="img" aria-label="Progrès cumulé selon r"></svg>
     <p class="small" id="capC"></p></div>
   <div id="vLap" hidden><svg id="svgL" viewBox="0 0 760 130" role="img" aria-label="Durée de chaque doublement du logiciel"></svg>
     <p class="small">Chaque segment est un doublement du logiciel.</p></div>
@@ -358,7 +358,7 @@ function renderMetr(){
 /* ---- 04 Composition ---- */
 const verdict=r=> r>1.02?"La boucle s'emballe": r<0.98?"La boucle s'essouffle":"Pile au seuil : exponentielle";
 function dialR(){ return +$('lam').value / +$('bet').value; }
-let useDial=false, view='cal', unit='years';
+let useDial=false, view='curve', unit='years';
 function renderDial(){
   $('lamO').textContent=fr(+$('lam').value,2); $('betO').textContent=fr(+$('bet').value,2);
   const lam=+$('lam').value, bt=+$('bet').value;
