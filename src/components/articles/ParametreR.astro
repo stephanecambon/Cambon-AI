@@ -281,6 +281,9 @@
 .pr .deck{display:flex;flex-direction:column;gap:16px;outline:none}
 .pr .deck:focus-visible{outline:2px solid var(--f-a);outline-offset:6px;border-radius:4px}
 .pr .stage{position:relative;background:rgba(255,255,255,.03);border:1px solid var(--f-grid);border-radius:6px;padding:8px}
+/* Graphique, texte et boutons tiennent ensemble dans la hauteur de l'écran, sous l'en-tête du site (graphique 2:1) */
+.pr .stage{width:100%;align-self:flex-start;max-width:calc(2 * max(220px, 100vh - var(--header-h, 72px) - 330px) + 18px)}
+@supports (height:100svh){.pr .stage{max-width:calc(2 * max(220px, 100svh - var(--header-h, 72px) - 330px) + 18px)}}
 .pr .reveal{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none}
 .pr .reveal span{position:absolute;left:50%;top:50%;font:italic 500 clamp(110px,22vw,200px)/1 var(--f-math);color:var(--f-a);text-shadow:0 0 40px var(--f-bg);animation:pr-pop .7s ease-out both}
 @keyframes pr-pop{from{opacity:0}to{opacity:1}}
