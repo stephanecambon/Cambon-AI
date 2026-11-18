@@ -272,6 +272,8 @@ const vingeAlt = "Citation de Vernor Vinge, « The Coming Technological Singular
 .pr .seg{display:inline-flex;flex-wrap:wrap;gap:4px;border:1px solid var(--line);border-radius:999px;padding:4px;align-self:flex-start}
 .pr .seg button{font:600 15px var(--f-body);border:0;background:transparent;color:var(--muted);padding:7px 16px;border-radius:999px;cursor:pointer}
 .pr .seg button[aria-pressed=true]{background:var(--sig);color:var(--bg)}
+/* Mobile : onglets sur toute la largeur, chacun sur une ou deux lignes, zones tactiles de 44 px */
+@media (max-width:520px){.pr .seg{display:flex;flex-wrap:nowrap;align-self:stretch;border-radius:14px}.pr .seg button{flex:1 1 0;min-height:44px;padding:6px 8px;font-size:14px;line-height:1.2;border-radius:10px}.pr .chips button{min-height:44px}}
 .pr .chips{display:flex;flex-wrap:wrap;gap:8px}
 .pr .chips button{font:600 14px var(--f-body);border:1px solid var(--line);background:var(--bg);color:var(--ink);padding:6px 12px;border-radius:4px;cursor:pointer}
 .pr .chips button[aria-pressed=true]{border-color:var(--accent);background:var(--accent);color:var(--on-accent)}
@@ -379,7 +381,13 @@ function dateAt(t){ const y=2026+279/365+t, yr=Math.floor(y), m=Math.floor((y-yr
 function fmtX(m){ if(!isFinite(m)) return '∞'; if(m<10) return '×'+fr(m,1); if(m<1000) return '×'+Math.round(m);
   if(m<1e6) return '×'+Number(m.toPrecision(2)).toLocaleString('fr-FR');
   if(m<1e9) return '×'+fr(m/1e6,1)+' million'+(m>=2e6?'s':''); if(m<1e12) return '×'+fr(m/1e9,1)+' milliard'+(m>=2e9?'s':''); return '×10^'+Math.floor(Math.log10(m)); }
-const txt=(x,y,s,o={})=>`<text x="${x}" y="${y}" text-anchor="${o.a||'start'}" font-family="${o.f||BODY}" font-size="${o.s||12}" font-weight="${o.w||400}" fill="${o.c}">${s}</text>`;
+// Mobile : sous 600 px de large, les graphiques sont redessinés plus étroits (moins réduits à l'écran)
+// et leurs textes agrandis, pour rester lisibles (au moins ~11 px à l'écran).
+let NARROW=false, TXS=1;
+function setNarrow(){ const w=document.querySelector('.pr .wrap').clientWidth; NARROW=w<600; TXS=NARROW?1.15:1; }
+const vb=(s,W,H)=>s.setAttribute('viewBox',`0 0 ${W} ${H}`);
+const txt=(x,y,s,o={})=>`<text x="${x}" y="${y}" text-anchor="${o.a||'start'}" font-family="${o.f||BODY}" font-size="${((o.s||12)*TXS).toFixed(1)}" font-weight="${o.w||400}" fill="${o.c}">${s}</text>`;
+const vtxt=(x,y,s,o={})=>`<text transform="translate(${x},${y}) rotate(-90)" text-anchor="middle" font-family="${o.f||BODY}" font-size="${((o.s||12)*TXS).toFixed(1)}" font-weight="${o.w||700}" fill="${o.c}">${s}</text>`;
 
 /* ---- 01 Courbe METR (schéma) ---- */
 let metrMode='trend';
@@ -387,30 +395,42 @@ document.querySelectorAll('#metrSeg button').forEach(b=>b.addEventListener('clic
 // Scores relevés sur le graphique METR : [nom, date (année décimale), AECI, interne, meilleur du moment, étiquette]
 const MODELS=[['Claude 3 Opus',2024.15,124.7,0,1,1],['Claude 3.5 Sonnet',2024.45,130.0,0,1,1],['Claude 3.5 Sonnet (nouveau)',2024.77,133.2,0,1,0],['Claude 3.7 Sonnet',2025.13,141.7,0,1,1],['Claude Opus 4',2025.38,144.8,0,1,1],['Claude Sonnet 4.5',2025.73,147.8,0,1,1],['Claude Opus 4.5',2025.89,152.3,0,1,0],['Claude Opus 4.6',2026.07,157.3,0,1,1],['Mythos Preview (version précoce)',2026.15,162.4,1,1,0],['Mythos Preview',2026.25,165.7,1,1,1],['Opus 4.7',2026.28,160.3,0,0,0],['Opus 4.8',2026.38,163.5,0,0,0],['Mythos 5',2026.42,168.7,0,1,1],['Model 2 (version précoce)',2026.53,171.8,1,1,0],['Opus 5',2026.55,169.3,0,0,0],['Model 2',2026.60,174.1,1,1,0],['Mythos 5.1',2026.60,172.5,0,0,0],['Model 3 (version précoce)',2026.69,176.3,1,1,0],['Opus 5.5',2026.69,174.6,0,0,0],['Model 3',2026.73,177.0,1,1,0],['Model 4',2026.74,178.6,1,1,0]];
 function renderMetr(){
-  const s=$('svgMetr'), W=760,H=360,L=74,R=120,T=24,B=46, t0=2024.0, t1=2026.85, yLo=120, yHi=190, TB=2025+279/365, TE=2026.74;
+  const N=NARROW, s=$('svgMetr'), W=N?400:760,H=360,L=N?50:74,R=N?100:120,T=N?30:24,B=46, t0=2024.0, t1=2026.85, yLo=120, yHi=190, TB=2025+279/365, TE=2026.74;
+  vb(s,W,H);
   const X=t=>L+(t-t0)/(t1-t0)*(W-L-R), Y=v=>T+(yHi-v)/(yHi-yLo)*(H-T-B);
   const sig=css('--sig'), acc=css('--accent'), mut=css('--muted'), grid=css('--grid'), line=css('--line'), peach=css('--peach'), bg=css('--surface');
   const AB=149.9, A=t=> t<=TB ? AB+15.4*(t-TB) : AB+29*(t-TB), C=t=>AB+15.4*(t-TB);
-  document.querySelectorAll('#metrSeg button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.m===metrMode)); $('metrLeg').hidden=metrMode!=='models';
+  const models=metrMode==='models';
+  document.querySelectorAll('#metrSeg button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.m===metrMode)); $('metrLeg').hidden=!models;
   let h='';
-  [120,130,140,150,160,170,180,190].forEach(v=>{h+=`<line x1="${L}" x2="${W-R}" y1="${Y(v)}" y2="${Y(v)}" stroke="${grid}"/>`+txt(L-8,Y(v)+4,v,{a:'end',f:MONO,c:mut});});
-  [['janv. 2024',2024],['juil. 2024',2024.5],['janv. 2025',2025],['juil. 2025',2025.5],['janv. 2026',2026],['juil. 2026',2026.5]].forEach(([d,t])=>{h+=txt(X(t),H-24,d,{a:'middle',f:MONO,c:mut});});
-  h+=`<text transform="translate(18,${(T+H-B)/2}) rotate(-90)" text-anchor="middle" font-family="${BODY}" font-size="15" font-weight="700" fill="${sig}">AECI (score de capacité)</text>`;
+  (N?[120,140,160,180]:[120,130,140,150,160,170,180,190]).forEach(v=>{h+=`<line x1="${L}" x2="${W-R}" y1="${Y(v)}" y2="${Y(v)}" stroke="${grid}"/>`+txt(L-8,Y(v)+4,v,{a:'end',f:MONO,c:mut});});
+  (N?[['2024',2024],['2025',2025],['2026',2026]]:[['janv. 2024',2024],['juil. 2024',2024.5],['janv. 2025',2025],['juil. 2025',2025.5],['janv. 2026',2026],['juil. 2026',2026.5]]).forEach(([d,t])=>{h+=txt(X(t),H-24,d,{a:'middle',f:MONO,c:mut});});
+  h+=vtxt(N?14:18,(T+H-B)/2,N?'AECI':'AECI (score de capacité)',{s:N?13:15,c:sig});
   h+=`<polygon points="${X(TB)},${Y(AB)} ${X(TE)},${Y(A(TE))} ${X(TE)},${Y(C(TE))}" fill="${peach}" opacity=".8"/>`;
-  h+=`<line x1="${X(TB)}" x2="${X(TB)}" y1="${T}" y2="${H-B}" stroke="${mut}" stroke-dasharray="4 4"/>`+txt(X(TB)-6,T+10,'rupture · 7 oct. 2025',{a:'end',c:mut,s:13,w:600});
+  h+=`<line x1="${X(TB)}" x2="${X(TB)}" y1="${T}" y2="${H-B}" stroke="${mut}" stroke-dasharray="4 4"/>`+txt(X(TB)-6,T+10,N?'rupture · oct. 2025':'rupture · 7 oct. 2025',{a:'end',c:mut,s:13,w:600});
   h+=`<line x1="${X(TB)}" y1="${Y(AB)}" x2="${X(TE)}" y2="${Y(C(TE))}" stroke="${line}" stroke-width="2.5" stroke-dasharray="6 5"/>`;
-  h+=`<line x1="${X(2024.15)}" y1="${Y(A(2024.15))}" x2="${X(TB)}" y2="${Y(AB)}" stroke="${sig}" stroke-width="${metrMode==='models'?2.5:4}" stroke-linecap="round"/>`;
-  h+=`<line x1="${X(TB)}" y1="${Y(AB)}" x2="${X(TE)}" y2="${Y(A(TE))}" stroke="${acc}" stroke-width="${metrMode==='models'?2.5:4}" stroke-linecap="round"/>`;
-  h+=txt(X(TE)+12,Y(C(TE))+4,'sans accélération',{c:mut,s:13});
-  h+=txt(X(2025.3),Y(A(2025.3))+32,'+15 points par an',{c:sig,s:14,w:700,a:'middle'});
-  if(metrMode!=='models') h+=txt(X(2026.2),Y(A(2026.2))-22,'+29 par an (×1,9)',{c:acc,s:14,w:700,a:'end'});
-  else h+=txt(X(TE)+12,Y(C(TE))+26,'pente : +29 par an',{c:acc,s:13,w:700})+txt(X(TE)+12,Y(C(TE))+42,'au lieu de +15',{c:acc,s:13,w:700});
-  if(metrMode==='models'){
-    MODELS.forEach(([n,d,v,int,fr0,lab])=>{ const c=int?acc:sig, x=X(d), y=Y(v);
-      h+=`<g class="pt" data-tip="${n} : ${fr(v,1)}"><circle cx="${x}" cy="${y}" r="14" fill="transparent"/><circle cx="${x}" cy="${y}" r="6" fill="${fr0?c:bg}" stroke="${c}" stroke-width="2"/>${lab?(d>TB?txt(x-10,y+4,n.replace('Claude ',''),{a:'end',s:12,w:600,c:c}):txt(x,y-12,n.replace('Claude ',''),{a:'middle',s:12,w:600,c:c})):''}</g>`; });
-    h+=txt(X(TE)+12,Y(178.6)+4,'Model 4 · 178,6',{c:acc,s:14,w:700});
+  h+=`<line x1="${X(2024.15)}" y1="${Y(A(2024.15))}" x2="${X(TB)}" y2="${Y(AB)}" stroke="${sig}" stroke-width="${models?2.5:4}" stroke-linecap="round"/>`;
+  h+=`<line x1="${X(TB)}" y1="${Y(AB)}" x2="${X(TE)}" y2="${Y(A(TE))}" stroke="${acc}" stroke-width="${models?2.5:4}" stroke-linecap="round"/>`;
+  h+=N?(models?txt(X(TB)-8,H-B-12,'+15 points par an',{c:sig,s:14,w:700,a:'end'}):txt(X(2025.05),Y(A(2025.05))-14,'+15 points par an',{c:sig,s:14,w:700,a:'end'})):txt(X(2025.3),Y(A(2025.3))+32,'+15 points par an',{c:sig,s:14,w:700,a:'middle'});
+  if(N){
+    // mobile : fins de courbes étiquetées dans une colonne à droite (sur deux lignes),
+    // pente annoncée en haut à gauche de la rupture, dans la zone vide
+    h+=txt(X(TE)+8,Y(C(TE))+4,'sans',{c:mut,s:12})+txt(X(TE)+8,Y(C(TE))+19,'accélération',{c:mut,s:12});
+    if(!models) h+=txt(X(TB)-8,Y(176),'+29 par an (×1,9)',{c:acc,s:14,w:700,a:'end'});
+    else h+=txt(X(TB)-8,Y(178),'pente : +29 par an',{c:acc,s:13,w:700,a:'end'})+txt(X(TB)-8,Y(178)+17,'au lieu de +15',{c:acc,s:13,w:700,a:'end'});
   } else {
-    h+=`<circle cx="${X(TE)}" cy="${Y(A(TE))}" r="6" fill="${acc}"/>`+txt(X(TE)+12,Y(A(TE))+4,'Model 4 · 178,6',{c:acc,s:14,w:700});
+    h+=txt(X(TE)+12,Y(C(TE))+4,'sans accélération',{c:mut,s:13});
+    if(!models) h+=txt(X(2026.2),Y(A(2026.2))-22,'+29 par an (×1,9)',{c:acc,s:14,w:700,a:'end'});
+    else h+=txt(X(TE)+12,Y(C(TE))+26,'pente : +29 par an',{c:acc,s:13,w:700})+txt(X(TE)+12,Y(C(TE))+42,'au lieu de +15',{c:acc,s:13,w:700});
+  }
+  const m4=N?txt(X(TE)+10,Y(178.6)+4,'Model 4',{c:acc,s:13,w:700})+txt(X(TE)+10,Y(178.6)+20,'178,6',{c:acc,s:13,w:700}):txt(X(TE)+12,Y(178.6)+4,'Model 4 · 178,6',{c:acc,s:14,w:700});
+  if(models){
+    // sur mobile, les noms des modèles s'affichent au toucher (info-bulle), pas sur le graphique
+    MODELS.forEach(([n,d,v,int,fr0,lab])=>{ const c=int?acc:sig, x=X(d), y=Y(v);
+      h+=`<g class="pt" data-tip="${n} : ${fr(v,1)}"><circle cx="${x}" cy="${y}" r="14" fill="transparent"/><circle cx="${x}" cy="${y}" r="${N?5:6}" fill="${fr0?c:bg}" stroke="${c}" stroke-width="2"/>${lab&&!N?(d>TB?txt(x-10,y+4,n.replace('Claude ',''),{a:'end',s:12,w:600,c:c}):txt(x,y-12,n.replace('Claude ',''),{a:'middle',s:12,w:600,c:c})):''}</g>`; });
+    h+=m4;
+  } else {
+    h+=`<circle cx="${X(TE)}" cy="${Y(A(TE))}" r="6" fill="${acc}"/>`+m4;
   }
   s.innerHTML=h;
 }
@@ -447,13 +467,16 @@ function renderDialCharts(lam,bt){
     h+=`<line x1="${L}" x2="${R}" y1="${Y(1)}" y2="${Y(1)}" stroke="${line}" stroke-width="2" stroke-dasharray="5 4"/>`;
     h+=txt(L-40,14,'↑ durée pour obtenir un doublement du logiciel',{s:11.5,w:600,c:mut})+txt(L,B+36,'→ '+xlab,{s:11.5,w:600,c:mut});
     return h; };
+  [$('lamG'),$('betG')].forEach(g=>vb(g,360,NARROW?218:210));
   $('lamG').innerHTML=bars(lamV,['×1','×2','×4','×8'],'nombre de chercheurs',[1,1/2,1/4,1/8]);
   $('betG').innerHTML=bars(betV,['1er','2e','3e','4e','5e','6e'],'doublements successifs du logiciel');
 }
 
 /* ---- 05 Estimations ---- */
 function renderEst(){
-  const s=$('svgEst'), W=760, L=210, R=24, lo=Math.log(0.2), hi=Math.log(4.5);
+  const N=NARROW, s=$('svgEst'), W=N?400:760, L=N?14:210, R=N?14:24, lo=Math.log(0.2), hi=Math.log(4.5);
+  // mobile : nom et source au-dessus de chaque ligne, graphique sur toute la largeur
+  const RH=N?76:44, GH0=N?30:28, H=N?28+2*GH0+5*RH+46:340, yB=H-50; vb(s,W,H);
   const X=v=>L+(Math.log(v)-lo)/(hi-lo)*(W-L-R);
   const ink=css('--ink'), mut=css('--muted'), sig=css('--sig'), acc=css('--accent'), grid=css('--grid'), peach=css('--peach');
   const rows=[
@@ -464,18 +487,21 @@ function renderEst(){
     ['g','Estimations pour les modèles de langage (raisonnées)'],
     ['Médiane Forethought','Davidson & Houlden 2025',1.2,0.4,3.6],
     ['Révision Tillman','Forethought, oct. 2026',1.0,0.33,3.0]];
-  let h=`<rect x="${X(1)}" y="16" width="${X(4.5)-X(1)}" height="274" fill="${peach}" opacity=".55"/>`;
-  [0.2,0.3,0.5,1,2,3,4].forEach(v=>{h+=`<line x1="${X(v)}" x2="${X(v)}" y1="16" y2="290" stroke="${grid}"/>`+txt(X(v),310,fr(v,v<1?1:0),{a:'middle',f:MONO,c:mut});});
-  h+=`<line x1="${X(1)}" x2="${X(1)}" y1="10" y2="290" stroke="${acc}" stroke-width="2"/>`;
-  h+=txt(X(1)-8,334,"← s'essouffle",{a:'end',s:14,w:700,c:mut})+txt(X(1)+8,334,"s'emballe →",{s:14,w:700,c:acc});
-  let y=28;
+  let h=`<rect x="${X(1)}" y="16" width="${X(4.5)-X(1)}" height="${yB-16}" fill="${peach}" opacity=".55"/>`;
+  (N?[0.2,0.5,1,2,4]:[0.2,0.3,0.5,1,2,3,4]).forEach(v=>{h+=`<line x1="${X(v)}" x2="${X(v)}" y1="16" y2="${yB}" stroke="${grid}"/>`+txt(X(v),yB+20,fr(v,v<1?1:0),{a:'middle',f:MONO,c:mut});});
+  h+=`<line x1="${X(1)}" x2="${X(1)}" y1="10" y2="${yB}" stroke="${acc}" stroke-width="2"/>`;
+  h+=txt(X(1)-8,yB+44,"← s'essouffle",{a:'end',s:14,w:700,c:mut})+txt(X(1)+8,yB+44,"s'emballe →",{s:14,w:700,c:acc});
+  let y=28, grp=0;
   rows.forEach(rw=>{
-    if(rw[0]==='g'){ h+=txt(0,y+8,rw[1].toUpperCase(),{f:MONO,s:11,w:600,c:mut}); y+=28; return; }
-    const [n,src,v,a,b]=rw, ai=y>150;
-    h+=txt(0,y-2,n,{s:15,w:700,c:ink})+txt(0,y+15,src,{s:12.5,c:mut});
-    if(a) h+=`<line x1="${X(a)}" x2="${X(b)}" y1="${y}" y2="${y}" stroke="${sig}" stroke-width="3" stroke-linecap="round" opacity=".55"/>`;
-    h+=`<circle cx="${X(v)}" cy="${y}" r="7" fill="${ai?acc:sig}"/>`+txt(X(v),y-12,fr(v,2),{a:'middle',f:MONO,s:12,w:600,c:ink});
-    y+=44; });
+    if(rw[0]==='g'){ grp++; h+=(N?`<rect x="0" y="${y-8}" width="${W}" height="24" fill="${css('--surface')}"/>`:'')+txt(0,y+8,rw[1].toUpperCase(),{f:MONO,s:11,w:600,c:mut}); y+=GH0; return; }
+    const [n,src,v,a,b]=rw, ai=grp>1;
+    // mobile : textes sur un fond, au-dessus de la ligne de points
+    const yd=N?y+40:y;
+    if(N) h+=txt(0,y+4,n,{s:15,w:700,c:ink})+txt(0,y+21,src,{s:12.5,c:mut});
+    else h+=txt(0,y-2,n,{s:15,w:700,c:ink})+txt(0,y+15,src,{s:12.5,c:mut});
+    if(a) h+=`<line x1="${X(a)}" x2="${X(b)}" y1="${yd}" y2="${yd}" stroke="${sig}" stroke-width="3" stroke-linecap="round" opacity=".55"/>`;
+    h+=`<circle cx="${X(v)}" cy="${yd}" r="7" fill="${ai?acc:sig}"/>`+(N?txt(X(v)+12,yd+5,fr(v,2),{f:MONO,s:12,w:600,c:ink}).replace('<text ',`<text paint-order="stroke" stroke="${css('--surface')}" stroke-width="5" `):txt(X(v),yd-12,fr(v,2),{a:'middle',f:MONO,s:12,w:600,c:ink}));
+    y+=RH; });
   s.innerHTML=h;
 }
 
@@ -518,12 +544,13 @@ function renderProj(){
     $('calB').innerHTML=h; }
 
   // Courbe
-  { const isX=unit==='x', V=(t,rr)=>{const p=P(t,rr,b); return isX?Math.exp(GH*p):p;}, yMax=isX?40000:40, L=isX?84:56;
-    const W=760,H=380,R=66,T=20,B=72, X=t=>L+t/5*(W-L-R), Y=v=>T+(1-Math.min(v,yMax)/yMax)*(H-T-B);
+  { const N=NARROW, isX=unit==='x', V=(t,rr)=>{const p=P(t,rr,b); return isX?Math.exp(GH*p):p;}, yMax=isX?40000:40, L=isX?(N?70:84):(N?34:56);
+    const W=N?400:760,H=380,R=N?60:66,T=20,B=72, X=t=>L+t/5*(W-L-R), Y=v=>T+(1-Math.min(v,yMax)/yMax)*(H-T-B);
+    vb($('svgC'),W,H);
     let h='';
     (isX?[0,10000,20000,30000,40000]:[0,10,20,30,40]).forEach(v=>{h+=`<line x1="${L}" x2="${W-R}" y1="${Y(v)}" y2="${Y(v)}" stroke="${grid}"/>`+txt(L-8,Y(v)+4,isX?(v?'×'+v.toLocaleString('fr-FR'):'×1'):v,{a:'end',f:MONO,c:mut});});
-    for(let y=0;y<=5;y++) h+=txt(X(y),H-B+24,'oct. '+(2026+y),{a:'middle',f:MONO,c:mut});
-    h+=txt(L,H-B+58,isX?'efficacité du logiciel (× oct. 2026)':'années de progrès cumulées',{c:mut,s:13});
+    for(let y=0;y<=5;y++) h+=txt(X(y),H-B+24,(N?'':'oct. ')+(2026+y),{a:'middle',f:MONO,c:mut});
+    h+=txt(N?0:L,H-B+58,isX?'efficacité du logiciel (× oct. 2026)':'années de progrès cumulées',{c:mut,s:13});
     $('capC').textContent= isX ? "Efficacité du logiciel par rapport à octobre 2026, échelle linéaire : l'exponentielle (r = 1) devient visible. Au-delà de ×40 000, la courbe sort du cadre." : "Progrès cumulé depuis octobre 2026, en années de progrès au rythme d'avant : l'échelle des scores, logarithmique. Au-delà de 40, la courbe sort du cadre.";
     const path=rr=>{ let d='',on=false; for(let i=0;i<=400;i++){ const t=5*i/400, v=V(t,rr); if(!isFinite(v)||v>yMax*1.02){ if(on) d+=`L${X(t).toFixed(1)},${Y(yMax).toFixed(1)}`; break;} d+=(on?'L':'M')+X(t).toFixed(1)+','+Y(v).toFixed(1); on=true; } return d; };
     h+=`<path d="${path(0.6)}" fill="none" stroke="${line}" stroke-width="2" stroke-dasharray="5 5"/><path d="${path(1)}" fill="none" stroke="${sig}" stroke-width="2"/>`;
@@ -531,50 +558,58 @@ function renderProj(){
       const y1=Y(V(5,1)), y6=Math.max(Y(V(5,0.6)), y1+16);
       h+=txt(X(5)+8,y1+4,'r = 1',{w:700,s:13,c:sig})+txt(X(5)+8,y6+4,'r = 0,6',{s:13,c:mut}); }
     h+=`<path d="${path(r)}" fill="none" stroke="${acc}" stroke-width="4"/>`;
-    if(ts<5) h+=`<line x1="${X(ts)}" x2="${X(ts)}" y1="${T}" y2="${H-B}" stroke="${acc}" stroke-dasharray="4 4"/>`+txt(X(ts)+(ts>3.5?-6:6),T+14,'explosion · '+dateAt(ts),{a:ts>3.5?'end':'start',w:700,s:13,c:acc});
+    if(ts<5){ const right=ts>(N?2.5:3.5); h+=`<line x1="${X(ts)}" x2="${X(ts)}" y1="${T}" y2="${H-B}" stroke="${acc}" stroke-dasharray="4 4"/>`+txt(X(ts)+(right?-6:6),T+14,'explosion · '+dateAt(ts),{a:right?'end':'start',w:700,s:13,c:acc}); }
     $('svgC').innerHTML=h; }
 
   // Tours de boucle
-  { const W=760,l=8,rr=8, span=96, sc=(W-l-rr)/span, p=b*(r-1), q=Math.pow(2,-p), D1=12*Math.LN2/G0;
+  { const N=NARROW, W=N?400:760, dy=N?20:0, l=8,rr=8, span=96, sc=(W-l-rr)/span, p=b*(r-1), q=Math.pow(2,-p), D1=12*Math.LN2/G0;
+    vb($('svgL'),W,130+dy);
     let h='', x=l, t=0, k=0;
     while(t<span && k<80){ const d=D1*Math.pow(q,k), w=Math.min(d,span-t)*sc;
-      h+=`<rect x="${x.toFixed(2)}" y="24" width="${Math.max(w-1.5,0.6).toFixed(2)}" height="46" fill="${k%2?sig:acc}" opacity="${k%2?0.75:1}"/>`;
-      if(w>34) h+=txt((x+w/2).toFixed(1),52,'×2',{a:'middle',f:MONO,s:12,w:600,c:css('--bg')});
+      h+=`<rect x="${x.toFixed(2)}" y="${24+dy}" width="${Math.max(w-1.5,0.6).toFixed(2)}" height="46" fill="${k%2?sig:acc}" opacity="${k%2?0.75:1}"/>`;
+      if(w>(N?26:34)) h+=txt((x+w/2).toFixed(1),52+dy,'×2',{a:'middle',f:MONO,s:12,w:600,c:css('--bg')});
       x+=d*sc; t+=d; k++; if(d<0.03) break; }
-    if(t<span && isFinite(ts)) h+=txt(Math.min(x+8,W-150),52,'∞ vers '+dateAt(ts),{s:14,w:700,c:acc});
-    for(let y=0;y<=8;y+=2){ const xx=l+y*12*sc; h+=`<line x1="${xx}" x2="${xx}" y1="80" y2="88" stroke="${mut}"/>`+txt(xx,106,y===0?'oct. 2026':'+'+y+' ans',{a:y===0?'start':y===8?'end':'middle',f:MONO,c:mut}); }
-    h+=txt(l,14,`1er doublement : ${fr(D1,1)} mois · chaque suivant : ${fr(q*100,0)} % du précédent`,{s:13,c:mut});
+    if(t<span && isFinite(ts)) h+=txt(Math.min(x+8,W-(N?130:150)),52+dy,'∞ vers '+dateAt(ts),{s:14,w:700,c:acc});
+    for(let y=0;y<=8;y+=2){ const xx=l+y*12*sc; h+=`<line x1="${xx}" x2="${xx}" y1="${80+dy}" y2="${88+dy}" stroke="${mut}"/>`+txt(xx,106+dy,y===0?(N?'2026':'oct. 2026'):'+'+y+' ans',{a:y===0?'start':y===8?'end':'middle',f:MONO,c:mut}); }
+    if(N) h+=txt(l,14,`1er doublement : ${fr(D1,1)} mois`,{s:13,c:mut})+txt(l,32,`chaque suivant : ${fr(q*100,0)} % du précédent`,{s:13,c:mut});
+    else h+=txt(l,14,`1er doublement : ${fr(D1,1)} mois · chaque suivant : ${fr(q*100,0)} % du précédent`,{s:13,c:mut});
     $('svgL').innerHTML=h; }
 }
 
 function renderMini(){
-  const s=$('svgMini'), W=760, L=90, span=36, sc=(W-L-8)/span, D1=12*Math.LN2/G0, b=0.25, acc=css('--accent'), sig=css('--sig'), mut=css('--muted');
+  const N=NARROW, s=$('svgMini'), W=N?400:760, L=N?0:90, span=36, sc=(W-L-8)/span, D1=12*Math.LN2/G0, b=0.25, acc=css('--accent'), sig=css('--sig'), mut=css('--muted');
   const r2=+$('rMini').value; $('rMiniO').textContent=fr(r2,2);
+  // mobile : « r = … » et le résultat au-dessus des barres, sur toute la largeur
+  const rows=N?[[1,30],[r2,140]]:[[1,10],[r2,96]], yAx=N?228:190; vb(s,W,N?236:196);
   let h='';
-  [[1,10],[r2,96]].forEach(([r,y])=>{ const q=Math.pow(2,-b*(r-1)), col=r>1.005?acc:r<0.995?mut:sig, ts=tStar(r,b); let x=L,t=0,k=0;
-    h+=txt(0,y+26,'r = '+fr(r,r===1?0:2),{s:15,w:700,c:col});
+  rows.forEach(([r,y])=>{ const q=Math.pow(2,-b*(r-1)), col=r>1.005?acc:r<0.995?mut:sig, ts=tStar(r,b); let x=L,t=0,k=0;
     const P3=P(3,r,b), n=P3*GH/Math.LN2;
-    h+=txt(L,y+60, ts<3 ? `Logiciel : infini vers ${dateAt(ts)}` : `Logiciel : ${fmtX(Math.exp(GH*P3))} en 3 ans, soit ${fr(n,1)} doublements`,{s:14,w:700,c:col});
-    while(t<span&&k<200){ const d=D1*Math.pow(q,k), w=Math.min(d,span-t)*sc; h+=`<rect x="${x.toFixed(2)}" y="${y}" width="${Math.max(w-1.5,0.6).toFixed(2)}" height="40" fill="${col}" opacity="${k%2?0.6:1}"/>`; if(w>30) h+=txt((x+w/2).toFixed(1),y+25,'×2',{a:'middle',f:MONO,s:11,w:600,c:css('--bg')}); x+=d*sc; t+=d; k++; } });
-  [0,1,2,3].forEach(yv=>{ const xx=L+yv*12*sc; h+=txt(xx,190,yv?'+'+yv+' an'+(yv>1?'s':''):'oct. 2026',{a:yv===0?'start':yv===3?'end':'middle',f:MONO,c:mut}); });
+    const res= ts<3 ? `Logiciel : infini vers ${dateAt(ts)}` : `Logiciel : ${fmtX(Math.exp(GH*P3))} en 3 ans, soit ${fr(n,1)} doublements`;
+    if(N) h+=txt(0,y-8,'r = '+fr(r,r===1?0:2),{s:15,w:700,c:col})+txt(0,y+60,res,{s:12,w:700,c:col});
+    else h+=txt(0,y+26,'r = '+fr(r,r===1?0:2),{s:15,w:700,c:col})+txt(L,y+60,res,{s:14,w:700,c:col});
+    while(t<span&&k<200){ const d=D1*Math.pow(q,k), w=Math.min(d,span-t)*sc; h+=`<rect x="${x.toFixed(2)}" y="${y}" width="${Math.max(w-1.5,0.6).toFixed(2)}" height="40" fill="${col}" opacity="${k%2?0.6:1}"/>`; if(w>(N?24:30)) h+=txt((x+w/2).toFixed(1),y+25,'×2',{a:'middle',f:MONO,s:11,w:600,c:css('--bg')}); x+=d*sc; t+=d; k++; } });
+  [0,1,2,3].forEach(yv=>{ const xx=L+yv*12*sc; h+=txt(xx,yAx,yv?'+'+yv+' an'+(yv>1?'s':''):'oct. 2026',{a:yv===0?'start':yv===3?'end':'middle',f:MONO,c:mut}); });
   s.innerHTML=h;
 }
 $('rMini').addEventListener('input',renderMini);
 
 /* ---- Focus : diaporama ---- */
-const FW=760, FH=380;
+let FW=760, FH=380; // mobile : 400 × 440, deux graphiques empilés au lieu de côte à côte
 function fr2(n){ return n.toLocaleString('fr-FR'); }
-function frame(ox,w,xr,yr,o){ // o: {yt:[[v,label]], xt:[[v,label]], title}
-  const L=ox+74, R=ox+w-24, T=o.title?44:24, B=FH-40;
+function frame(ox,w,xr,yr,o){ // o: {yt:[[v,label]], xt:[[v,label]], title, oy (haut du cadre), ph (hauteur)}
+  const oy=o.oy||0, ph=o.ph||FH, L=ox+(o.L||(NARROW?58:74)), R=ox+w-(NARROW?22:24), T=oy+(o.title?44:24), B=oy+ph-40;
   const X=t=>L+(t-xr[0])/(xr[1]-xr[0])*(R-L), Y=v=>B-(Math.min(v,yr[1])-yr[0])/(yr[1]-yr[0])*(B-T);
   const g=css('--f-grid'), m=css('--f-mut'), f=css('--f-fg');
   let h='';
-  if(o.title) h+=txt(ox+4,20,o.title,{s:15,w:700,c:f});
-  (o.yt||[]).forEach(([v,l])=>{h+=`<line x1="${L}" x2="${R}" y1="${Y(v)}" y2="${Y(v)}" stroke="${g}"/>`+txt(L-8,Y(v)+4,l,{a:'end',f:MONO,s:11,c:m});});
-  (o.xt||[]).forEach(([v,l])=>{h+=txt(X(v),B+20,l,{a:'middle',f:MONO,s:11,c:m});});
-  if(o.ylab) h+=`<text transform="translate(${ox+12},${(T+B)/2}) rotate(-90)" text-anchor="middle" font-family="${BODY}" font-size="12" font-weight="700" fill="${m}">${o.ylab}</text>`;
+  const ts=NARROW?13:11;
+  if(o.title) h+=txt(ox+4,oy+20,o.title,{s:15,w:700,c:f});
+  (o.yt||[]).forEach(([v,l])=>{h+=`<line x1="${L}" x2="${R}" y1="${Y(v)}" y2="${Y(v)}" stroke="${g}"/>`+txt(L-8,Y(v)+4,l,{a:'end',f:MONO,s:ts,c:m});});
+  (o.xt||[]).forEach(([v,l])=>{h+=txt(X(v),B+20,l,{a:'middle',f:MONO,s:ts,c:m});});
+  if(o.ylab&&!o.noYlab) h+=vtxt(ox+12,(T+B)/2,o.ylab,{s:12,c:m});
   return {X,Y,h,L,R,T,B};
 }
+// Deux graphiques : côte à côte sur ordinateur, l'un sous l'autre sur mobile
+const PW=()=>NARROW?FW:370, PX=()=>NARROW?0:390, P1=()=>NARROW?{oy:0,ph:FH/2,L:66,noYlab:true}:{}, P2=()=>NARROW?{oy:FH/2,ph:FH/2,L:66,noYlab:true}:{}; // mobile : titres sans axe vertical nommé
 function pl(pts,tmax,X,Y,stroke,w,dash){ // polyline coupée à tmax
   let d='', on=false;
   for(let i=0;i<pts.length;i++){ const [t,v]=pts[i];
@@ -597,14 +632,14 @@ const SLIDES=[
     h+=pl(hist.slice(0,2),tm,f.X,f.Y,b2,4)+pl(hist.slice(1),tm,f.X,f.Y,a,4);
     if(p>=1){ h+=pl([[TB0,149.9],[TE0,149.9+15.4*(TE0-TB0)]],9999,f.X,f.Y,m,2,true);
       h+=`<circle cx="${f.X(TB0)}" cy="${f.Y(149.9)}" r="7" fill="none" stroke="${a}" stroke-width="2.5"/>`+txt(f.X(TB0)-14,f.Y(149.9)-24,'la cassure',{a:'end',s:15,w:700,c:a});
-      h+=txt(f.X(2024.9),f.Y(140)+44,'+15 points par an',{s:14,w:700,c:b2,a:'middle'})+txt(f.X(2026.3)-10,f.Y(165)-14,'+29 par an',{s:14,w:700,c:a,a:'end'}); }
+      h+=(NARROW?txt(f.X(TB0)-10,f.B-14,'+15 points par an',{s:14,w:700,c:b2,a:'end'}):txt(f.X(2024.9),f.Y(140)+44,'+15 points par an',{s:14,w:700,c:b2,a:'middle'}))+txt(f.X(2026.3)-10,f.Y(165)-14,'+29 par an',{s:14,w:700,c:a,a:'end'}); }
     return h; }},
  {t:"Une droite, ici, c'est une exponentielle", x:"À gauche, le score mesuré par METR : une droite, qui se casse et monte plus vite. À droite, ce que ce score représente : la capacité des modèles. L’échelle de METR est logarithmique : chaque tranche de 15 points multiplie la capacité des modèles par 3. Jusqu’en 2025, on gagnait environ 15 points par an, soit ×3 par an. Depuis la cassure, on en gagne environ 29 : ×8 par an.",
   d:p=>{ const tm=5*p, a=css('--f-a'), b2=css('--f-b'), m=css('--f-mut'), fg=css('--f-fg');
     const xt=[[0,'2023'],[1,'2024'],[2,'2025'],[3,'2026'],[4,'2027'],[5,'2028']];
     const Lv=t=> t<=2 ? t : 2+1.9*(t-2), Cv=t=>Math.pow(3,Lv(t));
-    const l=frame(0,370,[0,5],[0,8],{title:'Ce que mesure METR',yt:[[0,'0'],[2,'+30'],[4,'+60'],[6,'+90'],[8,'+120']],xt,ylab:'score (points)'});
-    const r=frame(390,370,[0,5],[0,6000],{title:'Ce que ça représente',yt:[[0,'×1'],[1500,'×1 500'],[3000,'×3 000'],[4500,'×4 500'],[6000,'×6 000']],xt,ylab:'capacité des modèles'});
+    const l=frame(0,PW(),[0,5],[0,8],Object.assign({title:'Ce que mesure METR',yt:[[0,'0'],[2,'+30'],[4,'+60'],[6,'+90'],[8,'+120']],xt,ylab:'score (points)'},P1()));
+    const r=frame(PX(),PW(),[0,5],[0,6000],Object.assign({title:'Ce que ça représente',yt:[[0,'×1'],[1500,'×1 500'],[3000,'×3 000'],[4500,'×4 500'],[6000,'×6 000']],xt,ylab:'capacité des modèles'},P2()));
     let h=l.h+r.h; const seg=(f,t0,t1)=>{ const q=[]; for(let i=0;i<=120;i++){ const t=t0+(t1-t0)*i/120; q.push([t,f(t)]); } return q; };
     const base=t=>t, baseC=t=>Math.pow(3,t);
     // sans la cassure (pointillés fins), passé, depuis la cassure jusqu'à maintenant, puis projection
@@ -613,9 +648,10 @@ const SLIDES=[
     h+=`<g opacity=".75">`+pl(seg(Lv,3,5),tm,l.X,l.Y,a,4,true)+pl(seg(Cv,3,5),tm,r.X,r.Y,a,4,true)+`</g>`;
     for(let n=1;n<=Math.floor(tm+1e-9);n++){ const fut=n>3, c=n<=2?b2:a; [[l,Lv(n)],[r,Cv(n)]].forEach(([f,v])=>{ h+=`<circle cx="${f.X(n)}" cy="${f.Y(v)}" r="6" fill="${fut?css('--f-bg'):c}" stroke="${c}" stroke-width="2.5"/>`; }); }
     if(tm>=2){ h+=`<circle cx="${l.X(2)}" cy="${l.Y(2)}" r="12" fill="none" stroke="${a}" stroke-width="2.5"/>`+txt(l.X(2)-16,l.Y(2)-14,'la cassure',{a:'end',f:'Caveat',s:22,w:700,c:a}); }
-    const here=(x,y,up)=>{ const s=up?-1:1; return `<circle cx="${x}" cy="${y}" r="12" fill="none" stroke="${fg}" stroke-width="2.5"/><path d="M${x+6} ${y+s*80}Q${x-10} ${y+s*44} ${x-3} ${y+s*16}" fill="none" stroke="${fg}" stroke-width="2.5" stroke-linecap="round"/><path d="M${x-3} ${y+s*16}l-9 ${s*10}M${x-3} ${y+s*16}l9 ${s*10}" stroke="${fg}" stroke-width="2.5" stroke-linecap="round"/>`+txt(x+40,y+s*(up?98:104),'on est là',{a:'end',f:'Caveat',s:24,w:700,c:fg})+txt(x+40,y+s*(up?82:122),'(oct. 2026)',{a:'end',s:11,c:m}); };
+    const here=(x,y,up)=>{ if(NARROW) return `<circle cx="${x}" cy="${y}" r="12" fill="none" stroke="${fg}" stroke-width="2.5"/>`+txt(x-16,y-10,'on est là (oct. 2026)',{a:'end',f:'Caveat',s:20,w:700,c:fg});
+      const s=up?-1:1; return `<circle cx="${x}" cy="${y}" r="12" fill="none" stroke="${fg}" stroke-width="2.5"/><path d="M${x+6} ${y+s*80}Q${x-10} ${y+s*44} ${x-3} ${y+s*16}" fill="none" stroke="${fg}" stroke-width="2.5" stroke-linecap="round"/><path d="M${x-3} ${y+s*16}l-9 ${s*10}M${x-3} ${y+s*16}l9 ${s*10}" stroke="${fg}" stroke-width="2.5" stroke-linecap="round"/>`+txt(x+40,y+s*(up?98:104),'on est là',{a:'end',f:'Caveat',s:24,w:700,c:fg})+txt(x+40,y+s*(up?82:122),'(oct. 2026)',{a:'end',s:11,c:m}); };
     if(tm>=3){ h+=here(l.X(3),l.Y(Lv(3)),false)+here(r.X(3),r.Y(Cv(3)),true); }
-    if(p>=1){ h+=txt(l.X(4.6),l.Y(Lv(4.6))-16,'projection',{a:'end',s:12,c:m})+txt(r.X(5)-10,r.Y(Cv(5))+20,'décolle',{a:'end',f:'Caveat',s:22,w:700,c:a})+txt(r.X(5)-4,r.Y(243)+22,'sans la cassure',{a:'end',s:12,c:m}); }
+    if(p>=1){ h+=txt(l.X(4.6),l.Y(Lv(4.6))-16,'projection',{a:'end',s:12,c:m})+txt(r.X(5)-10,r.Y(Cv(5))+20,'décolle',{a:'end',f:'Caveat',s:22,w:700,c:a})+(NARROW?'':txt(r.X(5)-4,r.Y(243)+22,'sans la cassure',{a:'end',s:12,c:m})); }
     return h; }},
  {t:"La cassure : l'exponentielle change de vitesse", x:"En octobre 2025, l'IA s'est mise à aider la recherche. La droite monte 1,9 fois plus vite. En valeur réelle, le logiciel ne gagne plus ×3 par an, mais environ ×8 (3 puissance 1,9).",
   d:p=>{ const tm=4*p, a=css('--f-a'), b2=css('--f-b'), m=css('--f-mut');
@@ -629,8 +665,8 @@ const SLIDES=[
   d:p=>{ const tm=5*p, a=css('--f-a'), b2=css('--f-b'), m=css('--f-mut'), fg=css('--f-fg'), fbg=css('--f-bg');
     // même référentiel que l'étape 2 : années 2023 → 2028, score de 0 à +120 (une unité = 15 points)
     const xt=[[0,'2023'],[1,'2024'],[2,'2025'],[3,'2026'],[4,'2027'],[5,'2028']], yt=[[0,'0'],[2,'+30'],[4,'+60'],[6,'+90'],[8,'+120']];
-    const l=frame(0,370,[0,5],[0,8],{title:'Une seule marche',yt,xt,ylab:'score (points)'});
-    const r=frame(390,370,[0,5],[0,8],{title:'Un escalier',yt,xt,ylab:'score (points)'});
+    const l=frame(0,PW(),[0,5],[0,8],Object.assign({title:'Une seule marche',yt,xt,ylab:'score (points)'},P1()));
+    const r=frame(PX(),PW(),[0,5],[0,8],Object.assign({title:'Un escalier',yt,xt,ylab:'score (points)'},P2()));
     // marche : pente ×1,9 à partir de 2025, puis constante ; escalier : la pente est multipliée par 1,5 à chaque année après 2026
     const M=[0,1,2,3.9,5.8,7.7], E=[0,1,2,3.9,3.9+1.9*1.5,3.9+1.9*1.5+1.9*2.25];
     let h=l.h+r.h;
@@ -658,7 +694,7 @@ const SLIDES=[
     const f=frame(0,FW,[2024,2032],[120,400],yAECI); let h=f.h;
     h+=pl(hist.slice(0,2),9999,f.X,f.Y,b2,4)+pl(hist.slice(1),9999,f.X,f.Y,a,4);
     if(p<0.55) return h;
-    h+=pl(smooth(1,0.25,2032,400),9999,f.X,f.Y,m,2,true)+txt(f.X(2031.5),f.Y(A0F+15*P(2031.5-TE0,1,0.25))+20,'r = 1',{a:'end',s:13,c:m});
+    h+=pl(smooth(1,0.25,2032,400),9999,f.X,f.Y,m,2,true)+(()=>{ const tl=NARROW?2030.4:2031.5; return txt(f.X(tl),f.Y(A0F+15*P(tl-TE0,1,0.25))+20,'r = 1',{a:'end',s:13,c:m}); })();
     const sm=smooth(r,0.25,2032,400); h+=pl(sm,9999,f.X,f.Y,a,4.5);
     const ts=TE0+tStar(r,0.25); if(ts<2032) h+=`<line x1="${f.X(ts)}" x2="${f.X(ts)}" y1="${f.T}" y2="${f.B}" stroke="${a}" stroke-dasharray="4 4"/>`;
     return h; }}
@@ -667,7 +703,7 @@ SLIDES.splice(4,1); // étape « L'escalier se redresse » retirée
 SLIDES.splice(2,1); // étape « La cassure : l'exponentielle change de vitesse » retirée
 let fCur=0, fRaf=0;
 const reduce=()=>{ try{ return matchMedia('(prefers-reduced-motion: reduce)').matches; }catch(e){ return false; } };
-function fDraw(p){ const s=SLIDES[fCur]; $('svgF').innerHTML=s.d(p); if(s.reveal){ const on=p>=0.55; $('fReveal').hidden=!on; $('fCtl').hidden=!on; $('fText').hidden=!on;
+function fDraw(p){ const s=SLIDES[fCur]; FW=NARROW?400:760; FH=NARROW?440:380; vb($('svgF'),FW,FH); $('svgF').innerHTML=s.d(p); if(s.reveal){ const on=p>=0.55; $('fReveal').hidden=!on; $('fCtl').hidden=!on; $('fText').hidden=!on;
     // le « r » apparaît au centre, puis se range en haut à gauche du graphique et y reste
     const pop=Math.min(1,Math.max(0,(p-0.55)/0.15)), k=Math.min(1,Math.max(0,(p-0.8)/0.2)), e=1-Math.pow(1-k,3);
     const sp=$('fReveal').querySelector('span'); sp.style.left=`calc(50% - ${e}*(50% - 120px))`; sp.style.top=`calc(50% - ${e}*(50% - 70px))`;
@@ -685,7 +721,9 @@ $('deck').addEventListener('keydown',e=>{ if(e.key==='ArrowRight'){fShow(fCur+1)
 $('rF').addEventListener('input',()=>{ cancelAnimationFrame(fRaf); fDraw(1); $('fCtl').hidden=false; $('fText').hidden=false; });
 let fx0=null; $('deck').addEventListener('pointerdown',e=>{ if(e.target.closest('input,button')) return; fx0=e.clientX; }); $('deck').addEventListener('pointerup',e=>{ if(fx0==null) return; const dx=e.clientX-fx0; fx0=null; if(Math.abs(dx)>50) fShow(fCur+(dx<0?1:-1)); });
 
-function all(){ renderMetr(); renderMini(); renderEst(); renderDial(); fDraw(1); }
+function all(){ setNarrow(); renderMetr(); renderMini(); renderEst(); renderDial(); fDraw(1); }
+// Passage ordinateur ↔ mobile (rotation, fenêtre redimensionnée) : on redessine
+addEventListener('resize',()=>{ const was=NARROW; setNarrow(); if(was!==NARROW){ cancelAnimationFrame(fRaf); all(); } });
 fShow(0);
 
 /* ---- Mise en forme : tous les « r » en rouge, « λ » et « β » en gras (textes et graphiques) ---- */
