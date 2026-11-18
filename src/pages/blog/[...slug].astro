@@ -5,6 +5,8 @@ import Blog from '../../components/Blog.astro';
 import { blogPaths, type Article } from '../../lib/articles';
 import { blogJsonLd } from '../../lib/seo';
 import { texts, plain, type Alternates } from '../../i18n';
+import { getImage } from 'astro:assets';
+import { articleImage } from '../../lib/articleImages';
 
 export const getStaticPaths = () => blogPaths('fr');
 
@@ -12,8 +14,11 @@ const { article, articles, alternates } = Astro.props as { article: Article | nu
 const t = texts.fr.blog;
 const title = article ? article.data.seoTitle : t.metaTitle;
 const description = article ? article.data.seoDescription : t.metaDescription;
-const jsonLd = blogJsonLd('fr', article, articles);
+// Image de partage : la couverture de l'article, 1200 × 630, en JPEG (sinon l'image générale du site).
+const share = article?.data.image ? await getImage({ src: articleImage(article.data.image), width: 1200, height: 630, format: 'jpg', quality: 85 }) : null;
+const ogImage = share && article ? { src: share.src, width: 1200, height: 630, alt: plain(article.data.imageAlt ?? '', 'fr') } : undefined;
+const jsonLd = blogJsonLd('fr', article, articles, share?.src);
 ---
-<Base lang="fr" alternates={alternates} title={plain(title, 'fr')} description={plain(description, 'fr')} jsonLd={jsonLd}>
+<Base lang="fr" alternates={alternates} title={plain(title, 'fr')} description={plain(description, 'fr')} ogImage={ogImage} jsonLd={jsonLd}>
   <Blog lang="fr" article={article} articles={articles} />
 </Base>

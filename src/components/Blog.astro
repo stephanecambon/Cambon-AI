@@ -55,6 +55,11 @@ if (d?.component && !Custom) throw new Error(`Composant d'article inconnu : ${d.
       <ul class="blog__list">
         {articles.map((a) => (
           <li class="blog__item">
+            {a.data.image && (
+              <a class="blog__cover" href={articleUrl(lang, articleSlug(a))} tabindex="-1" aria-hidden="true">
+                <Image src={articleImage(a.data.image)} alt="" widths={[600, 900, 1400]} sizes="(max-width: 860px) calc(100vw - 32px), 760px" quality={82} />
+              </a>
+            )}
             {a.data.kicker && <p class="eyebrow">{plain(a.data.kicker, lang)}</p>}
             <h2><a href={articleUrl(lang, articleSlug(a))}>{plain(a.data.title, lang)}</a></h2>
             <p class="blog__date"><time datetime={a.data.date.toISOString().slice(0, 10)}>{formatDate(a.data.date, lang)}</time></p>
@@ -117,6 +122,16 @@ if (d?.component && !Custom) throw new Error(`Composant d'article inconnu : ${d.
   .blog__item {
     padding: 24px 0;
     border-top: 1px solid var(--rule);
+  }
+  .blog__cover {
+    display: block;
+    margin-bottom: 18px;
+  }
+  .blog__cover :global(img) {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius);
   }
   .blog__item h2 {
     font-family: var(--font-title);

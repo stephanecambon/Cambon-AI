@@ -136,7 +136,7 @@ export function projectJsonLd(
 }
 
 /** Blog : liste des articles, ou article seul (BlogPosting). */
-export function blogJsonLd(lang: Lang, article: Article | null, articles: Article[]) {
+export function blogJsonLd(lang: Lang, article: Article | null, articles: Article[], imageUrl?: string) {
   const t = texts[lang];
   const crumbs: Array<[string, string]> = [
     ['Cambon AI', routes.home[lang]],
@@ -178,6 +178,7 @@ export function blogJsonLd(lang: Lang, article: Article | null, articles: Articl
         datePublished: d.date.toISOString().slice(0, 10),
         ...(d.updated ? { dateModified: d.updated.toISOString().slice(0, 10) } : {}),
         inLanguage: LOCALE[lang],
+        ...(imageUrl ? { image: abs(imageUrl) } : {}),
         author: { '@type': 'Person', '@id': PERSON_ID, name: 'Stéphane Cambon' },
         publisher: { '@type': 'Organization', '@id': ORG_ID, name: 'Cambon AI' },
       },
