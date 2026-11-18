@@ -2,6 +2,17 @@
 // Article « Tout dépend de r » (paramètre r) : page interactive, avec ses
 // propres styles (isolés sous .pr), ses polices (servies depuis cambon.ai,
 // public/fonts/parametre-r/) et son script (graphiques, diaporama, simulations).
+
+// Lien de la vidéo explicative (crayonné sous l'accroche). Vide = crayonné masqué
+// sur le site en ligne ; affiché en local (npm run dev) pour la mise au point.
+const VIDEO_URL = '';
+const montrerVideo = VIDEO_URL !== '' || import.meta.env.DEV;
+
+// Easter egg : la première mention de « singularité » ouvre la citation de Vernor Vinge.
+import { getImage } from 'astro:assets';
+import vingeSrc from '../../assets/articles/vinge-singularite.png';
+const vinge = await getImage({ src: vingeSrc, format: 'webp', width: 1200, quality: 85 });
+const vingeAlt = "Citation de Vernor Vinge, « The Coming Technological Singularity », NASA, 1993 : « D'ici trente ans, nous aurons les moyens technologiques de créer une intelligence surhumaine. Peu après, l'ère humaine prendra fin. »";
 ---
 <div class="pr">
 <div class="wrap">
@@ -10,6 +21,14 @@
   <span class="kicker">R&amp;D en IA · novembre 2026</span>
   <h1>IA : l'accélération s'accélère ?</h1>
   <p class="lede"><b>Tout dépend de r.</b> En un an, Anthropic a presque doublé la vitesse à laquelle ses modèles progressent, en bonne partie grâce à l'IA elle-même. Palier ou début d'emballement ? Tout se joue sur un nombre, r, que personne ne sait encore mesurer.</p>
+  {montrerVideo && (
+    <a class="flemme" href={VIDEO_URL || '#'} target="_blank" rel="noopener">
+      <span class="flemme__a">Flemme de tout lire&nbsp;?</span>
+      <svg class="flemme__fleche" viewBox="0 0 64 30" aria-hidden="true"><path d="M3 19c12-9 27-11 51-6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/><path d="M45 5.5c4 3.2 7.6 5.6 10.5 7.4-3.6 2-6.8 4.4-9.6 7.6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span class="sr-only"> =&gt; </span>
+      <span class="flemme__b"><svg class="flemme__play" viewBox="0 0 24 24" aria-hidden="true"><path d="M7.5 4.8c-.4 4.6-.3 9.6.2 14.4 4.3-2 8.2-4.6 11.6-7.4C15.6 9.3 11.8 6.9 7.5 4.8z" fill="currentColor"/></svg>regardez la vidéo explicative</span>
+    </a>
+  )}
 </section>
 
 <section class="module" id="metr">
@@ -20,7 +39,7 @@
   <div class="legend" id="metrLeg" hidden><span><i style="background:var(--sig);border-radius:50%"></i>modèle public</span><span><i style="background:var(--accent);border-radius:50%"></i>modèle interne</span><span><i style="box-shadow:inset 0 0 0 2px var(--sig);border-radius:50%"></i>public, pas le meilleur du moment</span><span>Survolez un point pour son nom et son score.</span></div>
   <svg id="svgMetr" viewBox="0 0 760 360" role="img" aria-label="Score AECI des modèles d'Anthropic : deux droites, de +15 à +29 points par an en octobre 2025"></svg>
   <p class="small">Source : METR, Independent Assessment of AI R&amp;D Acceleration at Anthropic, novembre 2026.</p>
-  <div class="col"><span class="human" role="note" aria-label="Texte écrit par un humain, sans IA" style="align-self:flex-start"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l1.2-4.6L16.6 4a2 2 0 0 1 2.8 0l.6.6a2 2 0 0 1 0 2.8L8.6 18.8z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M14.5 6.1l3.4 3.4M4 20l4.6-1.2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span><b>100 % humain</b><small>écrit sans IA</small></span></span><p class="lede" style="font-size:19px"><i>Je suis METR depuis quelques temps et je dévore toutes leurs publications avec appétit. Cette étude est une grande première : 25 des chercheurs de METR ont eu accès aux données internes et aux chercheurs d'Antropic pendant plusieurs semaines. Ce résultat principal, ce X1,9 m'a forcément interpellé, j'ai voulu comprendre précisément ce que cela signifiait et ce que cela pourrait dire de l'avenir des IA. Car, derrière ce chiffre, il y a le démarrage d'une boucle : les IAs accélèrent la fabrication des IAs suivante.</i><br><i>Pour comprendre ce que cela signifie vraiment, nous allons faire un peu de maths. Ne vous inquiétez pas, j'ai beaucoup travaillé sur l'accessibilité du contenu : pas d'équation, que des visualisations. Et nous allons modéliser les conséquences de ce résultat.</i><br><i>En chemin, nous ferons un détour par la théorie de l'économie de la recherche et découvrirons le mystérieux paramètre <span class="m">r</span> : un chiffre presque impossible à évaluer mais qui sera peut-être le chiffre le plus important du siècle.</i></p></div>
+  <div class="col"><span class="human" role="note" aria-label="Texte écrit par un humain, sans IA" style="align-self:flex-start"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l1.2-4.6L16.6 4a2 2 0 0 1 2.8 0l.6.6a2 2 0 0 1 0 2.8L8.6 18.8z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M14.5 6.1l3.4 3.4M4 20l4.6-1.2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span><b>100 % humain</b><small>écrit sans IA</small></span></span><p class="lede" style="font-size:19px"><i>Je suis METR depuis quelque temps et je dévore toutes leurs publications avec appétit. Cette étude est une grande première : 25 des chercheurs de METR ont eu accès aux données internes et aux chercheurs d'Anthropic pendant plusieurs semaines. Ce résultat principal, ce X1,9 m'a forcément interpellé, j'ai voulu comprendre précisément ce que cela signifiait et ce que cela pourrait dire de l'avenir des IA. Car, derrière ce chiffre, il y a le démarrage d'une boucle : les IA accélèrent la fabrication des IA suivantes.</i><br><i>Pour comprendre ce que cela signifie vraiment, nous allons faire un peu de maths. Ne vous inquiétez pas, j'ai beaucoup travaillé sur l'accessibilité du contenu : pas d'équation, que des visualisations. Et nous allons modéliser les conséquences de ce résultat.</i><br><i>En chemin, nous ferons un détour par la théorie de l'économie de la recherche et découvrirons le mystérieux paramètre <span class="m">r</span> : un chiffre presque impossible à évaluer mais qui sera peut-être le chiffre le plus important du siècle.</i></p></div>
 </section>
 
 <section class="focus" id="focus">
@@ -40,7 +59,7 @@
   <p class="def">Quand l'effort de recherche double, combien de fois le logiciel double-t-il ? C'est <span class="m">r</span>, le <b>rendement de la R&amp;D logicielle</b>.</p>
   <p>Le « logiciel », ici, c'est l'efficacité des algorithmes : ce qu'on tire d'un même parc de machines. Dans une R&amp;D classique, l'effort vient de chercheurs humains. Or un chercheur ne se fabrique pas en un jour : il faut des années pour le former, et les recrutements suivent les budgets. Leur nombre augmente donc lentement, quelles que soient leurs découvertes. Si l'IA fait la recherche, cette limite saute : chaque amélioration du logiciel rend aussi les chercheurs, artificiels cette fois, plus nombreux ou plus rapides.</p>
   <p>D'où le seuil. Si <span class="m">r &gt; 1</span>, un doublement du logiciel achète plus d'un nouveau doublement : chaque tour de boucle est plus rapide que le précédent. Si <span class="m">r &lt; 1</span>, chaque tour est plus lent, parce que les idées faciles s'épuisent plus vite que l'IA ne progresse. À <span class="m">r = 1</span> exactement, la croissance est déjà explosive : le logiciel double à intervalles réguliers, environ tous les quatre mois au rythme actuel, et les gains deviennent vite gigantesques. Mais ce rythme ne change pas.</p>
-  <p>Cette différence change la nature de la courbe. Une exponentielle grandit sans fin, mais elle reste finie à toute date. Au-delà de <span class="m">r</span> = 1, la croissance devient <b>hyperbolique</b> : comme les doublements raccourcissent, leur durée totale est finie, et la courbe atteint l'infini à une date précise, calculable à l'avance. C'est ce qu'on appelle une singularité en temps fini. Aucun système réel n'y arrive : un goulot l'arrête avant, une limite physique apparaît (énergie notamment). Mais la date de la singularité indique à quelle vitesse on fonce vers ce goulot.</p>
+  <p>Cette différence change la nature de la courbe. Une exponentielle grandit sans fin, mais elle reste finie à toute date. Au-delà de <span class="m">r</span> = 1, la croissance devient <b>hyperbolique</b> : comme les doublements raccourcissent, leur durée totale est finie, et la courbe atteint l'infini à une date précise, calculable à l'avance. C'est ce qu'on appelle une <a class="oeuf" href={vinge.src} target="_blank" rel="noopener">singularité</a> en temps fini. Aucun système réel n'y arrive : un goulot l'arrête avant, une limite physique apparaît (énergie notamment). Mais la date de la singularité indique à quelle vitesse on fonce vers ce goulot.</p>
   <svg id="svgMini" viewBox="0 0 760 196" role="img" aria-label="Doublements du logiciel sur trois ans selon r"></svg>
   <div class="ctl"><label for="rMini">r de la seconde ligne</label><div class="row"><input id="rMini" type="range" min="0.4" max="2.5" step="0.01" value="1.4"><output id="rMiniO"></output></div></div>
 </section>
@@ -137,6 +156,10 @@
   <span>Stéphane Cambon · Cambon AI</span>
 </footer>
 </div>
+<dialog class="oeuf-dlg" id="oeufDlg" aria-label="Vernor Vinge et la singularité">
+  <form method="dialog"><button class="oeuf-dlg__x" aria-label="Fermer">×</button></form>
+  <img src={vinge.src} width={vinge.attributes.width} height={vinge.attributes.height} alt={vingeAlt} loading="lazy" decoding="async" />
+</dialog>
 </div>
 
 <style is:global>
@@ -200,12 +223,32 @@
 .pr b.gk{font-weight:700}
 .pr hr{border:0;border-top:1px solid var(--line);margin:6px 0;width:100%}
 .pr .avis-head{display:flex;flex-wrap:wrap;align-items:center;gap:12px 22px}
-.pr .human{display:inline-flex;align-items:center;gap:10px;border:2.5px solid var(--sig);color:var(--sig);border-radius:6px;padding:6px 14px 6px 10px;transform:rotate(-3deg);font-family:Caveat,"Source Sans 3",cursive}
+.pr .human{display:inline-flex;align-items:center;gap:10px;border:2.5px solid var(--accent);color:var(--accent);border-radius:6px;padding:6px 14px 6px 10px;transform:rotate(-3deg);font-family:Caveat,"Source Sans 3",cursive}
 .pr .human svg{width:26px;height:26px;flex:none}
 .pr .human b{display:block;font:700 26px/1 Caveat,"Source Sans 3",cursive}
-.pr .human small{display:block;font:600 11px/1.3 var(--f-mono);letter-spacing:.08em;text-transform:uppercase}
+.pr .human small{display:block;font:600 11px/1.3 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--sig)}
 .pr mark{background:var(--peach);color:inherit;padding:0 3px;border-radius:2px}
 .pr .hero{display:flex;flex-direction:column;gap:20px}
+/* Crayonné « Flemme de tout lire » sous l'accroche */
+.pr .flemme{align-self:flex-start;display:inline-flex;flex-wrap:wrap;align-items:center;gap:4px 12px;margin-top:4px;transform:rotate(-2deg);transform-origin:left center;font:700 28px/1.15 Caveat,"Source Sans 3",cursive;color:var(--sig);text-decoration:none}
+.pr .flemme__fleche{width:56px;height:26px;flex:none;color:var(--accent)}
+.pr .flemme__b{display:inline-flex;align-items:center;gap:6px;color:var(--accent);background:linear-gradient(transparent 62%,rgba(224,42,0,.18) 62%,rgba(224,42,0,.18) 92%,transparent 92%);padding:0 4px}
+.pr .flemme__play{width:22px;height:22px;flex:none}
+.pr .flemme:hover .flemme__b,.pr .flemme:focus-visible .flemme__b{text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:4px}
+.pr .flemme:focus-visible{outline:2px solid var(--accent);outline-offset:4px;border-radius:4px}
+/* Easter egg « singularité » : le mot garde l'allure du texte, seul le survol le trahit */
+.pr a.oeuf{color:inherit;text-decoration:none;cursor:pointer}
+.pr a.oeuf:hover{text-decoration:underline dotted var(--accent);text-decoration-thickness:2px;text-underline-offset:4px}
+.pr a.oeuf:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:2px}
+.pr .oeuf-dlg{padding:0;border:0;background:transparent;max-width:min(92vw,86vh);overflow:visible}
+.pr .oeuf-dlg::backdrop{background:rgba(10,14,28,.82)}
+.pr .oeuf-dlg img{display:block;width:100%;height:auto;border-radius:6px;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+.pr .oeuf-dlg form{position:absolute;top:-14px;right:-14px;margin:0}
+.pr .oeuf-dlg__x{width:44px;height:44px;border-radius:50%;border:0;background:var(--surface);color:var(--sig);font:600 28px/1 var(--f-body);cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.3)}
+.pr .oeuf-dlg__x:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+@media (max-width:560px){.pr .oeuf-dlg form{top:-52px;right:0}}
+.pr .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+@media (max-width:560px){.pr .flemme{font-size:25px}.pr .flemme__fleche{width:44px}}
 .pr .module{background:var(--surface);border:0;border-radius:6px;padding:24px;display:flex;flex-direction:column;gap:18px}
 @media (max-width:560px){.pr .module{padding:18px 14px}.pr{font-size:17px}}
 .pr .def{font-size:20px;line-height:1.5;background:var(--surface);border-left:4px solid var(--accent);border-radius:4px;padding:18px 22px}
@@ -656,6 +699,10 @@ const MO=new MutationObserver(ms=>{ MO.disconnect(); const seen=new Set(); ms.fo
 })();
 all();
 deco(document.querySelector('.wrap'));
+// Easter egg : ouvre la citation par-dessus la page (sans JS, le lien ouvre l'image)
+try{ const dlg=document.getElementById('oeufDlg'), egg=document.querySelector('.pr a.oeuf');
+  if(dlg && egg && dlg.showModal){ egg.addEventListener('click',e=>{ e.preventDefault(); dlg.showModal(); });
+    dlg.addEventListener('click',e=>{ if(e.target===dlg) dlg.close(); }); } }catch(e){}
 MO.observe(document.querySelector('.wrap'),{childList:true,subtree:true,characterData:true});
 })();
 </script>
