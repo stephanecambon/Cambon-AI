@@ -597,7 +597,7 @@ const SLIDES=[
       h+=`<circle cx="${f.X(TB0)}" cy="${f.Y(149.9)}" r="7" fill="none" stroke="${a}" stroke-width="2.5"/>`+txt(f.X(TB0)-14,f.Y(149.9)-24,'la cassure',{a:'end',s:15,w:700,c:a});
       h+=txt(f.X(2024.9),f.Y(140)+44,'+15 points par an',{s:14,w:700,c:b2,a:'middle'})+txt(f.X(2026.3)-10,f.Y(165)-14,'+29 par an',{s:14,w:700,c:a,a:'end'}); }
     return h; }},
- {t:"Une droite, ici, c'est une exponentielle", x:"À gauche, le score mesuré par METR : une droite, qui se casse et monte plus vite. À droite, ce que ce score représente : la capacité des modèles. L'échelle de METR est logarithmique : chaque tranche de 15 points gagnés multipliait la capacité des modèles par 3. C'est maintenant par 8.",
+ {t:"Une droite, ici, c'est une exponentielle", x:"À gauche, le score mesuré par METR : une droite, qui se casse et monte plus vite. À droite, ce que ce score représente : la capacité des modèles. L’échelle de METR est logarithmique : chaque tranche de 15 points multiplie la capacité des modèles par 3. Jusqu’en 2025, on gagnait environ 15 points par an, soit ×3 par an. Depuis la cassure, on en gagne environ 29 : ×8 par an.",
   d:p=>{ const tm=5*p, a=css('--f-a'), b2=css('--f-b'), m=css('--f-mut'), fg=css('--f-fg');
     const xt=[[0,'2023'],[1,'2024'],[2,'2025'],[3,'2026'],[4,'2027'],[5,'2028']];
     const Lv=t=> t<=2 ? t : 2+1.9*(t-2), Cv=t=>Math.pow(3,Lv(t));
