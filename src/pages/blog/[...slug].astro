@@ -19,6 +19,6 @@ const share = article?.data.image ? await getImage({ src: articleImage(article.d
 const ogImage = share && article ? { src: share.src, width: 1200, height: 630, alt: plain(article.data.imageAlt ?? '', 'fr') } : undefined;
 const jsonLd = blogJsonLd('fr', article, articles, share?.src);
 ---
-<Base lang="fr" alternates={alternates} title={plain(title, 'fr')} description={plain(description, 'fr')} ogImage={ogImage} jsonLd={jsonLd}>
+<Base lang="fr" alternates={alternates} title={plain(title, 'fr')} description={plain(description, 'fr')} ogImage={ogImage} ogTitle={article?.data.ogTitle && plain(article.data.ogTitle, 'fr')} ogDescription={article?.data.ogDescription && plain(article.data.ogDescription, 'fr')} jsonLd={jsonLd}>
   <Blog lang="fr" article={article} articles={articles} />
 </Base>

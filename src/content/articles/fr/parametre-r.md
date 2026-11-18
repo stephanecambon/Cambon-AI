@@ -6,6 +6,8 @@ image: couverture-parametre-r
 imageAlt: "IA : l'accélération s'accélère ? Tout dépend de r. Un grand r et une courbe qui se redresse jusqu'à la verticale."
 date: 2026-11-18
 seoTitle: "IA : l'accélération s'accélère ? · Cambon AI"
+ogTitle: "IA : l'accélération s'accélère ? Tout dépend de r"
+ogDescription: "En un an, Anthropic a presque doublé la vitesse à laquelle ses modèles progressent, en bonne partie grâce à l'IA elle-même. Palier ou début d'emballement ?"
 seoDescription: "Anthropic progresse 1,9 fois plus vite grâce à l'IA. Le paramètre r, rendement de la R&D logicielle, dit si cette boucle s'emballe ou s'essouffle."
 component: parametre-r
 ---

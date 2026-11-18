@@ -80,12 +80,15 @@ const articles = defineCollection({
     /** Date de publication (AAAA-MM-JJ). */
     date: z.coerce.date(),
     updated: z.coerce.date().optional(),
-    /** Image facultative : nom du fichier (sans extension) dans src/assets/articles/, format 16:10. */
+    /** Couverture facultative : nom du fichier (sans extension) dans src/assets/articles/, format 1200 × 630 (ou le double). */
     image: z.string().optional(),
     imageAlt: z.string().optional(),
     /** Référencement : 60 et 155 caractères maximum. */
     seoTitle: z.string().max(60),
     seoDescription: z.string().max(155),
+    /** Aperçu de partage (réseaux sociaux), s'il diffère du titre et de la description pour Google. */
+    ogTitle: z.string().max(90).optional(),
+    ogDescription: z.string().max(200).optional(),
     /**
      * Article interactif avec sa propre mise en page : nom du composant dans
      * src/components/articles/ (voir articleComponents.ts). Le corps Markdown est alors ignoré.
