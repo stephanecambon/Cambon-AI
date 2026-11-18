@@ -297,8 +297,6 @@ export const en: Texts = {
     errorEmail: "This email address doesn't look valid.",
     errorConsent: 'Tick the box to confirm your subscription.',
     honeypot: 'Leave this field empty',
-    ctaLine: 'No problem to share yet?',
-    ctaLink: 'Get my analyses.',
     veilleR: {
       emailLabel: 'Your email',
       button: 'Follow the r watch',

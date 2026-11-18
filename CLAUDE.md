@@ -29,7 +29,7 @@ Site vitrine de Cambon AI (SASU, Paris), R&D appliquée pour PME et ETI. Propri�
 - **Avec JavaScript** : `fetch` POST de type « simple » (`URLSearchParams`, aucun en-tête personnalisé) pour éviter la pré-vérification CORS qu'Apps Script ne gère pas ; `format=json` et `sent` ajoutés. La réponse arrive après redirection vers `script.googleusercontent.com` (`Access-Control-Allow-Origin: *`). Si la réponse est illisible, retour à l'envoi classique (doublons ignorés côté script).
 - Anti-robots : champ piège `website` et horodatage `t` (+ `sent` côté JS) : moins de 3 s = ignoré en silence. Doublon = pas de ligne, même message de succès.
 - Script : `tools/newsletter/Code.gs` (le dépôt fait foi ; Stéphane le recopie dans Apps Script, puis « Gérer les déploiements › Nouvelle version » pour garder la même URL). Mode d'emploi : `tools/newsletter/README.md`.
-- Tant que `NEWSLETTER_URL` commence par `[`, le formulaire et la ligne « Recevez mes analyses » du bloc d'appel à l'action ne sont pas affichés.
+- Tant que `NEWSLETTER_URL` commence par `[`, le formulaire n'est pas affiché.
 - Pages `/confidentialite/` et `/en/privacy/` (textes dans `privacy` de `fr.ts`/`en.ts`), liées depuis le pied de page et la case de consentement.
 
 ## Mesure d'audience (maison, sans cookie)

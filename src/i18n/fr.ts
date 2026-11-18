@@ -301,8 +301,6 @@ export const fr = {
     errorEmail: 'Cette adresse e-mail ne semble pas valide.',
     errorConsent: 'Cochez la case pour confirmer votre inscription.',
     honeypot: 'Ne pas remplir ce champ',
-    ctaLine: 'Pas encore de problème à me soumettre ?',
-    ctaLink: 'Recevez mes analyses.',
     veilleR: {
       emailLabel: 'Votre e-mail',
       button: "M'abonner à la veille",
