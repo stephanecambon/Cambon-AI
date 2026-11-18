@@ -33,7 +33,10 @@ var CONFIG = {
   SITE_URL: 'https://cambon.ai',
   // Versions du texte de consentement acceptées. Si le texte de la case
   // à cocher change sur le site, ajouter ici la nouvelle version.
-  CONSENT_VERSIONS: ['v1-2026-11'],
+  CONSENT_VERSIONS: ['v1-2026-11', 'v1-veille-r-2026-11'],
+  // Listes auxquelles le formulaire du site peut inscrire (paramètre « liste »).
+  // Inconnue ou absente : « site ».
+  LISTES: { site: 'optin_site', veille_r: 'optin_veille_r' },
   MIN_DELAY_MS: 3000, // envoi plus rapide = robot
   TIMEZONE: 'Europe/Paris',
   // Destinataire des notifications de nouvelle inscription ('' pour désactiver).
@@ -74,6 +77,7 @@ function doPost(e) {
   var lang = p.langue === 'en' ? 'en' : 'fr';
   var wantsJson = p.format === 'json'; // ajouté par le JavaScript du site
   var page = cleanPage_(p.page, lang);
+  var liste = CONFIG.LISTES.hasOwnProperty(p.liste) ? p.liste : 'site';
 
   try {
     // 1. Robots : on fait comme si tout allait bien, sans rien enregistrer.
@@ -89,10 +93,11 @@ function doPost(e) {
     var email = String(p.email || '').replace(/\s+/g, '').toLowerCase();
     if (!isValidEmail_(email)) return respond_('email', lang, page, wantsJson);
 
-    // 4. Écriture, une à la fois. Déjà inscrit via le site : pas de nouvelle
+    // 4. Écriture, une à la fois. Déjà inscrit à cette liste : pas de nouvelle
     //    ligne, mais même message de succès (ne pas révéler qui est inscrit).
-    //    Déjà présent mais désinscrit, ou venu d'une autre liste : la ligne
-    //    existante est mise à jour (nouvelle inscription via le site).
+    //    Déjà présent sur une autre liste : la date de cette liste est ajoutée.
+    //    Désinscrit : la ligne est réactivée pour cette liste seulement (les
+    //    autres inscriptions faites sur le site sont effacées).
     var lock = LockService.getScriptLock();
     if (!lock.tryLock(10000)) return respond_('error', lang, page, wantsJson);
     var added = null;
@@ -100,15 +105,23 @@ function doPost(e) {
       var sheet = getSheet_();
       var date = maintenant_();
       var row = findRow_(sheet, email);
+      var c = colonnes_();
+      var col = c[CONFIG.LISTES[liste]];
       if (!row) {
-        sheet.appendRow([date, email, lang, page, version, date, '', '', '']);
+        var ligne = [date, email, lang, page, version, '', '', '', ''];
+        ligne[col] = date;
+        sheet.appendRow(ligne);
         added = { date: date, total: sheet.getLastRow() - 1 };
       } else {
-        var c = colonnes_();
         var r = sheet.getRange(row, 1, 1, CONFIG.HEADERS.length).getValues()[0];
-        if (r[c.desinscription] !== '' || r[c.optin_site] === '') {
+        if (r[c.desinscription] !== '' || r[col] === '') {
+          if (r[c.desinscription] !== '') {
+            Object.keys(CONFIG.LISTES).forEach(function (l) {
+              sheet.getRange(row, c[CONFIG.LISTES[l]] + 1).setValue('');
+            });
+          }
           sheet.getRange(row, c.consentement + 1).setValue(version);
-          sheet.getRange(row, c.optin_site + 1).setValue(date);
+          sheet.getRange(row, col + 1).setValue(date);
           sheet.getRange(row, c.desinscription + 1).setValue('');
           added = { date: date, total: sheet.getLastRow() - 1 };
         }
@@ -116,7 +129,7 @@ function doPost(e) {
     } finally {
       lock.releaseLock();
     }
-    if (added) notify_(email, lang, page, added.date, added.total);
+    if (added) notify_(email, lang, page + (liste === 'site' ? '' : ' (liste ' + liste + ')'), added.date, added.total);
     return respond_('ok', lang, page, wantsJson);
   } catch (err) {
     console.error('Inscription impossible : ' + (err && err.message)); // jamais l'adresse

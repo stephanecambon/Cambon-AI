@@ -303,6 +303,13 @@ export const fr = {
     honeypot: 'Ne pas remplir ce champ',
     ctaLine: 'Pas encore de problème à me soumettre ?',
     ctaLink: 'Recevez mes analyses.',
+    veilleR: {
+      emailLabel: 'Votre e-mail',
+      consent:
+        "J'accepte de recevoir la veille de Cambon AI sur le paramètre r. Je peux me désinscrire à tout moment.",
+      button: "M'abonner à la veille",
+      success: "Merci, c'est noté. Je vous écris dès qu'un signal bouge.",
+    },
   },
 
   // ---------- Confidentialité ----------

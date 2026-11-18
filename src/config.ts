@@ -39,6 +39,9 @@ export const AUDIENCE_URL =
  */
 export const NEWSLETTER_CONSENT_VERSION = 'v1-2026-11';
 
+/** Version du texte de consentement de la veille sur le paramètre r (même règle). */
+export const VEILLE_R_CONSENT_VERSION = 'v1-veille-r-2026-11';
+
 /** Liens à compléter. Tant qu'une valeur commence par « [ », le lien n'est pas affiché. */
 export const URL_PLACEHOLDERS: Record<string, string> = {
 };

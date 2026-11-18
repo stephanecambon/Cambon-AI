@@ -4,27 +4,34 @@
 // page de confirmation. Avec JavaScript : envoi en arrière-plan et message
 // sur place (voir le <script> plus bas).
 import { texts, plain, routes, type Lang } from '../i18n';
-import { NEWSLETTER_URL, NEWSLETTER_CONSENT_VERSION } from '../config';
+import { NEWSLETTER_URL, NEWSLETTER_CONSENT_VERSION, VEILLE_R_CONSENT_VERSION } from '../config';
 
 interface Props {
   lang: Lang;
   /** Chemin de la page courante (enregistré avec l'inscription). */
   path: string;
+  /** Liste visée : « site » (pied de page) ou « veille_r » (formulaire seul, sans titre, dans l'article). */
+  liste?: 'site' | 'veille_r';
 }
 
-const { lang, path } = Astro.props;
-const t = texts[lang].newsletter;
-const id = (name: string) => `nl-${name}`;
+const { lang, path, liste = 'site' } = Astro.props;
+const veille = liste === 'veille_r';
+const base = texts[lang].newsletter;
+const t = veille ? { ...base, ...base.veilleR } : base;
+const version = veille ? VEILLE_R_CONSENT_VERSION : NEWSLETTER_CONSENT_VERSION;
+const id = (name: string) => `nl-${veille ? 'veille-' : ''}${name}`;
 // Sans JavaScript, « t » vaut l'heure du build (toujours > 3 s) ;
 // le script la remplace par l'heure d'affichage réelle.
 const builtAt = Date.now();
 ---
-<section class="nl" id="newsletter" aria-labelledby={id('title')}>
-  <div class="nl__intro">
-    <p class="eyebrow nl__eyebrow">{plain(t.label, lang)}</p>
-    <h2 class="nl__title" id={id('title')}>{plain(t.title, lang)}</h2>
-    <p class="nl__text">{plain(t.text, lang)}</p>
-  </div>
+<section class={veille ? 'nl nl--seul' : 'nl'} id={veille ? undefined : 'newsletter'} aria-labelledby={veille ? undefined : id('title')} aria-label={veille ? t.button : undefined}>
+  {!veille && (
+    <div class="nl__intro">
+      <p class="eyebrow nl__eyebrow">{plain(t.label, lang)}</p>
+      <h2 class="nl__title" id={id('title')}>{plain(t.title, lang)}</h2>
+      <p class="nl__text">{plain(t.text, lang)}</p>
+    </div>
+  )}
 
   <form
     class="nl__form"
@@ -71,7 +78,8 @@ const builtAt = Date.now();
       <input type="hidden" name="t" value={String(builtAt)} />
       <input type="hidden" name="langue" value={lang} />
       <input type="hidden" name="page" value={path} />
-      <input type="hidden" name="version" value={NEWSLETTER_CONSENT_VERSION} />
+      <input type="hidden" name="version" value={version} />
+      <input type="hidden" name="liste" value={liste} />
     </div>
 
     <p class="nl__status" role="status" aria-live="polite" data-status></p>
@@ -276,6 +284,14 @@ const builtAt = Date.now();
   }
   .nl__form.is-done .nl__status {
     margin-top: 0;
+  }
+
+  /* Formulaire seul (veille dans l'article) : ni titre, ni trait, ni marges */
+  .nl--seul {
+    display: block;
+    padding-block: 0;
+    border-bottom: 0;
+    max-width: 34rem;
   }
 
   @media (max-width: 760px) {

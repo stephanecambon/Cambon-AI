@@ -299,6 +299,12 @@ export const en: Texts = {
     honeypot: 'Leave this field empty',
     ctaLine: 'No problem to share yet?',
     ctaLink: 'Get my analyses.',
+    veilleR: {
+      emailLabel: 'Your email',
+      consent: 'I agree to receive Cambon AI updates on the r parameter. I can unsubscribe at any time.',
+      button: 'Follow the r watch',
+      success: "Thanks, you're on the list. I'll write as soon as a signal moves.",
+    },
   },
 
   // ---------- Privacy ----------
