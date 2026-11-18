@@ -111,7 +111,7 @@ const vingeAlt = "Citation de Vernor Vinge, « The Coming Technological Singular
     <button data-v="curve" aria-pressed="true">Courbe</button><button data-v="lap" aria-pressed="false">Tours de boucle</button><button data-v="cal" aria-pressed="false">Calendrier</button>
   </div>
   <div class="seg" role="group" aria-label="Unité de la courbe" id="unitSeg">
-    <button data-u="years" aria-pressed="true">Score de capacité</button><button data-u="x" aria-pressed="false">Capacité des IA (×)</button>
+    <button data-u="x" aria-pressed="true">Capacité des IA (×)</button><button data-u="years" aria-pressed="false">Score de capacité</button>
   </div>
   <p class="statline" id="stat"></p>
   <div id="vCal" hidden>
@@ -440,7 +440,7 @@ function renderMetr(){
 /* ---- 04 Composition ---- */
 const verdict=r=> r>1.02?"La boucle s'emballe": r<0.98?"La boucle s'essouffle":"Pile au seuil : exponentielle";
 function dialR(){ return +$('lam').value / +$('bet').value; }
-let useDial=false, view='curve', unit='years';
+let useDial=false, view='curve', unit='x';
 function renderDial(){
   $('lamO').textContent=fr(+$('lam').value,2); $('betO').textContent=fr(+$('bet').value,2);
   const lam=+$('lam').value, bt=+$('bet').value;
