@@ -303,7 +303,7 @@ export const en: Texts = {
       alsoSite: 'Also get my other analyses (Cambon AI newsletter)',
       notice:
         'By subscribing, you agree to receive Cambon AI updates on the r parameter. One-click unsubscribe, at any time.',
-      success: "Thanks, you're on the list. I'll write as soon as a signal moves.",
+      success: "Thanks, you're on the list. You'll get the watch every Thursday at 9 a.m. (Paris time).",
     },
   },
 
