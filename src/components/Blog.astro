@@ -28,7 +28,7 @@ if (d?.component && !Custom) throw new Error(`Composant d'article inconnu : ${d.
 {article && Custom ? (
   <article class="article article--custom">
     <div class="container"><p class="article__back"><a href={routes.blog[lang]}>← {t.back}</a></p></div>
-    <Custom />
+    <Custom lang={lang} />
   </article>
 ) : article && d && Content ? (
   <article class="article">

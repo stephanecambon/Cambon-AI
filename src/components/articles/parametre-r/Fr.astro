@@ -1,0 +1,160 @@
+---
+// Contenu français de l'article « Tout dépend de r » (structure, styles et script : ../ParametreR.astro).
+// Les identifiants (id) et classes doivent rester identiques à ceux de la version anglaise (En.astro).
+import Newsletter from '../../Newsletter.astro';
+import { newsletterEnabled } from '../../../config';
+
+interface Props {
+  videoUrl: string;
+  showVideo: boolean;
+  vingeSrc: string;
+}
+const { videoUrl: VIDEO_URL, showVideo: montrerVideo, vingeSrc } = Astro.props;
+---
+
+<section class="hero">
+  <span class="kicker">R&amp;D en IA · novembre 2026</span>
+  <h1>IA : l'accélération s'accélère ?</h1>
+  <p class="lede"><b>Tout dépend de r.</b> En un an, Anthropic a presque doublé la vitesse à laquelle ses modèles progressent, en bonne partie grâce à l'IA elle-même. Palier ou début d'emballement ? Tout se joue sur un nombre, r, que personne ne sait encore mesurer.</p>
+  {montrerVideo && (
+    <a class="flemme" href={VIDEO_URL || '#'} target="_blank" rel="noopener">
+      <span class="flemme__a">Flemme de tout lire&nbsp;?</span>
+      <svg class="flemme__fleche" viewBox="0 0 64 30" aria-hidden="true"><path d="M3 19c12-9 27-11 51-6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/><path d="M45 5.5c4 3.2 7.6 5.6 10.5 7.4-3.6 2-6.8 4.4-9.6 7.6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span class="sr-only"> =&gt; </span>
+      <span class="flemme__b"><svg class="flemme__play" viewBox="0 0 24 24" aria-hidden="true"><path d="M7.5 4.8c-.4 4.6-.3 9.6.2 14.4 4.3-2 8.2-4.6 11.6-7.4C15.6 9.3 11.8 6.9 7.5 4.8z" fill="currentColor"/></svg>regardez la vidéo explicative</span>
+    </a>
+  )}
+</section>
+
+<section class="module" id="metr">
+  <div class="col"><span class="num">01</span>
+  <h2>Anthropic a fait en un an ce qui en prenait deux</h2>
+  <p><b>Ce que METR a vu.</b> De août à octobre 2026, l'organisme d'évaluation METR a eu un accès inédit aux données internes d'Anthropic. Il a suivi l'AECI, le score de capacité qu'Anthropic calcule pour ses modèles. Cet indice résume des dizaines de benchmarks en un seul nombre. METR a ajusté ce score par deux droites. La seconde, depuis octobre 2025, monte <mark>1,9 fois plus vite</mark> que la première.</p></div>
+  <div class="seg" role="group" aria-label="Affichage" id="metrSeg"><button data-m="trend" aria-pressed="true">Tendances</button><button data-m="models" aria-pressed="false">Avec chaque modèle</button></div>
+  <div class="legend" id="metrLeg" hidden><span><i style="background:var(--sig);border-radius:50%"></i>modèle public</span><span><i style="background:var(--accent);border-radius:50%"></i>modèle interne</span><span><i style="box-shadow:inset 0 0 0 2px var(--sig);border-radius:50%"></i>public, pas le meilleur du moment</span><span>Survolez un point pour son nom et son score.</span></div>
+  <svg id="svgMetr" viewBox="0 0 760 360" role="img" aria-label="Score AECI des modèles d'Anthropic : deux droites, de +15 à +29 points par an en octobre 2025"></svg>
+  <p class="small">Source : METR, Independent Assessment of AI R&amp;D Acceleration at Anthropic, novembre 2026.</p>
+  <div class="col"><span class="human" role="note" aria-label="Texte écrit par un humain, sans IA" style="align-self:flex-start"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l1.2-4.6L16.6 4a2 2 0 0 1 2.8 0l.6.6a2 2 0 0 1 0 2.8L8.6 18.8z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M14.5 6.1l3.4 3.4M4 20l4.6-1.2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span><b>100 % humain</b><small>écrit sans IA</small></span></span><div class="hm"><p>Cette étude de METR est sans précédent : des chercheurs de METR ont eu accès aux données internes et aux chercheurs d'Anthropic pendant onze semaines. Le rapport est largement caviardé mais nous pouvons en tirer de précieux enseignements.</p><p>Ce résultat principal, ce ×1,9, m'a forcément interpellé. Bien évidemment, METR prend d'infinies précautions à la présentation de ce chiffre mais il me semble assez solide (dans un intervalle de confiance).</p><p>Mais que signifie-t-il vraiment ? Que peut-il nous dire des futurs progrès de l'IA ?</p><p>Ce chiffre est une nouvelle preuve que les IA aident au développement de la R&amp;D en IA. METR estime que les renforts IA « chercheurs artificiels » sont à l'origine de 80 % de l'accélération actuelle. Elle n'est pas due à une augmentation de la puissance de calcul.</p><p>Derrière ce chiffre : il y a le démarrage d'une boucle. Une IA développant une IA un peu meilleure développant la génération suivante… Mais jusqu'où ? Pour mieux comprendre le processus en cours j'ai voulu le modéliser. Et il se trouve que le modèle existait déjà, issu du champ de l'économie de la recherche. Dans ce modèle, le paramètre central s'appelle <span class="m">r</span>. C'est un paramètre difficile à évaluer et presque impossible à prédire mais qui sera, je pense, le paramètre le plus important du siècle.</p></div></div>
+</section>
+
+<section class="focus" id="focus">
+  <div class="fhead"><span class="fkick">Focus</span><h2>À la découverte du paramètre <em>r</em></h2></div>
+  <div class="deck" id="deck" tabindex="0" aria-roledescription="diaporama" aria-label="Diaporama en quatre étapes">
+    <div class="stage"><svg id="svgF" viewBox="0 0 760 380" role="img" aria-label="Illustration de l'étape en cours"></svg>
+      <div class="reveal" id="fReveal" hidden><span>r</span></div></div>
+    <div class="ftext" aria-live="polite"><span class="fstep" id="fStep"></span><h3 id="fTitle"></h3><p id="fText"></p>
+      <div class="ctl" id="fCtl" hidden><label for="rF">Réglez r</label><div class="row"><input id="rF" type="range" min="0.4" max="2.5" step="0.01" value="1.4"><output id="rFO"></output></div></div></div>
+    <div class="fnav"><button id="fPrev" type="button">← Précédent</button><div class="dots" id="fDots"></div><button id="fReplay" type="button">↻ Rejouer</button><button id="fNext" type="button" class="primary">Suivant →</button></div>
+  </div>
+</section>
+
+<section class="col">
+  <span class="num">02</span>
+  <h2>Comprendre <span class="m">r</span></h2>
+  <p class="def">Quand l'effort de recherche double, combien de fois le logiciel double-t-il ? C'est <span class="m">r</span>, le <b>rendement de la R&amp;D logicielle</b>.</p>
+  <p>Le « logiciel », ici, c'est l'efficacité des algorithmes : ce qu'on tire d'un même parc de machines. Dans une R&amp;D classique, l'effort vient de chercheurs humains. Or un chercheur ne se fabrique pas en un jour : il faut des années pour le former, et les recrutements suivent les budgets. Leur nombre augmente donc lentement, quelles que soient leurs découvertes. Si l'IA fait la recherche, cette limite saute : chaque amélioration du logiciel rend aussi les chercheurs, artificiels cette fois, plus nombreux ou plus rapides.</p>
+  <p>D'où le seuil. Si <span class="m">r &gt; 1</span>, un doublement du logiciel achète plus d'un nouveau doublement : chaque tour de boucle est plus rapide que le précédent. Si <span class="m">r &lt; 1</span>, chaque tour est plus lent, parce que les idées faciles s'épuisent plus vite que l'IA ne progresse. À <span class="m">r = 1</span> exactement, la croissance est déjà explosive : le logiciel double à intervalles réguliers, environ tous les quatre mois au rythme actuel, et les gains deviennent vite gigantesques. Mais ce rythme ne change pas.</p>
+  <p>Cette différence change la nature de la courbe. Une exponentielle grandit sans fin, mais elle reste finie à toute date. Au-delà de <span class="m">r</span> = 1, la croissance devient <b>hyperbolique</b> : comme les doublements raccourcissent, leur durée totale est finie, et la courbe atteint l'infini à une date précise, calculable à l'avance. C'est ce qu'on appelle une <a class="oeuf" href={vingeSrc} target="_blank" rel="noopener">singularité</a> en temps fini. Aucun système réel n'y arrive : un goulot l'arrête avant, une limite physique apparaît (énergie notamment). Mais la date de la singularité indique à quelle vitesse on fonce vers ce goulot.</p>
+  <svg id="svgMini" viewBox="0 0 760 196" role="img" aria-label="Doublements du logiciel sur trois ans selon r"></svg>
+  <div class="ctl"><label for="rMini">r de la seconde ligne</label><div class="row"><input id="rMini" type="range" min="0.4" max="2.5" step="0.01" value="1.4"><output id="rMiniO"></output></div></div>
+</section>
+
+
+<section class="module" id="compo">
+  <div class="col" style="gap:8px"><span class="num">03</span><h2>Aux origines de <span class="m">r</span></h2>
+  <p>En 1995, l'économiste Charles Jones cherche à expliquer un paradoxe : les États-Unis emploient de plus en plus de chercheurs, mais leur croissance ne s'accélère pas. Sa réponse : les idées deviennent plus dures à trouver. Son modèle a depuis servi à mesurer la recherche dans de nombreux domaines (puces électroniques, rendements agricoles, médicaments). Dans ce modèle, <span class="m">r</span> est le rapport de deux forces qui tirent en sens contraire.</p></div>
+  <div class="dials">
+    <div class="dial"><span class="sym">λ</span><h3>Rendement de l'effort de recherche</h3><p>Doubler l'effort ne double pas le progrès : doublons, coordination, pistes redondantes, expériences limitées par les machines disponibles. λ = 1 serait une recherche parfaitement efficace.</p>
+      <p class="live" id="lamL"></p>
+      <svg id="lamG" viewBox="0 0 360 210" role="img" aria-label="Durée d'un doublement du logiciel selon le nombre de chercheurs"></svg>
+      <div class="ctl"><div class="row"><input id="lam" type="range" min="0.1" max="1" step="0.01" value="0.3" aria-label="λ"><output id="lamO"></output></div></div></div>
+    <div class="dial"><span class="sym">β</span><h3>Épuisement des idées</h3><p>Plus le logiciel est bon, plus chaque gain coûte cher. C'est la loi des rendements décroissants, observée dans presque tous les domaines. β = 0 voudrait dire des idées inépuisables.</p>
+      <p class="live" id="betL"></p>
+      <svg id="betG" viewBox="0 0 360 210" role="img" aria-label="Durée de chaque doublement à nombre de chercheurs constant"></svg>
+      <div class="ctl"><div class="row"><input id="bet" type="range" min="0.05" max="1" step="0.01" value="0.25" aria-label="beta"><output id="betO"></output></div></div></div>
+  </div>
+  <div class="result"><span class="big" id="rRes"></span><span class="verdict" id="rVer"></span><span class="formula">r = λ ÷ β</span></div>
+  <p>L'IA apporte du "renfort", puisque chaque doublement du logiciel augmente l'effort de recherche. <b>λ</b> dit combien ce renfort accélère, <b>β</b> combien l'épuisement freine. Si le renfort de l'IA l'emporte (<b>λ</b> &gt; <b>β</b>, donc <span class="m">r</span> &gt; 1), les doublements raccourcissent.</p>
+  <div class="example"><b>Repères : β mesuré ailleurs</b>
+    <span>Bloom et al. (2020) ont estimé β dans plusieurs domaines, en supposant λ = 1 : <b>0,2</b> pour les puces électroniques (la loi de Moore), <b>autour de 1</b> pour les grandes entreprises cotées, <b>3,4</b> pour l'économie américaine, <b>4 à 7</b> pour les rendements agricoles. Ces chiffres dépendent de la façon dont on mesure le progrès dans chaque domaine : ils donnent des ordres de grandeur, pas une échelle commune. Pour les échecs comme pour le logiciel d'IA, Epoch AI ne publie que r, sans séparer λ et β.</span></div>
+</section>
+
+<section class="module" id="est">
+  <div class="col" style="gap:8px"><span class="num">04</span><h2>Mesurer <span class="m">r</span></h2>
+  <p>Personne n'a mesuré r directement pour les grands modèles de langage. On l'a mesuré dans d'autres domaines où l'on dispose de longues séries : l'économie, les échecs, les solveurs mathématiques, la vision par ordinateur, etc. Le principe est toujours le même : on compare deux vitesses, celle à laquelle le résultat s'améliore et celle à laquelle l'effort de recherche augmente. Leur rapport donne r.</p></div>
+  <div class="example"><b>Exemple : les échecs</b>
+    <span>Stockfish, le meilleur moteur d'échecs open source, est amélioré par une communauté qui fait jouer chaque modification proposée sur des milliers de parties avant de l'accepter. Epoch AI prend le nombre de ces tests comme mesure de l'effort. Il convertit les gains de niveau (en points Elo) en gain d'efficacité : combien de puissance il aurait fallu à l'ancienne version pour jouer aussi bien. Résultat : <b><span class="m">r</span> ≈ 0,83</b>. Les échecs progressent, mais chaque doublement d'effort rapporte moins d'un doublement d'efficacité.</span></div>
+  <div class="example"><b>Les autres mesures</b>
+    <span><b>Vision par ordinateur :</b> le résultat est l'efficacité des algorithmes, qui double tous les 9 mois ; l'effort est le nombre d'auteurs publiant dans le domaine, qui double tous les 13 mois. D'où r ≈ 1,4, mais sur un seul point de données. <b>Économie américaine</b> (Bloom et al., 2020) : le résultat est la productivité de l'économie, c'est-à-dire ce qu'elle produit avec le même travail et le même capital ; l'effort est le nombre de chercheurs employés dans tout le pays. La productivité progresse à peu près au même rythme depuis les années 1930, alors que l'effort de recherche a été multiplié par environ 23 : la productivité de chaque chercheur a donc été divisée par 41. D'où r ≈ 0,3.</span></div>
+  <div class="example"><b>Et pour les modèles de langage ?</b>
+    <span>Forethought, un institut de recherche britannique sur les transitions liées à l'IA, en propose une estimation. Mais c'est un raisonnement, pas une mesure : il part du 1,4 de la vision par ordinateur et l'ajuste pas à pas (ce que vaut un gain d'efficacité en capacités, le frein des machines, l'épuisement futur des idées). Résultat : une médiane de 1,2, dans une fourchette de 0,4 à 3,6.</span></div>
+  <svg id="svgEst" viewBox="0 0 760 340" role="img" aria-label="Estimations publiées de r sur une échelle logarithmique"></svg>
+</section>
+
+<section class="module" id="proj">
+  <div class="col" style="gap:8px"><span class="num">05</span><h2>Simulation de r pour les modèles de langage</h2>
+  <p>Point de départ commun : la vitesse mesurée par METR en octobre 2026. On laisse ensuite tourner la boucle avec le <span class="m">r</span> choisi. Choisissez aussi votre façon de lire le résultat.</p></div>
+  <div class="ctl"><label for="rP">Valeur de r</label><div class="row"><input id="rP" type="range" min="0.4" max="2.5" step="0.01" value="1.2"><output id="rPO"></output></div></div>
+  <div class="chips" role="group" aria-label="Valeurs publiées">
+    <button data-r="0.83">Échecs 0,83</button><button data-r="1">Tillman 1,0</button><button data-r="1.2">Forethought 1,2</button><button data-r="1.4">Vision 1,4</button><button data-r="dial">Vos réglages</button>
+  </div>
+  <div class="seg" role="group" aria-label="Mode de lecture" id="viewSeg">
+    <button data-v="curve" aria-pressed="true">Courbe</button><button data-v="lap" aria-pressed="false">Tours de boucle</button><button data-v="cal" aria-pressed="false">Calendrier</button>
+  </div>
+  <div class="seg" role="group" aria-label="Unité de la courbe" id="unitSeg">
+    <button data-u="x" aria-pressed="true">Capacité des IA (×)</button><button data-u="years" aria-pressed="false">Score de capacité</button>
+  </div>
+  <p class="statline" id="stat"></p>
+  <div id="vCal" hidden>
+    <div class="legend"><span><i style="background:var(--sig)"></i>au rythme actuel (r = 1)</span><span><i style="background:var(--accent)"></i>en plus grâce à r</span><span><i style="box-shadow:inset 0 0 0 1.5px var(--line)"></i>perdu si r &lt; 1</span><span>Un cube = une année de progrès au rythme d'octobre 2023 à octobre 2025</span></div>
+    <div class="years" id="calB"></div></div>
+  <div id="vCurve"><svg id="svgC" viewBox="0 0 760 380" role="img" aria-label="Progrès cumulé selon r"></svg>
+    <p class="small" id="capC" style="margin-top:14px"></p></div>
+  <div id="vLap" hidden><svg id="svgL" viewBox="0 0 760 130" role="img" aria-label="Durée de chaque doublement du logiciel"></svg>
+    <p class="small">Chaque segment est un doublement du logiciel.</p></div>
+  <p class="small">Modèle simplifié : r constant, parc de machines fixe, pas de plafond ; une année de progrès vaut ×3 en capacité des IA. La vitesse à laquelle la boucle s'emballe dépend aussi de β, l'épuisement des idées : r dit si ça s'emballe, β dit à quelle vitesse. Les estimations publiées ne donnent que r ; on fixe donc β = 0,25 pour elles. Ces courbes montrent la logique du mécanisme, pas une prévision.</p>
+</section>
+
+<section class="col">
+  <span class="num">06</span>
+  <h2>Ce qu'il faut surveiller</h2>
+  <p>METR attribue environ 80 % de l'accélération observée à l'usage de l'IA dans la R&amp;D elle-même, et ne voit pas de goulot d'étranglement à douze mois. Mais aucun chiffre public ne tranche aujourd'hui la question de r. Six signaux à suivre.</p>
+</section>
+<div class="watch">
+  <div><b>Une accélération qui accélère</b><span>Avec r &gt; 1, l'accélération mesurée doit grimper d'un modèle à l'autre. METR en a vu des indices, mais Anthropic les a caviardés.</span></div>
+  <div><b>Des contributions autonomes</b><span>Tant que l'IA assiste les chercheurs sans les remplacer, la boucle reste partielle. Les entretiens menés par METR évoquent, chez les modèles, un manque d'« intuition de chercheur », mais observent des « signes de vie ».</span></div>
+  <div><b>Le mur des expériences</b><span>Si le temps machine pour tester les idées devient le goulot, λ s'effondre et r avec. METR n'en voit pas à douze mois, avec une confiance limitée.</span></div>
+  <div><b>Le seuil d'alerte d'Anthropic</b><span>En novembre 2026, Anthropic a déclaré avoir franchi son seuil d'alerte « R&amp;D en IA », en s'appuyant sur une hausse attendue du rythme. Les prochaines mesures diront si cette attente se confirme.</span></div>
+  <div><b>La même cassure ailleurs</b><span>Chez Anthropic seul, METR mesure ×1,9. En incluant les modèles des autres développeurs, l'accélération tombe à environ ×1,4. Si OpenAI ou Google montrent la même cassure, le phénomène est général.</span></div>
+  <div><b>Le nombre de chercheurs artificiels</b><span>Les labos font travailler de plus en plus d'agents en parallèle. Le jour où l'un d'eux publiera le temps de résolution d'une tâche selon le nombre d'agents, on aura une première mesure de λ.</span></div>
+</div>
+{newsletterEnabled && (
+  <div class="veille">
+    <p class="veille__mot">Je surveille ces six signaux pour vous<svg class="veille__fleche" viewBox="0 0 40 52" aria-hidden="true"><path d="M8 4c14 6 22 20 18 40" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/><path d="M17 36c3 4 6 7 9 9 2-4 5-8 8-11" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></p>
+    <Newsletter lang="fr" path="/blog/parametre-r/" liste="veille_r" />
+  </div>
+)}
+
+<section class="col" id="avis">
+  <span class="num">07</span>
+  <div class="avis-head"><h2>Mon avis sur la question</h2>
+    <span class="human" role="note" aria-label="Texte écrit par un humain, sans IA"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l1.2-4.6L16.6 4a2 2 0 0 1 2.8 0l.6.6a2 2 0 0 1 0 2.8L8.6 18.8z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M14.5 6.1l3.4 3.4M4 20l4.6-1.2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span><b>100 % humain</b><small>écrit sans IA</small></span></span></div>
+  <div class="hm">
+  <p>Concernant le paramètre <b>β</b>, l'épuisement des idées, son évaluation se fait bien « après coup », mais la question de savoir le prédire est totalement fascinante. <b>β</b> est une mesure de l'espace des idées explorées. On ne sait même pas si, dans le cas de l'IA, cet espace est fini ou non. On sait par exemple que l'espace des idées de la géométrie euclidienne (celles de Pythagore et de Thalès) est infini, mais « décidable » : une machine peut trancher n'importe quelle question qu'on lui pose sur le sujet. Mais pour la recherche en IA, c'est la grande inconnue. Plus encore que sa taille (finie ou infinie), c'est sa structure qui compte : y a-t-il des idées cruciales encore non découvertes, mais gigantesquement difficiles à atteindre ?</p>
+  <p>Concernant le paramètre <b>λ</b>, je pense que les grands labos d'IA en ont une idée assez précise : ils ont dû mener des expériences de résolution de tâches de R&amp;D en faisant varier le nombre d'agents « chercheurs artificiels » et en mesurant le temps de résolution. Mon intuition, c'est que <b>λ</b> est probablement meilleur pour une équipe d'agents IA que pour une équipe de chercheurs humains (je suis sûr que vous voyez ce que je veux dire ;)). Parmi les indices, OpenAI a par exemple déployé 10 000 agents « chercheurs artificiels » sur le problème du millénaire Navier-Stokes (une autre histoire de singularité). Pourquoi 10 000 ? Ont-ils testé diverses organisations sociales, ou les ont-ils laissés libres de s'organiser ? OpenAI et Anthropic ont les tableaux de résultats, pas nous. Et ils ne nous seront probablement jamais communiqués. Il me semble assez direct d'avoir de premières évaluations de <b>λ</b>, mais il faut avoir les ressources nécessaires pour mettre en place les protocoles expérimentaux : beaucoup de tokens, et donc beaucoup d'argent.</p>
+  <p>Mon intuition (rien de scientifique là-dedans) : <span class="m">r</span> &gt; 1. Le <b>λ</b> me semble élevé : les agents se coordonnent probablement très efficacement. Pour le <b>β</b>, je le pense faible : les idées semblent encore « faciles » à trouver. Les IA rentrent comme dans du beurre dans nos problèmes réputés quasi impossibles : OpenAI a dégommé des centaines de problèmes de maths majeurs en quelques semaines. Sur mon évaluation plus personnelle, j'utilise un problème scientifique issu de ma thèse comme benchmark personnel : j'ai commencé à travailler dessus en Opus 4.6. À chaque nouvelle version, je progresse dans la théorie et les performances des algorithmes produits ne cessent de progresser. J'ai observé les plus gros sauts au passage à Fable 5 puis Fable 5.2.</p>
+  <p>Mais ce rendement « naturel » va être confronté à des vents contraires : une prudence accrue des ingénieurs au cœur du réacteur, la rugosité de la réalité (les courbes ne se réalisent jamais vraiment) et, je l'espère, une régulation sérieuse, franche, massive et coordonnée du secteur.</p>
+  </div>
+</section>
+
+<footer>
+  <span><b>Sources</b></span>
+  <ol>
+    <li><a href="https://metr.org/blog/2026-11-05-anthropic-ai-rd-acceleration-assessment/">METR, Independent Assessment of AI R&amp;D Acceleration at Anthropic in October 2026 (nov. 2026)</a></li>
+    <li><a href="https://epoch.ai/blog/do-the-returns-to-software-rnd-point-towards-a-singularity">Besiroglu, Erdil, Ho (Epoch AI), Do the Returns to Software R&amp;D Point Towards a Singularity? (mai 2024)</a></li>
+    <li><a href="https://epoch.ai/blog/algorithmic-progress-in-language-models">Ho et al. (Epoch AI), Algorithmic progress in language models (NeurIPS 2024)</a></li>
+    <li><a href="https://www.forethought.org/research/how-quick-and-big-would-a-software-intelligence-explosion-be">Davidson &amp; Houlden (Forethought), How quick and big would a software intelligence explosion be? (août 2025)</a></li>
+    <li><a href="https://www.lesswrong.com/posts/xoChjkJeefmoP2ufH/humans-are-not-chinchillas-revisiting-how-quick-and-big">Tillman (Forethought), Humans are not chinchillas (oct. 2026)</a></li>
+    <li><a href="https://www.nber.org/papers/w23782">Bloom, Jones, Van Reenen, Webb, « Are Ideas Getting Harder to Find? », American Economic Review, 2020</a> ; C. I. Jones, Journal of Political Economy, 1995.</li>
+  </ol>
+</footer>

@@ -1,0 +1,161 @@
+---
+// English content of the article "It all depends on r" (structure, styles and script: ../ParametreR.astro).
+// The ids and classes must stay identical to those of the French version (Fr.astro).
+import Newsletter from '../../Newsletter.astro';
+import { newsletterEnabled } from '../../../config';
+
+interface Props {
+  videoUrl: string;
+  showVideo: boolean;
+  vingeSrc: string;
+}
+const { videoUrl, showVideo, vingeSrc } = Astro.props;
+const pencil = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l1.2-4.6L16.6 4a2 2 0 0 1 2.8 0l.6.6a2 2 0 0 1 0 2.8L8.6 18.8z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M14.5 6.1l3.4 3.4M4 20l4.6-1.2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>';
+---
+
+<section class="hero">
+  <span class="kicker">AI R&amp;D · November 2026</span>
+  <h1>AI: is the acceleration accelerating?</h1>
+  <p class="lede"><b>It all depends on r.</b> In one year, Anthropic nearly doubled the speed at which its models improve, largely thanks to AI itself. A plateau, or the start of a runaway? It all hinges on one number, r, that nobody can measure yet.</p>
+  {showVideo && (
+    <a class="flemme" href={videoUrl || '#'} target="_blank" rel="noopener">
+      <span class="flemme__a">Too long to read?</span>
+      <svg class="flemme__fleche" viewBox="0 0 64 30" aria-hidden="true"><path d="M3 19c12-9 27-11 51-6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/><path d="M45 5.5c4 3.2 7.6 5.6 10.5 7.4-3.6 2-6.8 4.4-9.6 7.6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span class="sr-only"> =&gt; </span>
+      <span class="flemme__b"><svg class="flemme__play" viewBox="0 0 24 24" aria-hidden="true"><path d="M7.5 4.8c-.4 4.6-.3 9.6.2 14.4 4.3-2 8.2-4.6 11.6-7.4C15.6 9.3 11.8 6.9 7.5 4.8z" fill="currentColor"/></svg>watch the explainer video</span>
+    </a>
+  )}
+</section>
+
+<section class="module" id="metr">
+  <div class="col"><span class="num">01</span>
+  <h2>Anthropic did in one year what used to take two</h2>
+  <p><b>What METR saw.</b> From August to October 2026, the evaluation organization METR had unprecedented access to Anthropic's internal data. It tracked the AECI, the capability score Anthropic computes for its models. This index sums up dozens of benchmarks in a single number. METR fitted this score with two straight lines. The second, since October 2025, rises <mark>1.9 times faster</mark> than the first.</p></div>
+  <div class="seg" role="group" aria-label="Display" id="metrSeg"><button data-m="trend" aria-pressed="true">Trends</button><button data-m="models" aria-pressed="false">With each model</button></div>
+  <div class="legend" id="metrLeg" hidden><span><i style="background:var(--sig);border-radius:50%"></i>public model</span><span><i style="background:var(--accent);border-radius:50%"></i>internal model</span><span><i style="box-shadow:inset 0 0 0 2px var(--sig);border-radius:50%"></i>public, not the best at the time</span><span>Hover over or tap a point to see its name and score.</span></div>
+  <svg id="svgMetr" viewBox="0 0 760 360" role="img" aria-label="AECI score of Anthropic's models: two straight lines, from +15 to +29 points a year in October 2025"></svg>
+  <p class="small">Source: METR, Independent Assessment of AI R&amp;D Acceleration at Anthropic, November 2026.</p>
+  <div class="col"><span class="human" role="note" aria-label="Written by a human without AI, translated with AI" style="align-self:flex-start"><Fragment set:html={pencil} /><span><b>100% human</b><small>written without AI · AI-translated</small></span></span><div class="hm"><p>This METR study is unprecedented: METR researchers had access to Anthropic's internal data and researchers for eleven weeks. The report is heavily redacted, but we can still draw valuable lessons from it.</p><p>The headline result, this ×1.9, naturally caught my attention. Of course, METR presents this figure with endless caveats, but it seems fairly solid to me (within a confidence interval).</p><p>But what does it really mean? What can it tell us about future AI progress?</p><p>This figure is further evidence that AI is helping AI R&amp;D. METR estimates that AI reinforcements, “artificial researchers”, account for 80% of the current acceleration. It is not due to an increase in computing power.</p><p>Behind this figure lies the start of a loop. An AI developing a slightly better AI, which develops the next generation… But how far can it go? To better understand what is happening, I wanted to model it. And it turns out the model already existed, from the field of the economics of research. In this model, the central parameter is called <span class="m">r</span>. It is hard to estimate and almost impossible to predict, but it will, I think, be the most important parameter of the century.</p></div></div>
+</section>
+
+<section class="focus" id="focus">
+  <div class="fhead"><span class="fkick">Focus</span><h2>Discovering the parameter <em>r</em></h2></div>
+  <div class="deck" id="deck" tabindex="0" aria-roledescription="slideshow" aria-label="Slideshow in four steps">
+    <div class="stage"><svg id="svgF" viewBox="0 0 760 380" role="img" aria-label="Illustration of the current step"></svg>
+      <div class="reveal" id="fReveal" hidden><span>r</span></div></div>
+    <div class="ftext" aria-live="polite"><span class="fstep" id="fStep"></span><h3 id="fTitle"></h3><p id="fText"></p>
+      <div class="ctl" id="fCtl" hidden><label for="rF">Set r</label><div class="row"><input id="rF" type="range" min="0.4" max="2.5" step="0.01" value="1.4"><output id="rFO"></output></div></div></div>
+    <div class="fnav"><button id="fPrev" type="button">← Previous</button><div class="dots" id="fDots"></div><button id="fReplay" type="button">↻ Replay</button><button id="fNext" type="button" class="primary">Next →</button></div>
+  </div>
+</section>
+
+<section class="col">
+  <span class="num">02</span>
+  <h2>Understanding <span class="m">r</span></h2>
+  <p class="def">When research effort doubles, how many times does software double? That is <span class="m">r</span>, the <b>returns to software R&amp;D</b>.</p>
+  <p>“Software” here means the efficiency of algorithms: what you get out of the same fleet of machines. In classic R&amp;D, the effort comes from human researchers. But researchers are not made overnight: it takes years to train them, and hiring follows budgets. So their number grows slowly, whatever they discover. If AI does the research, this limit disappears: every software improvement also makes the researchers, artificial ones this time, more numerous or faster.</p>
+  <p>Hence the threshold. If <span class="m">r &gt; 1</span>, one software doubling buys more than one new doubling: each turn of the loop is faster than the last. If <span class="m">r &lt; 1</span>, each turn is slower, because the easy ideas run out faster than AI improves. At exactly <span class="m">r = 1</span>, growth is already explosive: software doubles at regular intervals, roughly every four months at the current pace, and the gains quickly become enormous. But that pace does not change.</p>
+  <p>This difference changes the nature of the curve. An exponential grows forever, but stays finite at any given date. Above <span class="m">r</span> = 1, growth becomes <b>hyperbolic</b>: as the doublings get shorter, their total duration is finite, and the curve reaches infinity at a precise date, which can be calculated in advance. This is called a finite-time <a class="oeuf" href={vingeSrc} target="_blank" rel="noopener">singularity</a>. No real system gets there: a bottleneck stops it first, a physical limit appears (energy, notably). But the date of the singularity tells you how fast you are heading for that bottleneck.</p>
+  <svg id="svgMini" viewBox="0 0 760 196" role="img" aria-label="Software doublings over three years depending on r"></svg>
+  <div class="ctl"><label for="rMini">r of the second row</label><div class="row"><input id="rMini" type="range" min="0.4" max="2.5" step="0.01" value="1.4"><output id="rMiniO"></output></div></div>
+</section>
+
+
+<section class="module" id="compo">
+  <div class="col" style="gap:8px"><span class="num">03</span><h2>The origins of <span class="m">r</span></h2>
+  <p>In 1995, the economist Charles Jones set out to explain a paradox: the United States employs more and more researchers, yet its growth does not speed up. His answer: ideas are getting harder to find. His model has since been used to measure research in many fields (microchips, crop yields, medicines). In this model, <span class="m">r</span> is the ratio of two forces pulling in opposite directions.</p></div>
+  <div class="dials">
+    <div class="dial"><span class="sym">λ</span><h3>Returns to research effort</h3><p>Doubling the effort does not double progress: duplicated work, coordination, redundant leads, experiments limited by the machines available. λ = 1 would mean perfectly efficient research.</p>
+      <p class="live" id="lamL"></p>
+      <svg id="lamG" viewBox="0 0 360 210" role="img" aria-label="Time for one software doubling depending on the number of researchers"></svg>
+      <div class="ctl"><div class="row"><input id="lam" type="range" min="0.1" max="1" step="0.01" value="0.3" aria-label="λ"><output id="lamO"></output></div></div></div>
+    <div class="dial"><span class="sym">β</span><h3>Running out of ideas</h3><p>The better the software, the more each gain costs. This is the law of diminishing returns, observed in almost every field. β = 0 would mean an inexhaustible supply of ideas.</p>
+      <p class="live" id="betL"></p>
+      <svg id="betG" viewBox="0 0 360 210" role="img" aria-label="Time for each doubling with a constant number of researchers"></svg>
+      <div class="ctl"><div class="row"><input id="bet" type="range" min="0.05" max="1" step="0.01" value="0.25" aria-label="beta"><output id="betO"></output></div></div></div>
+  </div>
+  <div class="result"><span class="big" id="rRes"></span><span class="verdict" id="rVer"></span><span class="formula">r = λ ÷ β</span></div>
+  <p>AI brings “reinforcements”, since each software doubling increases research effort. <b>λ</b> says how much these reinforcements speed things up, <b>β</b> how much exhaustion slows them down. If the AI reinforcements win (<b>λ</b> &gt; <b>β</b>, so <span class="m">r</span> &gt; 1), the doublings get shorter.</p>
+  <div class="example"><b>Benchmarks: β measured elsewhere</b>
+    <span>Bloom et al. (2020) estimated β in several fields, assuming λ = 1: <b>0.2</b> for microchips (Moore's law), <b>around 1</b> for large listed companies, <b>3.4</b> for the US economy, <b>4 to 7</b> for crop yields. These figures depend on how progress is measured in each field: they give orders of magnitude, not a common scale. For chess as for AI software, Epoch AI only publishes r, without separating λ and β.</span></div>
+</section>
+
+<section class="module" id="est">
+  <div class="col" style="gap:8px"><span class="num">04</span><h2>Measuring <span class="m">r</span></h2>
+  <p>Nobody has measured r directly for large language models. It has been measured in other fields with long data series: the economy, chess, mathematical solvers, computer vision, and so on. The principle is always the same: compare two speeds, the rate at which the result improves and the rate at which research effort grows. Their ratio gives r.</p></div>
+  <div class="example"><b>Example: chess</b>
+    <span>Stockfish, the best open-source chess engine, is improved by a community that plays every proposed change over thousands of games before accepting it. Epoch AI takes the number of these tests as the measure of effort. It converts gains in playing strength (in Elo points) into efficiency gains: how much computing power the old version would have needed to play as well. Result: <b><span class="m">r</span> ≈ 0.83</b>. Chess engines keep improving, but each doubling of effort brings less than a doubling of efficiency.</span></div>
+  <div class="example"><b>Other measurements</b>
+    <span><b>Computer vision:</b> the result is algorithmic efficiency, which doubles every 9 months; the effort is the number of authors publishing in the field, which doubles every 13 months. Hence r ≈ 1.4, but from a single data point. <b>US economy</b> (Bloom et al., 2020): the result is the productivity of the economy, i.e. what it produces with the same labor and the same capital; the effort is the number of researchers employed across the country. Productivity has grown at roughly the same pace since the 1930s, while research effort has been multiplied by about 23: each researcher's productivity has therefore been divided by 41. Hence r ≈ 0.3.</span></div>
+  <div class="example"><b>And for language models?</b>
+    <span>Forethought, a British research institute working on AI-driven transitions, offers an estimate. But it is a line of reasoning, not a measurement: it starts from computer vision's 1.4 and adjusts it step by step (what an efficiency gain is worth in capabilities, the brake from machines, the future exhaustion of ideas). Result: a median of 1.2, within a range of 0.4 to 3.6.</span></div>
+  <svg id="svgEst" viewBox="0 0 760 340" role="img" aria-label="Published estimates of r on a logarithmic scale"></svg>
+</section>
+
+<section class="module" id="proj">
+  <div class="col" style="gap:8px"><span class="num">05</span><h2>Simulating r for language models</h2>
+  <p>Common starting point: the speed measured by METR in October 2026. Then we let the loop run with the chosen <span class="m">r</span>. Also choose how you want to read the result.</p></div>
+  <div class="ctl"><label for="rP">Value of r</label><div class="row"><input id="rP" type="range" min="0.4" max="2.5" step="0.01" value="1.2"><output id="rPO"></output></div></div>
+  <div class="chips" role="group" aria-label="Published values">
+    <button data-r="0.83">Chess 0.83</button><button data-r="1">Tillman 1.0</button><button data-r="1.2">Forethought 1.2</button><button data-r="1.4">Vision 1.4</button><button data-r="dial">Your settings</button>
+  </div>
+  <div class="seg" role="group" aria-label="Reading mode" id="viewSeg">
+    <button data-v="curve" aria-pressed="true">Curve</button><button data-v="lap" aria-pressed="false">Loop turns</button><button data-v="cal" aria-pressed="false">Calendar</button>
+  </div>
+  <div class="seg" role="group" aria-label="Curve unit" id="unitSeg">
+    <button data-u="x" aria-pressed="true">AI capability (×)</button><button data-u="years" aria-pressed="false">Capability score</button>
+  </div>
+  <p class="statline" id="stat"></p>
+  <div id="vCal" hidden>
+    <div class="legend"><span><i style="background:var(--sig)"></i>at the current pace (r = 1)</span><span><i style="background:var(--accent)"></i>extra thanks to r</span><span><i style="box-shadow:inset 0 0 0 1.5px var(--line)"></i>lost if r &lt; 1</span><span>One cube = one year of progress at the pace of October 2023 to October 2025</span></div>
+    <div class="years" id="calB"></div></div>
+  <div id="vCurve"><svg id="svgC" viewBox="0 0 760 380" role="img" aria-label="Cumulative progress depending on r"></svg>
+    <p class="small" id="capC" style="margin-top:14px"></p></div>
+  <div id="vLap" hidden><svg id="svgL" viewBox="0 0 760 130" role="img" aria-label="Duration of each software doubling"></svg>
+    <p class="small">Each segment is one software doubling.</p></div>
+  <p class="small">Simplified model: constant r, fixed fleet of machines, no ceiling; one year of progress is worth ×3 in AI capability. How fast the loop runs away also depends on β, the exhaustion of ideas: r says whether it runs away, β says how fast. Published estimates only give r, so we set β = 0.25 for them. These curves show the logic of the mechanism, not a forecast.</p>
+</section>
+
+<section class="col">
+  <span class="num">06</span>
+  <h2>What to watch</h2>
+  <p>METR attributes about 80% of the observed acceleration to the use of AI in R&amp;D itself, and sees no bottleneck within twelve months. But no public figure settles the question of r today. Six signals to follow.</p>
+</section>
+<div class="watch">
+  <div><b>An acceleration that accelerates</b><span>With r &gt; 1, the measured acceleration should climb from one model to the next. METR saw hints of this, but Anthropic redacted them.</span></div>
+  <div><b>Autonomous contributions</b><span>As long as AI assists researchers without replacing them, the loop remains partial. The interviews conducted by METR point to the models' lack of “research taste”, but observe “signs of life”.</span></div>
+  <div><b>The experiment wall</b><span>If machine time for testing ideas becomes the bottleneck, λ collapses, and r with it. METR sees no such wall within twelve months, with limited confidence.</span></div>
+  <div><b>Anthropic's alert threshold</b><span>In November 2026, Anthropic declared it had crossed its “AI R&amp;D” alert threshold, based on an expected increase in pace. The next measurements will show whether that expectation holds.</span></div>
+  <div><b>The same break elsewhere</b><span>For Anthropic alone, METR measures ×1.9. Including other developers' models, the acceleration falls to about ×1.4. If OpenAI or Google show the same break, the phenomenon is general.</span></div>
+  <div><b>The number of artificial researchers</b><span>Labs are running more and more agents in parallel. The day one of them publishes how long a task takes to solve depending on the number of agents, we will have a first measurement of λ.</span></div>
+</div>
+{newsletterEnabled && (
+  <div class="veille">
+    <p class="veille__mot">I keep an eye on these six signals for you<svg class="veille__fleche" viewBox="0 0 40 52" aria-hidden="true"><path d="M8 4c14 6 22 20 18 40" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/><path d="M17 36c3 4 6 7 9 9 2-4 5-8 8-11" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></p>
+    <Newsletter lang="en" path="/en/blog/it-all-depends-on-r/" liste="veille_r" />
+  </div>
+)}
+
+<section class="col" id="avis">
+  <span class="num">07</span>
+  <div class="avis-head"><h2>My take on it</h2>
+    <span class="human" role="note" aria-label="Written by a human without AI, translated with AI"><Fragment set:html={pencil} /><span><b>100% human</b><small>written without AI · AI-translated</small></span></span></div>
+  <div class="hm">
+  <p>On the parameter <b>β</b>, the exhaustion of ideas: it can indeed be estimated “after the fact”, but the question of predicting it is utterly fascinating. <b>β</b> is a measure of the space of ideas being explored. We don't even know whether, in the case of AI, this space is finite or not. We know, for example, that the space of ideas of Euclidean geometry (those of Pythagoras and Thales) is infinite, but “decidable”: a machine can settle any question you ask it on the subject. But for AI research, it is the great unknown. Even more than its size (finite or infinite), what matters is its structure: are there crucial ideas still undiscovered, but enormously hard to reach?</p>
+  <p>On the parameter <b>λ</b>, I think the big AI labs have a fairly precise idea: they must have run experiments on solving R&amp;D tasks while varying the number of “artificial researcher” agents and measuring the time to solution. My intuition is that <b>λ</b> is probably better for a team of AI agents than for a team of human researchers (I'm sure you see what I mean ;)). Among the clues, OpenAI for example deployed 10,000 “artificial researcher” agents on the Navier-Stokes millennium problem (another singularity story). Why 10,000? Did they test various social organizations, or let them organize themselves? OpenAI and Anthropic have the results tables, we don't. And they will probably never be shared with us. It seems fairly straightforward to get first estimates of <b>λ</b>, but you need the resources to set up the experimental protocols: lots of tokens, and therefore lots of money.</p>
+  <p>My intuition (nothing scientific about it): <span class="m">r</span> &gt; 1. <b>λ</b> seems high to me: the agents probably coordinate very efficiently. As for <b>β</b>, I think it is low: ideas still seem “easy” to find. AIs are cutting through our supposedly near-impossible problems like a knife through butter: OpenAI knocked out hundreds of major math problems in a few weeks. For my own, more personal assessment, I use a scientific problem from my PhD thesis as a personal benchmark: I started working on it with Opus 4.6. With each new version, I make progress on the theory, and the performance of the algorithms produced keeps improving. I saw the biggest jumps with the move to Fable 5, then Fable 5.2.</p>
+  <p>But this “natural” return is going to face headwinds: increased caution among the engineers at the heart of the reactor, the roughness of reality (curves never quite play out), and, I hope, serious, frank, massive and coordinated regulation of the sector.</p>
+  </div>
+</section>
+
+<footer>
+  <span><b>Sources</b></span>
+  <ol>
+    <li><a href="https://metr.org/blog/2026-11-05-anthropic-ai-rd-acceleration-assessment/">METR, Independent Assessment of AI R&amp;D Acceleration at Anthropic in October 2026 (Nov. 2026)</a></li>
+    <li><a href="https://epoch.ai/blog/do-the-returns-to-software-rnd-point-towards-a-singularity">Besiroglu, Erdil, Ho (Epoch AI), Do the Returns to Software R&amp;D Point Towards a Singularity? (May 2024)</a></li>
+    <li><a href="https://epoch.ai/blog/algorithmic-progress-in-language-models">Ho et al. (Epoch AI), Algorithmic progress in language models (NeurIPS 2024)</a></li>
+    <li><a href="https://www.forethought.org/research/how-quick-and-big-would-a-software-intelligence-explosion-be">Davidson &amp; Houlden (Forethought), How quick and big would a software intelligence explosion be? (Aug. 2025)</a></li>
+    <li><a href="https://www.lesswrong.com/posts/xoChjkJeefmoP2ufH/humans-are-not-chinchillas-revisiting-how-quick-and-big">Tillman (Forethought), Humans are not chinchillas (Oct. 2026)</a></li>
+    <li><a href="https://www.nber.org/papers/w23782">Bloom, Jones, Van Reenen, Webb, “Are Ideas Getting Harder to Find?”, American Economic Review, 2020</a>; C. I. Jones, Journal of Political Economy, 1995.</li>
+  </ol>
+</footer>
