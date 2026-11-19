@@ -7,6 +7,7 @@ import SectionHead from './SectionHead.astro';
 import Layers from './Layers.astro';
 import ProjectCard from './ProjectCard.astro';
 import Cta from './Cta.astro';
+import LatestArticle from './LatestArticle.astro';
 import { texts, plain, anchors, routes, type Lang } from '../i18n';
 import { getProjets } from '../lib/projets';
 import { PHOTO_PATH, LINKEDIN_URL, CONTACT_EMAIL } from '../config';
@@ -120,6 +121,7 @@ const hasPhoto = fs.existsSync(path.join(process.cwd(), 'public', PHOTO_PATH));
     <p class="projects__all">
       <a class="btn btn--outline" href={routes.projects[lang]}>{t.projectsPreview.all} →</a>
     </p>
+    <LatestArticle lang={lang} />
   </div>
 </section>
 

@@ -1,0 +1,146 @@
+---
+// Accueil, sous la section 06 : aperçu du dernier article publié dans la langue de la page,
+// annoncé par un crayonné (écriture manuscrite + flèche). Rien si aucun article n'est publié.
+// Pas de résumé : il peut citer des entreprises ou modèles d'IA, permis dans les articles seulement.
+import { Image } from 'astro:assets';
+import { texts, plain, articleUrl, type Lang } from '../i18n';
+import { getArticles, articleSlug, formatDate } from '../lib/articles';
+import { articleImage } from '../lib/articleImages';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = texts[lang].latest;
+const [latest] = await getArticles(lang);
+const d = latest?.data;
+const href = latest ? articleUrl(lang, articleSlug(latest)) : '';
+const img = d?.image ? articleImage(d.image) : null;
+---
+{latest && d && (
+  <div class="latest">
+    <p class="latest__note" aria-hidden="true">
+      {plain(t.cta, lang)}
+      <svg class="latest__arrow" viewBox="0 0 40 52"><path d="M8 4c14 6 22 20 18 40" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/><path d="M17 36c3 4 6 7 9 9 2-4 5-8 8-11" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </p>
+    <a class="latest__card" href={href}>
+      <span class="sr-only">{plain(t.cta, lang)}{lang === 'fr' ? '\u00a0: ' : ': '}</span>
+      {img && (
+        <Image class="latest__img" src={img} alt="" widths={[480, 720, 1080]} sizes="(max-width: 760px) calc(100vw - 32px), 440px" quality={82} />
+      )}
+      <span class="latest__body">
+        {d.kicker && <span class="eyebrow latest__kicker">{plain(d.kicker, lang)}</span>}
+        <span class="latest__title">{plain(d.title, lang)}</span>
+        <span class="latest__date"><time datetime={d.date.toISOString().slice(0, 10)}>{formatDate(d.date, lang)}</time></span>
+      </span>
+    </a>
+  </div>
+)}
+
+<style>
+  @font-face {
+    font-family: 'Caveat';
+    font-weight: 700;
+    font-display: swap;
+    src: url(/fonts/parametre-r/caveat-normal-latin-b4f6fc.woff2) format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  }
+  @font-face {
+    font-family: 'Caveat';
+    font-weight: 700;
+    font-display: swap;
+    src: url(/fonts/parametre-r/caveat-normal-latin-ext-c68992.woff2) format('woff2');
+    unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+  }
+  .latest {
+    margin-top: clamp(48px, 7vw, 72px);
+  }
+  /* Crayonné : vermillon, 28 px (au-dessus du seuil de 18 px pour le vermillon en texte) */
+  .latest__note {
+    display: flex;
+    align-items: flex-end;
+    gap: 6px;
+    margin: 0 0 10px 4px;
+    transform: rotate(-2deg);
+    transform-origin: left center;
+    font: 700 30px/1.1 'Caveat', cursive;
+    color: var(--amber);
+  }
+  .latest__arrow {
+    width: 30px;
+    height: 40px;
+    flex: none;
+    margin-bottom: -20px;
+  }
+  .latest__card {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+    gap: clamp(20px, 3vw, 36px);
+    align-items: center;
+    max-width: 980px;
+    padding: clamp(14px, 2vw, 20px);
+    background: var(--surface);
+    border-radius: var(--radius);
+    color: var(--text-2);
+    text-decoration: none;
+    transition: box-shadow 0.2s ease;
+  }
+  .latest__card:hover {
+    box-shadow: 0 8px 24px rgba(74, 25, 15, 0.12);
+  }
+  .latest__card:focus-visible {
+    outline: 3px solid var(--ink);
+    outline-offset: 3px;
+  }
+  .latest__img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius);
+  }
+  .latest__body {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .latest__kicker {
+    margin: 0;
+  }
+  .latest__title {
+    font-family: var(--font-title);
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--ink);
+    font-size: clamp(1.5rem, 3vw, 2.1rem);
+    line-height: 1.05;
+  }
+  .latest__card:hover .latest__title {
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 4px;
+  }
+  .latest__date {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+  }
+  .latest__summary {
+    line-height: 1.55;
+  }
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+  @media (max-width: 760px) {
+    .latest__card {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .latest__note {
+      font-size: 26px;
+    }
+  }
+</style>

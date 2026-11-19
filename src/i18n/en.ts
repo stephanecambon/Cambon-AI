@@ -232,6 +232,10 @@ export const en: Texts = {
     all: 'All projects',
   },
 
+  latest: {
+    cta: 'Read my latest piece',
+  },
+
   cta: {
     label: 'Contact',
     title: "A problem that won't budge?",

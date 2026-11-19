@@ -235,6 +235,11 @@ export const fr = {
     all: 'Tous les projets',
   },
 
+  // Sous les projets : aperçu du dernier article (crayonné)
+  latest: {
+    cta: 'Lire mon dernier contenu',
+  },
+
   cta: {
     label: 'Contact',
     title: 'Un problème qui résiste ?',
