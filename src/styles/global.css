@@ -307,3 +307,31 @@ h3 {
   margin: 0;
   padding: 0;
 }
+
+/* ---------- Logo : le carré « AI » ressort puis s'emboîte (0,7 s) ----------
+   Classe .is-animating posée par le script de Header.astro sur le lien du logo
+   de l'en-tête (chargement, survol, focus clavier) et sur la marque du pied de
+   page (survol). Sans JS ou si l'utilisateur réduit les animations : logo
+   statique. 60px = 60 unités du dessin (viewBox 240), donc proportionnel à la
+   taille d'affichage. */
+@keyframes logo-emboite {
+  0% {
+    transform: translateX(0);
+    animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  45% {
+    transform: translateX(60px);
+    animation-timing-function: cubic-bezier(0.6, 0, 0.85, 0.9);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+.is-animating .logo-ai {
+  animation: logo-emboite 0.7s both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .is-animating .logo-ai {
+    animation: none;
+  }
+}

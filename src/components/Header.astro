@@ -209,61 +209,39 @@ const hasBlog = (await getArticles(lang)).length > 0;
     }
   }
 
-  /* ---------- Logo : le carré « AI » ressort puis s'emboîte (0,7 s) ----------
-     Déclenché par JavaScript (classe .is-animating) une fois au chargement de
-     la page, puis au survol (souris) ou au focus clavier du lien. Sans JS ou
-     si l'utilisateur réduit les animations : logo statique. 60px = 60 unités du dessin (viewBox 240),
-     donc proportionnel à la taille d'affichage. */
-  @keyframes logo-emboite {
-    0% {
-      transform: translateX(0);
-      animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    45% {
-      transform: translateX(60px);
-      animation-timing-function: cubic-bezier(0.6, 0, 0.85, 0.9);
-    }
-    100% {
-      transform: translateX(0);
-    }
-  }
-  .site-header__logo.is-animating :global(.logo-ai) {
-    animation: logo-emboite 0.7s both;
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .site-header__logo.is-animating :global(.logo-ai) {
-      animation: none;
-    }
-  }
+  /* Animation du logo (emboîtement) : styles communs dans global.css (.is-animating). */
 </style>
 
 <script>
   // Mobile : masque la ligne de navigation en descendant, la réaffiche en remontant.
   // Le logo et « Prendre rendez-vous » restent toujours visibles.
-  // Logo : animation d'emboîtement, une fois au chargement de la page,
-  // puis une fois par survol (ou focus clavier).
+  // Logo : animation d'emboîtement. En-tête : une fois au chargement de la page,
+  // puis une fois par survol (ou focus clavier). Pied de page : au survol seulement.
   // Elle se joue toujours en entier : la classe n'est retirée qu'à la fin.
-  const logoLink = document.querySelector<HTMLAnchorElement>('.site-header__logo');
-  const logoAi = logoLink?.querySelector('.logo-ai');
-  if (logoLink && logoAi) {
-    const canHover = window.matchMedia('(hover: hover) and (pointer: fine)');
-    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const canHover = window.matchMedia('(hover: hover) and (pointer: fine)');
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const setupLogo = (el: HTMLElement | null, onLoad: boolean) => {
+    const logoAi = el?.querySelector('.logo-ai');
+    if (!el || !logoAi) return;
     const play = () => {
-      if (reduced.matches || logoLink.classList.contains('is-animating')) return;
-      logoLink.classList.add('is-animating');
+      if (reduced.matches || el.classList.contains('is-animating')) return;
+      el.classList.add('is-animating');
     };
-    logoLink.addEventListener('mouseenter', () => {
+    el.addEventListener('mouseenter', () => {
       if (canHover.matches) play();
     });
-    logoLink.addEventListener('focus', () => {
-      if (logoLink.matches(':focus-visible')) play();
+    el.addEventListener('focus', () => {
+      if (el.matches(':focus-visible')) play();
     });
-    logoAi.addEventListener('animationend', () => logoLink.classList.remove('is-animating'));
+    logoAi.addEventListener('animationend', () => el.classList.remove('is-animating'));
+    if (!onLoad) return;
     // Au chargement : court délai pour que la page soit affichée avant le mouvement
     const playOnLoad = () => setTimeout(play, 400);
     if (document.readyState === 'complete') playOnLoad();
     else window.addEventListener('load', playOnLoad, { once: true });
-  }
+  };
+  setupLogo(document.querySelector<HTMLElement>('.site-header__logo'), true);
+  setupLogo(document.querySelector<HTMLElement>('.site-footer__brand'), false);
 
   const header = document.querySelector<HTMLElement>('.site-header');
   if (header) {
