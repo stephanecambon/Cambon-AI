@@ -307,7 +307,7 @@ export const fr = {
       alsoSite: 'Recevoir aussi mes autres analyses (newsletter de Cambon AI)',
       notice:
         'En vous abonnant, vous acceptez de recevoir la veille de Cambon AI sur le paramètre r. Désinscription en un clic, à tout moment.',
-      success: "Merci, c'est noté. Je vous envoie une veille tous les jeudi à 9h.",
+      success: "Merci, c'est noté. Je vous envoie une veille tous les jeudis à 9 h.",
     },
   },
 
