@@ -1,7 +1,7 @@
 ---
 // Accueil, sous la section 06 : aperçu du dernier article publié dans la langue de la page,
 // annoncé par un crayonné (écriture manuscrite + flèche). Rien si aucun article n'est publié.
-// Pas de résumé : il peut citer des entreprises ou modèles d'IA, permis dans les articles seulement.
+// Texte : celui de l'aperçu de partage (ogDescription), sinon le résumé de l'article.
 import { Image } from 'astro:assets';
 import { texts, plain, articleUrl, type Lang } from '../i18n';
 import { getArticles, articleSlug, formatDate } from '../lib/articles';
@@ -33,6 +33,7 @@ const img = d?.image ? articleImage(d.image) : null;
         {d.kicker && <span class="eyebrow latest__kicker">{plain(d.kicker, lang)}</span>}
         <span class="latest__title">{plain(d.title, lang)}</span>
         <span class="latest__date"><time datetime={d.date.toISOString().slice(0, 10)}>{formatDate(d.date, lang)}</time></span>
+        <span class="latest__summary">{plain(d.ogDescription ?? d.summary, lang)}</span>
       </span>
     </a>
   </div>

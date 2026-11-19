@@ -6,15 +6,15 @@ Site vitrine de Cambon AI (SASU, Paris), R&D appliquée pour PME et ETI. Propri�
 
 - **Textes français validés : intégrer mot pour mot.** Ne rien reformuler. Une faute ou une incohérence se signale à Stéphane, elle ne se corrige pas d'office.
 - **Le site ne mentionne jamais Claude**, ni aucun nom de modèle ou d'éditeur d'IA. On dit « IA », de manière générique. Cette règle vaut pour tout le dépôt public (README, commentaires, noms de fichiers), sauf ce fichier.
-- **Exception : les articles du blog** (choix de Stéphane, novembre 2026). Un article d'analyse peut citer les entreprises et modèles d'IA qu'il étudie (ex. Anthropic, OpenAI, les modèles Claude dans « Tout dépend de r »). Uniquement dans le contenu des articles (`src/content/articles/`, `src/components/articles/`) ; jamais ailleurs (pages, projets, interface, commentaires de code).
+- **Exception : les articles du blog** (choix de Stéphane, novembre 2026). Un article d'analyse peut citer les entreprises et modèles d'IA qu'il étudie (ex. Anthropic, OpenAI, les modèles Claude dans « Tout dépend de r »). Dans le contenu des articles (`src/content/articles/`, `src/components/articles/`) et dans leurs aperçus partout sur le site (titre, résumé, texte de partage : liste du blog, bloc « dernier contenu » de l'accueil, aperçus de partage) ; le reste du site (pages, projets, interface, commentaires de code) n'en cite pas (choix de Stéphane, novembre 2026).
 - **Anonymisation.** Aucun nom de client. Le cabinet de maîtrise d'ouvrage n'est ni nommé ni situé.
 - **Biotech : rester strictement vague.** Jamais de test (au sens de produit de diagnostic), de diagnostic, de domaine vétérinaire, d'ELISA, de plaques, de réactifs ni de dilutions. Uniquement « biotech », « expériences », « paramètres ».
 - **Première personne du singulier** (« je »). Exceptions voulues : « Nous avons construit… » (l'équipe d'Ownpage, section 05) et « à notre connaissance » (JouetSwap, projet mené avec son fils).
 - **Surligneur vermillon : un seul mot ou une seule expression par bloc** (« à l'échelle de votre entreprise » dans l'accroche, le résultat de chaque projet).
 - **Version anglaise** : adaptation naturelle de site professionnel, pas de traduction littérale ; mêmes règles que le français. Tout nouveau texte EN est validé par Stéphane avant publication.
-- Vérification avant chaque publication, les deux commandes ne doivent rien trouver :
-  - `grep -rlaiE "claude|anthropic|cambea|elisa|v[ée]t[ée]rinaire|innovative" dist --exclude-dir=blog --exclude-dir=brand` (tout le site hors blog, **images comprises** grâce à `-a` : le `grep` de ce Mac ignore sinon les fichiers binaires ; `dist/brand/` vient de `public/brand/`, exclu du dépôt et jamais publié) ;
-  - `grep -rlaiE "cambea|elisa|v[ée]t[ée]rinaire|innovative" dist/blog dist/en/blog` (le blog, sans les noms d'IA autorisés). Si `dist/en/blog` n'existe pas encore, ne vérifier que `dist/blog`.
+- Vérification avant chaque publication :
+  - `grep -rlaiE "cambea|elisa|v[ée]t[ée]rinaire|innovative" dist --exclude-dir=brand` (tout le site, **images comprises** grâce à `-a` : le `grep` de ce Mac ignore sinon les fichiers binaires ; `dist/brand/` vient de `public/brand/`, exclu du dépôt et jamais publié) ;
+  - `grep -rlaiE "claude|anthropic" dist --exclude-dir=blog --exclude-dir=brand` ne doit trouver que `dist/index.html` et `dist/en/index.html` (aperçu du dernier article sur l'accueil). Tout autre fichier, image comprise, est une fuite à corriger.
 - **Images** : toute image ajoutée doit être sans métadonnées. Les fichiers produits par un outil d'IA portent souvent un bloc de provenance (C2PA : bloc `caBX` en PNG, extension `C2PA_GIF` en GIF) qui nomme l'outil : le retirer avant de commiter (novembre 2026 : nettoyé sans perte sur les 3 images de `public/newsletter/`, les anciennes versions restent dans l'historique Git).
 
 ## Newsletter (formulaire)
